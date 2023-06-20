@@ -44,11 +44,13 @@ const Register = () => {
       <form action="" onSubmit={handleSubmit}>
         <div className="h-[550px] w-[500px] flex flex-col justify-around items-center rounded-md shadow-gray-200 shadow-lg">
           <div className="w-4/5">
-            <h3 className="text-2xl self-start">Create your Uprite account</h3>
+            <h3 className="text-2xl font-semibold self-start">
+              Create your Up+Right account
+            </h3>
           </div>
 
           <div className="flex flex-col justify-around w-4/5">
-            <label className="text-sm" htmlFor="">
+            <label className="text-sm font-medium" htmlFor="">
               First name
             </label>
             <input
@@ -58,7 +60,7 @@ const Register = () => {
                 setFirstName(e.target.value)
               }
             />
-            <label className="text-sm" htmlFor="">
+            <label className="text-sm font-medium" htmlFor="">
               Last name
             </label>
             <input
@@ -68,7 +70,7 @@ const Register = () => {
                 setLastName(e.target.value)
               }
             />
-            <label className="text-sm" htmlFor="">
+            <label className="text-sm font-medium" htmlFor="">
               Email
             </label>
             <input
@@ -78,7 +80,7 @@ const Register = () => {
                 setEmail(e.target.value)
               }
             />
-            <label className="text-sm" htmlFor="">
+            <label className="text-sm font-medium" htmlFor="">
               Birthday
             </label>
             <input
@@ -91,7 +93,7 @@ const Register = () => {
             />
           </div>
           <button
-            className="h-[50px] w-4/5 bg-indigo-500 text-white rounded-md flex justify-center items-center"
+            className="h-[50px] w-4/5 bg-indigo-500 text-white font-medium rounded-md flex justify-center items-center"
             type="submit"
           >
             {isLoading ? <Spinner /> : "Continue"}

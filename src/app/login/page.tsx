@@ -37,9 +37,13 @@ const Login = () => {
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-white">
         <form onSubmit={handleSubmit}>
           <div className="h-[300px] w-[500px] flex flex-col justify-around items-center rounded-md shadow-gray-200 shadow-lg">
-            <h3 className="text-2xl">Sign in to your account</h3>
+            <div className="w-4/5">
+              <h3 className="text-2xl font-semibold self-start">
+                Sign in to your account
+              </h3>
+            </div>
             <div className="flex flex-col justify-around w-4/5">
-              <label className="text-sm" htmlFor="">
+              <label className="text-sm font-medium" htmlFor="">
                 Email
               </label>
               <input
@@ -51,7 +55,7 @@ const Login = () => {
               />
             </div>
             <button
-              className="h-[50px] w-4/5 bg-indigo-500 text-white rounded-md"
+              className="h-[50px] w-4/5 bg-indigo-500 text-white font-medium rounded-md flex justify-center items-center"
               type="submit"
             >
               {isLoading ? <Spinner /> : "Continue"}
