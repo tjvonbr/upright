@@ -13,7 +13,7 @@ const handler = NextAuth({
   adapter: PrismaAdapter(prisma) as Adapter,
   debug: true,
   pages: {
-    signIn: "../../../login/page",
+    signIn: "../../../login",
     verifyRequest: "../../../verify-request",
   },
   providers: [
