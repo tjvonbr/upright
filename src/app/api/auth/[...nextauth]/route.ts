@@ -3,7 +3,6 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { Adapter } from "next-auth/adapters";
-import nodemailer from "nodemailer";
 
 const THIRTY_DAYS = 60 * 60 * 24 * 30;
 const THIRTY_MINUTES = 60 * 30;
@@ -14,8 +13,8 @@ const handler = NextAuth({
   adapter: PrismaAdapter(prisma) as Adapter,
   debug: true,
   pages: {
-    signIn: "/login",
-    verifyRequest: "/verify-request",
+    signIn: "../../../login/page",
+    verifyRequest: "../../../verify-request",
   },
   providers: [
     EmailProvider({
