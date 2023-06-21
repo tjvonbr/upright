@@ -9,8 +9,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Exercise {
+  id      Int     @id @default(autoincrement())
+  name    String
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int?
+
+  
+  @@map("exercises")
+}
 model Session {
-  id           String   @id @default(cuid())
+  id           Int   @id @default(autoincrement())
   sessionToken String   @unique
   userId       Int
   expires      DateTime
@@ -26,9 +36,10 @@ model User {
   firstName     String    
   lastName      String
   email         String    @unique
-  emailVerified DateTime? @map("emailVerified")
+  emailVerified DateTime? 
   birthday      DateTime  @db.Date
   sessions      Session[]
+  exercises     Exercise[]
 
   @@map("users")
 }
