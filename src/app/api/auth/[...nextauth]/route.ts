@@ -1,8 +1,25 @@
 import EmailProvider from "next-auth/providers/email";
-import NextAuth from "next-auth";
+import NextAuth, { DefaultUser } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { Adapter } from "next-auth/adapters";
+import { db } from "@/app/lib/prisma";
+
+export interface IUser extends DefaultUser {
+  firstName?: string;
+  lastName?: string;
+}
+
+declare module "next-auth" {
+  interface User extends IUser {}
+  interface Session {
+    user?: User;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends IUser {}
+}
 
 const THIRTY_DAYS = 60 * 60 * 24 * 30;
 const THIRTY_MINUTES = 60 * 30;
@@ -36,16 +53,35 @@ const handler = NextAuth({
     updateAge: THIRTY_MINUTES,
   },
   callbacks: {
-    async jwt({ token, account, profile }) {
-      if (account) {
-        token.name = profile?.name;
-        token.email = profile?.email;
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findFirst({
+        where: {
+          email: token.email as string,
+        },
+      });
+
+      if (!dbUser) {
+        if (user) {
+          token.id = user.id;
+        }
+
+        return token;
       }
 
-      return token;
+      return {
+        ...token,
+        firstName: dbUser.firstName,
+        lastName: dbUser.lastName,
+        email: dbUser.email,
+      };
     },
-    async session({ session, user }) {
-      session.user = user;
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+        session.user.email = token.email;
+      }
 
       return session;
     },
