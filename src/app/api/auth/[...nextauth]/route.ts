@@ -35,6 +35,21 @@ const handler = NextAuth({
     maxAge: THIRTY_DAYS,
     updateAge: THIRTY_MINUTES,
   },
+  callbacks: {
+    async jwt({ token, account, profile }) {
+      if (account) {
+        token.name = profile?.name;
+        token.email = profile?.email;
+      }
+
+      return token;
+    },
+    async session({ session, user }) {
+      session.user = user;
+
+      return session;
+    },
+  },
 });
 
 export { handler as GET, handler as POST };
