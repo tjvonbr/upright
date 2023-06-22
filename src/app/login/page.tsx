@@ -71,8 +71,6 @@ const Login = () => {
       </div>
     );
   }
-
-  return <h1>You are not signed in!</h1>;
 };
 
 export default Login;

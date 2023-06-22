@@ -7,7 +7,7 @@ import { User } from "next-auth";
 const Header = ({ user }: { user: User }) => {
   const name = user ? `${user.firstName} ${" "} ${user.lastName}` : "";
   return (
-    <div className="h-[50px] px-2 border border-b-lightgray w-full absolute flex justify-between items-center top-0">
+    <div className="h-[50px] px-2 border border-b-lightgray w-full flex justify-between items-center">
       <button>
         <span className="text-2xl">&#128200;</span>
       </button>

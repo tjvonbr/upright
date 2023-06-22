@@ -1,5 +1,6 @@
 "use client";
 
+import { Dropdown } from "semantic-ui-react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Header from "./dashboard/components/Header";
@@ -26,8 +27,16 @@ export default function Home() {
     return <Loading />;
   } else {
     return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-indigo-50">
+      <div className="h-screen w-screen bg-indigo-50">
         <Header user={session.user as User} />
+        <Dropdown className="font-medium" text="Create new...">
+          <Dropdown.Menu>
+            <Dropdown.Item
+              onClick={() => router.push("/exercises")}
+              text="Exercise"
+            />
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
     );
   }
