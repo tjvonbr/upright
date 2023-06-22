@@ -1,0 +1,86 @@
+import { Adapter } from "next-auth/adapters";
+import { db } from "./prisma";
+import EmailProvider from "next-auth/providers/email";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { DefaultUser, NextAuthOptions } from "next-auth";
+
+export interface IUser extends DefaultUser {
+  firstName?: string;
+  lastName?: string;
+}
+
+declare module "next-auth" {
+  interface User extends IUser {}
+  interface Session {
+    user?: User;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT extends IUser {}
+}
+
+const THIRTY_DAYS = 60 * 60 * 24 * 30;
+const THIRTY_MINUTES = 60 * 30;
+
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(db) as Adapter,
+  debug: true,
+  pages: {
+    signIn: "../../../login",
+    verifyRequest: "../../../verify-request",
+  },
+  providers: [
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: Number(process.env.EMAIL_SERVER_PORT),
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
+    }),
+  ],
+  secret: process.env.SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: THIRTY_DAYS,
+    updateAge: THIRTY_MINUTES,
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findFirst({
+        where: {
+          email: token.email as string,
+        },
+      });
+
+      if (!dbUser) {
+        if (user) {
+          token.id = user.id;
+        }
+
+        return token;
+      }
+
+      return {
+        ...token,
+        firstName: dbUser.firstName,
+        lastName: dbUser.lastName,
+        email: dbUser.email,
+      };
+    },
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id;
+        session.user.firstName = token.firstName;
+        session.user.lastName = token.lastName;
+        session.user.email = token.email;
+      }
+
+      return session;
+    },
+  },
+};
