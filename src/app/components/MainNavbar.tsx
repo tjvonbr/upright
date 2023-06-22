@@ -25,9 +25,8 @@ const MainNavbar = ({ items }: MainNavbarProps) => {
           className={twMerge(
             "px-2.5 py-1 mx-1 rounded-full font-medium text-sm",
             item.href.endsWith(pathname)
-              ? "bg-indigo-500 text-white"
-              : "bg-white text-black",
-            "hover:bg-gray-200 hover:text-black"
+              ? "bg-indigo-500 text-white hover:bg-indigo-500 hover:text-white"
+              : "bg-white text-black hover:bg-gray-200 hover:text-black"
           )}
           href={item.href}
           key={idx}
