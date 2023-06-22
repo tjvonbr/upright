@@ -29,14 +29,6 @@ export default function Home() {
     return (
       <div className="h-screen w-screen bg-indigo-50">
         <Header user={session.user as User} />
-        <Dropdown className="font-medium" text="Create new...">
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={() => router.push("/exercises")}
-              text="Exercise"
-            />
-          </Dropdown.Menu>
-        </Dropdown>
       </div>
     );
   }
