@@ -67,7 +67,6 @@ export const authOptions: NextAuthOptions = {
 
       return {
         ...token,
-        id: dbUser.id,
         firstName: dbUser.firstName,
         lastName: dbUser.lastName,
         email: dbUser.email,
