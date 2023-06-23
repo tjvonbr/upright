@@ -1,11 +1,8 @@
 "use client";
 
-import { Dropdown } from "semantic-ui-react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Header from "./dashboard/components/Header";
+import { redirect, useRouter } from "next/navigation";
 import "semantic-ui-css/semantic.min.css";
-import { User } from "next-auth";
 
 const Loading = () => {
   return (
@@ -26,10 +23,6 @@ export default function Home() {
   if (status === "loading" || !session) {
     return <Loading />;
   } else {
-    return (
-      <div className="h-screen w-screen bg-indigo-50">
-        <Header user={session.user as User} />
-      </div>
-    );
+    return redirect("/dashboard");
   }
 }
