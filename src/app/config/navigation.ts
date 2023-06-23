@@ -46,4 +46,14 @@ export const subNavbarItems = {
       href: "/programs/add-program",
     },
   ],
+  workouts: [
+    {
+      name: "Overview",
+      href: "/workouts",
+    },
+    {
+      name: "Create Workout",
+      href: "/workouts/add-workout",
+    },
+  ],
 };
