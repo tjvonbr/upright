@@ -48,14 +48,6 @@ export default async function RootLayout({
           <section>
             <Header user={user as User} />
             <MainNavbar items={navbarItems.mainNavbar} />
-            <div>
-              <div className="h-full w-9/10 flex-col items-center">
-                <div className="m-5">
-                  <h1 className="font-semibold text-3xl">Exercises</h1>
-                  <SubNavbar items={subNavbarItems.exercises} />
-                </div>
-              </div>
-            </div>
           </section>
           <main className="m-5">{children}</main>
         </AuthContext>

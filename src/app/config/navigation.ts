@@ -12,15 +12,15 @@ export const navbarItems = {
     },
     {
       name: "Programs",
-      href: "/dashboard/programs",
+      href: "/programs",
     },
     {
       name: "Workouts",
-      href: "/dashboard/workouts",
+      href: "/workouts",
     },
     {
       name: "Personal Bests",
-      href: "/dashboard/personal-bests",
+      href: "/personal-bests",
     },
   ],
 };
@@ -34,6 +34,16 @@ export const subNavbarItems = {
     {
       name: "Create Exercise",
       href: "/exercises/add-exercise",
+    },
+  ],
+  programs: [
+    {
+      name: "Overview",
+      href: "/programs",
+    },
+    {
+      name: "Create Program",
+      href: "/programs/add-program",
     },
   ],
 };
