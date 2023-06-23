@@ -11,13 +11,25 @@ datasource db {
 }
 
 model Exercise {
-  id      Int     @id @default(autoincrement())
-  name    String
-  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  Int?
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?
+  workouts  Workout[]
 
   
   @@map("exercises")
+}
+
+model Program {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  workouts    Workout[]
+
+  @@map("programs")
 }
 model Session {
   id           Int   @id @default(autoincrement())
@@ -40,6 +52,8 @@ model User {
   birthday      DateTime  @db.Date
   sessions      Session[]
   exercises     Exercise[]
+  programs      Program[]
+  workouts      Workout[]
 
   @@map("users")
 }
@@ -51,4 +65,17 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Workout {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  date      DateTime  @db.Date
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int       
+  program   Program?   @relation(fields: [programId], references: [id], onDelete: Cascade)
+  programId Int?
+  exercises Exercise[]
+
+  @@map("workouts")
 }
