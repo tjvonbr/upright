@@ -8,7 +8,7 @@ export const navbarItems = {
     },
     {
       name: "Exercises",
-      href: "/dashboard/exercises",
+      href: "/exercises",
     },
     {
       name: "Programs",
@@ -21,6 +21,19 @@ export const navbarItems = {
     {
       name: "Personal Bests",
       href: "/dashboard/personal-bests",
+    },
+  ],
+};
+
+export const subNavbarItems = {
+  exercises: [
+    {
+      name: "Overview",
+      href: "/exercises",
+    },
+    {
+      name: "Create Exercise",
+      href: "/exercises/add-exercise",
     },
   ],
 };
