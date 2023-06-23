@@ -2,12 +2,13 @@ import "./globals.css";
 import "semantic-ui-css/semantic.min.css";
 import AuthContext from "./dashboard/components/AuthContext";
 import { Inter } from "next/font/google";
-import { Session } from "next-auth";
+import { Session, User } from "next-auth";
 import { headers } from "next/headers";
 import Header from "./dashboard/components/Header";
 import MainNavbar from "./components/MainNavbar";
 import SubNavbar from "./components/SubNavbar";
 import { navbarItems, subNavbarItems } from "./config/navigation";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,12 +37,16 @@ export default async function RootLayout({
   const session = await getSession(headers().get("cookie") ?? "");
   const { user } = session;
 
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
     <html lang="en">
       <body className={inter.className}>
         <AuthContext session={session}>
           <section>
-            <Header user={user} />
+            <Header user={user as User} />
             <MainNavbar items={navbarItems.mainNavbar} />
             <div>
               <div className="h-full w-9/10 flex-col items-center">
