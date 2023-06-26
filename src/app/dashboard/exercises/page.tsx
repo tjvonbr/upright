@@ -1,4 +1,3 @@
-import { db } from "@/app/lib/prisma";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/app/lib/session";
