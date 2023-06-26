@@ -65,12 +65,12 @@ export const authOptions: NextAuthOptions = {
         return token;
       }
 
-      return {
-        id: dbUser.id,
-        firstName: dbUser.firstName,
-        lastName: dbUser.lastName,
-        email: dbUser.email,
-      };
+      token.id = String(dbUser.id);
+      token.firstName = dbUser.firstName;
+      token.lastName = dbUser.lastName;
+      token.birthday = dbUser.birthday;
+
+      return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
