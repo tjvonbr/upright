@@ -10,14 +10,16 @@ const Exercises = async () => {
     redirect("/login");
   }
 
-  const exercises = await db.exercise.findMany({
-    where: {
-      userId: Number(user.id),
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
+  // const exercises = await db.exercise.findMany({
+  //   where: {
+  //     userId: Number(user.id),
+  //   },
+  //   orderBy: {
+  //     name: "asc",
+  //   },
+  // });
+
+  const exercises: any[] = [];
 
   return (
     <main>

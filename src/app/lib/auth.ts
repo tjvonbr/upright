@@ -59,14 +59,14 @@ export const authOptions: NextAuthOptions = {
 
       if (!dbUser) {
         if (user) {
-          token.id = user.id;
+          token.id = user?.id;
         }
 
         return token;
       }
 
       return {
-        ...token,
+        id: dbUser.id,
         firstName: dbUser.firstName,
         lastName: dbUser.lastName,
         email: dbUser.email,

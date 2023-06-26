@@ -1,7 +1,3 @@
-"use client";
-
-import { useSession } from "next-auth/react";
-import { redirect, useRouter } from "next/navigation";
 import "semantic-ui-css/semantic.min.css";
 
 const Loading = () => {
@@ -14,15 +10,5 @@ const Loading = () => {
 };
 
 export default function Home() {
-  const router = useRouter();
-  const { data: session, status } = useSession({
-    required: true,
-    onUnauthenticated: () => router.push("api/auth/signin"),
-  });
-
-  if (status === "loading" || !session) {
-    return <Loading />;
-  } else {
-    return redirect("/dashboard");
-  }
+  return <div>Hello</div>;
 }

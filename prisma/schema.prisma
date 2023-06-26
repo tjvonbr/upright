@@ -25,7 +25,7 @@ model Program {
   id          Int       @id @default(autoincrement())
   name        String    @unique
   description String?
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
   workouts    Workout[]
 

@@ -24,7 +24,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      signIn("email", { callbackUrl: "/", email });
+      signIn("email", { callbackUrl: "/dashboard", email });
       setIsLoading(false);
     } catch (err) {
       console.log(err);

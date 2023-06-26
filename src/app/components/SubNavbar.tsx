@@ -14,7 +14,7 @@ interface SubNavbarProps {
   children?: React.ReactNode;
 }
 
-const SubNavbar = ({ children, items }: SubNavbarProps) => {
+const SubNavbar = ({ items }: SubNavbarProps) => {
   const pathname = usePathname();
 
   return (
@@ -25,7 +25,7 @@ const SubNavbar = ({ children, items }: SubNavbarProps) => {
               <Link
                 className={twMerge(
                   "px-2.5 py-1 pb-2 font-medium",
-                  item.href.endsWith(pathname)
+                  item.href === pathname
                     ? "border-b-2 border-indigo-500 text-indigo-500 hover:text-indigo-500"
                     : "text-gray-500 hover:text-black"
                 )}

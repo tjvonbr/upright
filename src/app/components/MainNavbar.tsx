@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { twMerge } from "tailwind-merge";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export interface NavItem {
   name: string;
@@ -15,7 +15,7 @@ export interface MainNavbarProps {
 }
 
 const MainNavbar = ({ items }: MainNavbarProps) => {
-  const segment = useSelectedLayoutSegment();
+  const pathname = usePathname().split("/").slice(0, 3).join("/");
 
   return (
     <nav className="h-[45px] w-full flex items-center border">
@@ -23,7 +23,7 @@ const MainNavbar = ({ items }: MainNavbarProps) => {
         <Link
           className={twMerge(
             "px-2.5 py-1 mx-1 rounded-full font-medium text-sm",
-            item.href.startsWith(`/${segment}`)
+            item.href === pathname
               ? "bg-indigo-500 text-white hover:bg-indigo-500 hover:text-white"
               : "bg-white text-black hover:bg-gray-200 hover:text-black"
           )}

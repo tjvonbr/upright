@@ -8,19 +8,19 @@ export const navbarItems = {
     },
     {
       name: "Exercises",
-      href: "/exercises",
+      href: "/dashboard/exercises",
     },
     {
       name: "Programs",
-      href: "/programs",
+      href: "/dashboard/programs",
     },
     {
       name: "Workouts",
-      href: "/workouts",
+      href: "/dashboard/workouts",
     },
     {
       name: "Personal Bests",
-      href: "/personal-bests",
+      href: "/dashboard/personal-bests",
     },
   ],
 };
@@ -29,31 +29,31 @@ export const subNavbarItems = {
   exercises: [
     {
       name: "Overview",
-      href: "/exercises",
+      href: "/dashboard/exercises",
     },
     {
       name: "Create Exercise",
-      href: "/exercises/add-exercise",
+      href: "/dashboard/exercises/add-exercise",
     },
   ],
   programs: [
     {
       name: "Overview",
-      href: "/programs",
+      href: "/dashboard/programs",
     },
     {
       name: "Create Program",
-      href: "/programs/add-program",
+      href: "/dashboard/programs/add-program",
     },
   ],
   workouts: [
     {
       name: "Overview",
-      href: "/workouts",
+      href: "/dashboard/workouts",
     },
     {
       name: "Create Workout",
-      href: "/workouts/add-workout",
+      href: "/dashboard/workouts/add-workout",
     },
   ],
 };
