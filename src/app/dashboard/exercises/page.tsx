@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
+import { db } from "@/app/lib/prisma";
 import { getCurrentUser } from "@/app/lib/session";
 
 const Exercises = async () => {
@@ -10,16 +11,14 @@ const Exercises = async () => {
     redirect("/login");
   }
 
-  // const exercises = await db.exercise.findMany({
-  //   where: {
-  //     userId: Number(user.id),
-  //   },
-  //   orderBy: {
-  //     name: "asc",
-  //   },
-  // });
-
-  const exercises: any[] = [];
+  const exercises = await db.exercise.findMany({
+    where: {
+      userId: Number(user.id),
+    },
+    orderBy: {
+      name: "asc",
+    },
+  });
 
   return (
     <main>
