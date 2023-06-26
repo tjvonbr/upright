@@ -27,7 +27,7 @@ const Programs = () => {
     return programs;
   }
 
-  const { data: programs, error, isLoading } = useSWR(url, getPrograms);
+  const { data: programs, isLoading } = useSWR(url, getPrograms);
 
   if (isLoading) return <div>Loading...</div>;
 

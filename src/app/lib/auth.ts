@@ -11,12 +11,14 @@ export interface IUser extends DefaultUser {
 
 declare module "next-auth" {
   interface User extends IUser {}
+  // eslint-disable-next-line no-unused-vars
   interface Session {
     user?: User;
   }
 }
 
 declare module "next-auth/jwt" {
+  // eslint-disable-next-line no-unused-vars
   interface JWT extends IUser {}
 }
 
@@ -59,18 +61,18 @@ export const authOptions: NextAuthOptions = {
 
       if (!dbUser) {
         if (user) {
-          token.id = user?.id;
+          token.id = user.id;
         }
 
         return token;
       }
 
-      token.id = String(dbUser.id);
-      token.firstName = dbUser.firstName;
-      token.lastName = dbUser.lastName;
-      token.birthday = dbUser.birthday;
-
-      return token;
+      return {
+        ...token,
+        firstName: dbUser.firstName,
+        lastName: dbUser.lastName,
+        email: dbUser.email,
+      };
     },
     async session({ session, token }) {
       if (token && session.user) {
