@@ -1,5 +1,6 @@
-import { db } from "@/app/lib/prisma";
 import { NextResponse } from "next/server";
+
+import { db } from "@/app/lib/prisma";
 
 export async function GET(req: Request) {
   const data = await req.json();

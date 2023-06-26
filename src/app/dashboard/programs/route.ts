@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { db } from "@/app/lib/prisma";
 
 export async function GET(req: Request) {
@@ -14,6 +15,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json(data);
   } catch (err) {
-    console.log(err);
+    throw new Error(`Error: ${err}`);
   }
 }
