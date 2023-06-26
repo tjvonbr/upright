@@ -59,18 +59,18 @@ export const authOptions: NextAuthOptions = {
 
       if (!dbUser) {
         if (user) {
-          token.id = user.id;
+          token.id = user?.id;
         }
 
         return token;
       }
 
-      return {
-        ...token,
-        firstName: dbUser.firstName,
-        lastName: dbUser.lastName,
-        email: dbUser.email,
-      };
+      token.id = String(dbUser.id);
+      token.firstName = dbUser.firstName;
+      token.lastName = dbUser.lastName;
+      token.birthday = dbUser.birthday;
+
+      return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
