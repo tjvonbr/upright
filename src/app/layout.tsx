@@ -1,9 +1,11 @@
 import "./globals.css";
 import "semantic-ui-css/semantic.min.css";
-import AuthContext from "./dashboard/components/AuthContext";
+
 import { Inter } from "next/font/google";
-import { Session } from "next-auth";
 import { headers } from "next/headers";
+import { Session } from "next-auth";
+
+import AuthContext from "./dashboard/components/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 

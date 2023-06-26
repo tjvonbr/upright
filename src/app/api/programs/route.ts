@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { db } from "@/app/lib/prisma";
+import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   const data = await req.json();
@@ -14,6 +14,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json(data);
   } catch (err) {
-    console.log(err);
+    throw new Error(`Error: ${err}`);
   }
 }

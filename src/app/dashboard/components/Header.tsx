@@ -1,8 +1,8 @@
 "use client";
 
-import { Dropdown } from "semantic-ui-react";
-import { signOut } from "next-auth/react";
 import { User } from "next-auth";
+import { signOut } from "next-auth/react";
+import { Dropdown } from "semantic-ui-react";
 
 const Header = ({ user }: { user: User }) => {
   const name = user ? `${user.firstName} ${" "} ${user.lastName}` : "";
