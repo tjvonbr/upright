@@ -1,5 +1,6 @@
 "use client";
 
+import { Program } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import useSWR from "swr";
@@ -33,7 +34,7 @@ const Programs = () => {
   if (programs) {
     return (
       <div>
-        {programs.map((program, idx) => (
+        {programs.map((program: Program, idx) => (
           <div key={idx}>{program.name}</div>
         ))}
       </div>
