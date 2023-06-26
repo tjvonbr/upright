@@ -1,9 +1,10 @@
 "use client";
 
-import { Icon } from "semantic-ui-react";
-import React, { useState } from "react";
-import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
+import React, { useState } from "react";
+import { Icon } from "semantic-ui-react";
+
 import Spinner from "@/app/components/Spinner";
 
 const AddExercise = () => {

@@ -1,7 +1,11 @@
 {
   "extends": "next/core-web-vitals",
+  "plugins": ["simple-import-sort"],
   "rules": {
+    "import/first": "error",
     "no-console": "error",
-    "no-unused-vars": "error"
+    "no-unused-vars": "error",
+    "simple-import-sort/exports": "error",
+    "simple-import-sort/imports": "error"
   }
 }

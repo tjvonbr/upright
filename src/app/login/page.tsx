@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
-import Spinner from "../components/Spinner";
 import { signIn } from "next-auth/react";
+import React, { useState } from "react";
+
+import Spinner from "../components/Spinner";
 
 interface FormElements extends HTMLFormControlsCollection {
   usernameInput: HTMLInputElement;
