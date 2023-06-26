@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+
 import { getCurrentUser } from "@/app/lib/session";
 
 const Exercises = async () => {

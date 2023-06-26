@@ -2,15 +2,13 @@ import { NextResponse } from "next/server";
 
 import { db } from "@/app/lib/prisma";
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   const data = await req.json();
-  const { name, description, userId } = data;
+  const { userId } = data;
 
   try {
-    await db.program.create({
-      data: {
-        name,
-        description,
+    await db.program.findMany({
+      where: {
         userId,
       },
     });

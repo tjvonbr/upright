@@ -1,8 +1,8 @@
 "use client";
 
 import { Program } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
 
 const Programs = () => {

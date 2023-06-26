@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { twMerge } from "tailwind-merge";
 import { usePathname } from "next/navigation";
+import { twMerge } from "tailwind-merge";
 
 export interface NavItem {
   name: string;

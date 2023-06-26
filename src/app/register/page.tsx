@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Spinner from "../components/Spinner";
 import { useState } from "react";
+
+import Spinner from "../components/Spinner";
 
 interface FormElements extends HTMLFormControlsCollection {
   usernameInput: HTMLInputElement;

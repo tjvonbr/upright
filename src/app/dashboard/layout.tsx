@@ -1,10 +1,11 @@
-import Header from "./components/Header";
-import MainNavbar from "../components/MainNavbar";
-import { navbarItems } from "../config/navigation";
 import { redirect } from "next/navigation";
 import { User } from "next-auth";
-import { getCurrentUser } from "../lib/session";
 import React from "react";
+
+import MainNavbar from "../components/MainNavbar";
+import { navbarItems } from "../config/navigation";
+import { getCurrentUser } from "../lib/session";
+import Header from "./components/Header";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getCurrentUser();
