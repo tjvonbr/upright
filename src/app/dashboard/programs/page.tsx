@@ -34,7 +34,7 @@ const Programs = () => {
   if (programs) {
     return (
       <div>
-        {programs.map((program: Program, idx) => (
+        {programs.map((program: Program, idx: number) => (
           <div key={idx}>{program.name}</div>
         ))}
       </div>
