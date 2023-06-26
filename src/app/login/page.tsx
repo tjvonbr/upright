@@ -27,8 +27,7 @@ const Login = () => {
       signIn("email", { callbackUrl: "/dashboard", email });
       setIsLoading(false);
     } catch (err) {
-      console.log(err);
-      setIsLoading(false);
+      throw new Error(`Error: ${err}`);
     }
   }
 
