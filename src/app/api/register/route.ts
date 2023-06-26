@@ -19,6 +19,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json(data);
   } catch (err) {
-    console.log(err);
+    throw new Error(`Error: ${err}`);
   }
 }

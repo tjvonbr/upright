@@ -34,8 +34,7 @@ const Register = () => {
       });
       setIsLoading(false);
     } catch (err) {
-      console.log(err);
-      setIsLoading(false);
+      throw new Error(`Error: ${err}`);
     }
   }
 

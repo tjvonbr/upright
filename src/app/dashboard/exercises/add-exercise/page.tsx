@@ -32,8 +32,7 @@ const AddExercise = () => {
       setIsLoading(false);
       setName("");
     } catch (err) {
-      console.log(err);
-      setIsLoading(false);
+      throw new Error(`Error: ${err}`);
     }
   }
 
