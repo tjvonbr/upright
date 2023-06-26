@@ -35,8 +35,7 @@ const AddProgram = () => {
       setName("");
       setDescription("");
     } catch (err) {
-      console.log(err);
-      setIsLoading(false);
+      throw new Error(`Error: ${err}`);
     }
   }
 

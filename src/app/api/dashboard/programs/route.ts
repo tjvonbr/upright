@@ -14,6 +14,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json(programs);
   } catch (err) {
-    console.log(err);
+    throw new Error(`Error: ${err}`);
   }
 }
