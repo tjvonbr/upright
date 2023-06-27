@@ -12,7 +12,7 @@ export const navbarItems = {
     },
     {
       name: "Programs",
-      href: "/dashboard/programs",
+      href: "/programs",
     },
     {
       name: "Workouts",
@@ -39,11 +39,11 @@ export const subNavbarItems = {
   programs: [
     {
       name: "Overview",
-      href: "/dashboard/programs",
+      href: "/programs",
     },
     {
       name: "Create Program",
-      href: "/dashboard/programs/add-program",
+      href: "/programs/add-program",
     },
   ],
   workouts: [
