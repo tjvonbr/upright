@@ -1,8 +1,11 @@
 "use client";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
+import DatePicker from "react-datepicker";
 
 import { toast } from "./common/use-toast";
 
@@ -10,7 +13,7 @@ interface WorkoutFormProps {
   programId: number;
 }
 
-export default async function WorkoutForm({ programId }: WorkoutFormProps) {
+export default function WorkoutForm({ programId }: WorkoutFormProps) {
   const { data: session } = useSession();
 
   if (!session) {
@@ -18,18 +21,25 @@ export default async function WorkoutForm({ programId }: WorkoutFormProps) {
   }
 
   const [name, setName] = useState("Today's date workout");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(new Date());
 
-  async function handleSubmit() {
-    const response = await fetch(`api/programs/${programId}/workouts`, {
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        date,
-        programId,
-        userId: session?.user?.id,
-      }),
-    });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    const response = await fetch(
+      `http://localhost:3000/api/programs/${programId}/workouts`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          date,
+          programId,
+          userId: session?.user?.id,
+        }),
+      }
+    );
+
+    console.log(response);
 
     if (!response?.ok) {
       return toast({
@@ -53,14 +63,7 @@ export default async function WorkoutForm({ programId }: WorkoutFormProps) {
           }
         />
         <label htmlFor="date">Workout date</label>
-        <input
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setDate(e.target.value)
-          }
-          id="date"
-          type="date"
-          value={date}
-        />
+        <DatePicker selected={date} onChange={(date) => setDate(date)} />
         <button
           type="submit"
           className="h-[20px] bg-black text-white rounded-md"
