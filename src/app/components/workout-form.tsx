@@ -39,8 +39,6 @@ export default function WorkoutForm({ programId }: WorkoutFormProps) {
       }
     );
 
-    console.log(response);
-
     if (!response?.ok) {
       return toast({
         title: "Something went wrong.",
