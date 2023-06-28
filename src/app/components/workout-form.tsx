@@ -21,7 +21,7 @@ export default function WorkoutForm({ programId }: WorkoutFormProps) {
   }
 
   const [name, setName] = useState("Today's date workout");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(new Date());
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
