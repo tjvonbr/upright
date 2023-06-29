@@ -2,8 +2,8 @@ import { Program } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { db } from "@/app/lib/prisma";
-import { getCurrentUser } from "@/app/lib/session";
+import { db } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/session";
 
 async function getProgramsForUser(userId: number) {
   return await db.program.findMany({
