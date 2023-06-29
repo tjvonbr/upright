@@ -1,5 +1,5 @@
 import SubNavbar from "../components/SubNavbar";
-import { subNavbarItems } from "../config/navigation";
+import { subNavbarItems } from "../../config/navigation";
 
 const WorkoutLayout = ({ children }: { children: React.ReactNode }) => {
   return (

@@ -3,7 +3,7 @@ import { User } from "next-auth";
 import React from "react";
 
 import MainNavbar from "../components/MainNavbar";
-import { navbarItems } from "../config/navigation";
+import { navbarItems } from "../../config/navigation";
 import { getCurrentUser } from "../lib/session";
 import Header from "./components/Header";
 
