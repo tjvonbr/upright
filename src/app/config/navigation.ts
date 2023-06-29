@@ -8,7 +8,7 @@ export const navbarItems = {
     },
     {
       name: "Exercises",
-      href: "/dashboard/exercises",
+      href: "/exercises",
     },
     {
       name: "Programs",
@@ -16,11 +16,11 @@ export const navbarItems = {
     },
     {
       name: "Workouts",
-      href: "/dashboard/workouts",
+      href: "/workouts",
     },
     {
       name: "Personal Bests",
-      href: "/dashboard/personal-bests",
+      href: "/personal-bests",
     },
   ],
 };
