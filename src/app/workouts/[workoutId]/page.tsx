@@ -1,7 +1,7 @@
 import { Workout } from "@prisma/client";
 import { notFound } from "next/navigation";
 
-import { db } from "@/app/lib/prisma";
+import { db } from "@/lib/prisma";
 
 async function getWorkout(workoutId: number) {
   const workout = db.workout.findFirst({

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 
-import { db } from "@/app/lib/prisma";
+import { db } from "@/lib/prisma";
 
 const routeContextSchema = z.object({
   params: z.object({

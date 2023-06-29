@@ -2,7 +2,7 @@ import { Program } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 import WorkoutForm from "@/app/components/workout-form";
-import { getCurrentUser } from "@/app/lib/session";
+import { getCurrentUser } from "@/lib/session";
 
 interface AddProgramWorkoutProps {
   params: { programId: Program["id"] };

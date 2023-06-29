@@ -4,7 +4,7 @@ import React from "react";
 
 import { navbarItems } from "../../config/navigation";
 import MainNavbar from "../components/MainNavbar";
-import { getCurrentUser } from "../lib/session";
+import { getCurrentUser } from "../../lib/session";
 import Header from "./components/Header";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
