@@ -3,8 +3,8 @@ import { User } from "next-auth";
 import React from "react";
 
 import { navbarItems } from "../../config/navigation";
-import MainNavbar from "../components/MainNavbar";
 import { getCurrentUser } from "../../lib/session";
+import MainNavbar from "../components/MainNavbar";
 import Header from "./components/Header";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
