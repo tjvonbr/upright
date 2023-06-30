@@ -1,5 +1,4 @@
 import { Workout } from "@prisma/client";
-import { Link } from "lucide-react";
 import { notFound } from "next/navigation";
 
 import { db } from "@/lib/prisma";
