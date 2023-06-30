@@ -24,5 +24,9 @@ export default async function Workout({ params }: WorkoutProps) {
     notFound();
   }
 
-  return <div>{workout.name}</div>;
+  return (
+    <div className="h-full w-[95%] m-auto">
+      <h1>{workout.name}</h1>
+    </div>
+  );
 }

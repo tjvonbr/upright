@@ -55,14 +55,15 @@ export default async function Program({ params }: ProgramPageProps) {
   }
 
   return (
-    <div className="h-full mx-10 flex flex-col">
-      <h1 className="relative left-0 top-0 text-2xl font-medium">
-        {program?.name}
-      </h1>
-      {mostRecentWorkout ? (
-        <LastWorkoutWidget workout={mostRecentWorkout} />
-      ) : null}
-      <AddWorkoutWidget programId={program.id as number} />
+    <div className="h-[90%] w-[95%] m-auto">
+      <h1>{program?.name}</h1>
+      <div className="grid grid-cols-3">
+        {mostRecentWorkout ? (
+          <LastWorkoutWidget workout={mostRecentWorkout} />
+        ) : null}
+        <AddWorkoutWidget programId={program.id as number} />
+        <WorkoutsWidget programId={program.id as number} />
+      </div>
     </div>
   );
 }
@@ -81,6 +82,17 @@ function AddWorkoutWidget({ programId }: { programId: number }) {
     <Widget href={`/programs/${programId}/add-workout`}>
       <div className="h-full w-full flex flex-col justify-center items-center">
         <p className="text-lg font-medium">Add Workout</p>
+        <PlusCircle strokeWidth={1.5} />
+      </div>
+    </Widget>
+  );
+}
+
+function WorkoutsWidget({ programId }: { programId: number }) {
+  return (
+    <Widget href={`/programs/${programId}/workouts`}>
+      <div className="h-full w-full flex flex-col justify-center items-center">
+        <p className="text-lg font-medium">See Workouts</p>
         <PlusCircle strokeWidth={1.5} />
       </div>
     </Widget>

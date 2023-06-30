@@ -26,9 +26,10 @@ export default async function Programs() {
   const programs = await getProgramsForUser(Number(user.id));
 
   return (
-    <div>
+    <div className="h-[95%] w-[95%] m-auto">
+      <h1>Programs</h1>
       {programs.map((program: Program, idx: number) => (
-        <Link href={`/programs/${program.id}`} key={idx}>
+        <Link className="text-black" href={`/programs/${program.id}`} key={idx}>
           {program.name}
         </Link>
       ))}
