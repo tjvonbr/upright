@@ -1,7 +1,10 @@
 import { Workout } from "@prisma/client";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
+import WorkoutOperations from "@/app/components/workout-operations";
+import { getExercises } from "@/lib/api/exercises";
 import { db } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/session";
 
 async function getWorkout(workoutId: number) {
   const workout = db.workout.findFirst({
@@ -18,7 +21,14 @@ interface WorkoutProps {
 }
 
 export default async function Workout({ params }: WorkoutProps) {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   const workout = await getWorkout(params.workoutId);
+  const exercises = await getExercises(Number(user?.id));
 
   if (!workout) {
     notFound();
@@ -26,7 +36,7 @@ export default async function Workout({ params }: WorkoutProps) {
 
   return (
     <div className="h-full w-[95%] m-auto">
-      <h1>{workout.name}</h1>
+      <WorkoutOperations workout={workout} />
     </div>
   );
 }
