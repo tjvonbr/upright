@@ -1,4 +1,4 @@
-import { Exercise, Program } from "@prisma/client";
+import { Program } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
 
