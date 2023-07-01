@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { z } from "zod";
 
@@ -10,10 +10,7 @@ const routeContextSchema = z.object({
   }),
 });
 
-export async function GET(
-  req: NextRequest,
-  ctx: z.infer<typeof routeContextSchema>
-) {
+export async function GET(ctx: z.infer<typeof routeContextSchema>) {
   try {
     const { params } = routeContextSchema.parse(ctx);
 
