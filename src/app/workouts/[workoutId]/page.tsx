@@ -2,7 +2,6 @@ import { Workout } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
 import WorkoutOperations from "@/app/components/workout-operations";
-import { getExercises } from "@/lib/api/exercises";
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 
@@ -28,7 +27,6 @@ export default async function Workout({ params }: WorkoutProps) {
   }
 
   const workout = await getWorkout(params.workoutId);
-  const exercises = await getExercises(Number(user?.id));
 
   if (!workout) {
     notFound();
