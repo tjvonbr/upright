@@ -8,14 +8,12 @@ import { useCallback, useState, useTransition } from "react";
 import React from "react";
 
 interface WorkoutListProps {
-  programId: number;
   workouts: Workout[];
 }
 
-export default function WorkoutList({ programId, workouts }: WorkoutListProps) {
+export default function WorkoutList({ workouts }: WorkoutListProps) {
   return (
     <div className="w-[95%] m-auto">
-      {/* <Controls programId={programId} /> */}
       {workouts.map((workout: Workout, idx: number) => (
         <WorkoutListItem workout={workout} key={idx} />
       ))}
@@ -23,10 +21,11 @@ export default function WorkoutList({ programId, workouts }: WorkoutListProps) {
   );
 }
 
-export function Controls({ programId }: { programId: number }) {
+export function Controls() {
   const router = useRouter();
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
+  // eslint-disable-next-line no-unused-vars
+  const [_, startTransition] = useTransition();
 
   const [mounted, setMounted] = useState(false);
   const [inputValue, setInputValue] = useState("");

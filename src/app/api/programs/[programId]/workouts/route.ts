@@ -15,7 +15,6 @@ export async function GET(
   ctx: z.infer<typeof routeContextSchema>
 ) {
   try {
-    console.log(req.nextUrl.searchParams);
     const session = await getServerSession();
 
     if (!session?.user) {

@@ -39,8 +39,8 @@ export default async function ProgramWorkouts({
       <div className="h-[100px] w-[95%] m-auto">
         <h1 className="py-2">Program Workouts</h1>
       </div>
-      <Controls programId={params.programId} />
-      <WorkoutList programId={params.programId} workouts={workouts} />
+      <Controls />
+      <WorkoutList workouts={workouts} />
     </div>
   );
 }
