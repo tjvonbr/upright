@@ -24,5 +24,10 @@ export default async function ProgramWorkout({ params }: ProgramWorkoutProps) {
     notFound();
   }
 
-  return <div>{workout.name}</div>;
+  return (
+    <div className="h-full w-full">
+      <h1>{workout.name}</h1>
+      <button>Hello</button>
+    </div>
+  );
 }

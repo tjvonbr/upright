@@ -1,34 +1,31 @@
-import { redirect } from "next/navigation";
+import { Program } from "@prisma/client";
+import { notFound, redirect } from "next/navigation";
 import React from "react";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/app/components/common/select";
+import AddExerciseForm from "@/app/components/add-exercise-form";
+import { getExercises } from "@/lib/api/exercises";
+import { getWorkout } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
 
-export default async function AddWorkoutExercise() {
+interface AddWorkoutExerciseProps {
+  params: { workoutId: Program["id"] };
+}
+
+export default async function AddWorkoutExercise({
+  params,
+}: AddWorkoutExerciseProps) {
   const user = await getCurrentUser();
 
   if (!user) {
     redirect("/login");
   }
 
-  return (
-    <div>
-      <form action="submit">
-        <label htmlFor="">Exercise name</label>
-        <Select>
-          <SelectTrigger>
-            <div>Hello</div>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={"Hello"} />
-          </SelectContent>
-        </Select>
-      </form>
-    </div>
-  );
+  const workout = await getWorkout(Number(params.workoutId));
+  const exercises = await getExercises(Number(user.id));
+
+  if (!workout || !exercises) {
+    notFound();
+  }
+
+  return <AddExerciseForm workout={workout} exercises={exercises} />;
 }
