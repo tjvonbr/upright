@@ -27,5 +27,13 @@ export default async function AddWorkoutExercise({
     notFound();
   }
 
-  return <AddExerciseForm workout={workout} exercises={exercises} />;
+  // Filter exercises so we only render the ones that aren't
+  // already part of the workout
+  const filteredExercises = exercises.filter((exercise) => {
+    return workout.exercises.some(
+      (workoutExercise) => workoutExercise.id !== exercise.id
+    );
+  });
+
+  return <AddExerciseForm workout={workout} exercises={filteredExercises} />;
 }
