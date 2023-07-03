@@ -23,10 +23,10 @@ export default function AddExerciseForm({
   workout,
 }: AddExerciseFormProps) {
   const [selected, setSelected] = useState<Partial<Exercise> | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    setIsLoading(true);
+    setIsSaving(true);
     e.preventDefault();
 
     try {
@@ -35,15 +35,15 @@ export default function AddExerciseForm({
         {
           method: "POST",
           body: JSON.stringify({
-            exerciseId: Number(selected?.id) as number,
+            exerciseId: Number(selected?.id),
             workoutId: Number(workout.id),
           }),
         }
       );
 
-      setIsLoading(false);
+      setIsSaving(false);
     } catch (error) {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   }
 
@@ -88,7 +88,7 @@ export default function AddExerciseForm({
               </DropdownMenuContent>
             </DropdownMenu>
             <button className="relative r-[50px] bg-black text-white hover:bg-black/80 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none align-end">
-              {isLoading ? <Spinner /> : "Save changes"}
+              {isSaving ? <Spinner /> : "Save changes"}
             </button>
           </div>
         </form>
