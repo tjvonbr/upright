@@ -1,7 +1,6 @@
 "use client";
 
 import { Workout } from "@prisma/client";
-import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 
