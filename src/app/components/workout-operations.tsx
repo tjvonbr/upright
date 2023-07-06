@@ -23,8 +23,11 @@ export default function WorkoutOperations({ workout }: { workout: Workout }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem>
-            <Link href={"/login"} className="flex w-full">
-              Edit
+            <Link
+              href={`/workouts/${workout.id}/edit-exercise`}
+              className="flex w-full"
+            >
+              Edit workout
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
@@ -32,7 +35,7 @@ export default function WorkoutOperations({ workout }: { workout: Workout }) {
               href={`/workouts/${workout.id}/add-exercise`}
               className="flex w-full"
             >
-              Add Exercise
+              Add exercise
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
