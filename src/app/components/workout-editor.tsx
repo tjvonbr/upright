@@ -1,12 +1,12 @@
 "use client";
 
-import { Exercise } from "@prisma/client";
+import { Exercise, WorkoutSet } from "@prisma/client";
 import React, { useState } from "react";
 import { twJoin } from "tailwind-merge";
 
 import { CompleteWorkout } from "../workouts/[workoutId]/edit-exercise/page";
 
-interface WorkoutSet {
+interface WorkoutSetState {
   reps: number | null;
   weightLbs: number | null;
   programId: number | null;
@@ -19,14 +19,13 @@ export default function WorkoutEditor({
 }: {
   workout: CompleteWorkout;
 }) {
-  const [selected, setSelected] = useState<Exercise | null>(null);
-  const [setsToSave, setSetsToSave] = useState<Array<WorkoutSet>>([]);
+  const [newSets, setNewSets] = useState<Array<WorkoutSetState>>([]);
 
   const exerciseMap = new Map();
 
   workout.exercises.forEach((exercise) => {
     const exerciseSets = workout.workoutSets.filter((set) => {
-      set.exerciseId === exercise.id;
+      return set.exerciseId === exercise.id;
     });
 
     exerciseMap.set(exercise.name, exerciseSets);
@@ -46,7 +45,15 @@ export default function WorkoutEditor({
       exerciseId: exercise.id,
     };
 
-    setSetsToSave([...setsToSave, newSet]);
+    setNewSets([...newSets, newSet]);
+  }
+
+  function removeSetField(e: React.FormEvent<HTMLButtonElement>, idx: number) {
+    e.preventDefault();
+
+    const data = [...newSets];
+    data.splice(idx, 1);
+    setNewSets(data);
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -55,7 +62,7 @@ export default function WorkoutEditor({
     try {
       await fetch(`http://localhost:3000/api/workouts/${workout.id}/sets`, {
         method: "POST",
-        body: JSON.stringify(setsToSave),
+        body: JSON.stringify(newSets),
       });
     } catch (error) {}
   }
@@ -65,30 +72,35 @@ export default function WorkoutEditor({
       <div>
         <h1>{workout.name}</h1>
       </div>
-      <div>
+      <div className="my-2">
         <h2>Current exercises</h2>
         {workout.exercises.map((exercise: Exercise, idx: number) => (
           <div
-            className={twJoin(
-              "h--min-[100px] w-[400px] flex flex-col justify-between border border-gray-200 rounded-md hover:cursor-pointer",
-              selected && "hover:bg-gray-200"
-            )}
             key={idx}
-            onClick={() => setSelected(exercise)}
+            className={twJoin(
+              "h--min-[100px] w-[300px] m-2 flex flex-col justify-between border border-gray-200 rounded-md"
+            )}
           >
-            <div className="text-lg font-semibold">{exercise.name}</div>
+            <span className="m-2 text-lg font-semibold">{exercise.name}</span>
+            <div>
+              {exerciseMap
+                .get(exercise.name)
+                .map((set: WorkoutSet, idx: number) => (
+                  <WorkoutSetRow key={idx} idx={idx} set={set} />
+                ))}
+            </div>
 
             <form
               action="submit"
               onSubmit={handleSubmit}
               className="flex flex-col"
             >
-              {setsToSave.map((_: WorkoutSet, idx: number) => (
-                <div key={idx} className="flex items-center">
-                  <span className="translate-y-[-2] text-sm">
-                    Set {idx + 1}
+              {newSets.map((_: WorkoutSetState, idx: number) => (
+                <div key={idx} className="mb-5 flex items-center">
+                  <span className="mx-2 font-semibold text-sm translate-y-[-2]">
+                    Set {exerciseMap.get(exercise.name).length + 1}
                   </span>
-                  <div className="flex flex-col mx-5 my-2">
+                  <div className="flex flex-col items-center mx-2">
                     <label className="text-sm font-semibold" htmlFor="reps">
                       Reps
                     </label>
@@ -96,11 +108,11 @@ export default function WorkoutEditor({
                       id="reps"
                       name="reps"
                       type="text"
-                      className="w-[50px] h-[30px] border border-gray-200 rounded-md text-center"
+                      className="w-[40px] h-[25px] border border-gray-200 rounded-md text-center"
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
-                        const data = [...setsToSave];
+                        const data = [...newSets];
 
                         data[idx][
                           event.target.name as keyof Pick<
@@ -108,11 +120,11 @@ export default function WorkoutEditor({
                             "reps" | "weightLbs"
                           >
                         ] = Number(event.target.value);
-                        setSetsToSave(data);
+                        setNewSets(data);
                       }}
                     />
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col items-center mx-2">
                     <label className="text-sm font-semibold" htmlFor="weight">
                       Weight
                     </label>
@@ -120,11 +132,11 @@ export default function WorkoutEditor({
                       id="weight"
                       name="weightLbs"
                       type="text"
-                      className="w-[50px] h-[30px] border border-gray-200 rounded-md text-center"
+                      className="w-[40px] h-[25px] border border-gray-200 rounded-md text-center"
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ) => {
-                        const data = [...setsToSave];
+                        const data = [...newSets];
 
                         data[idx][
                           event.target.name as keyof Pick<
@@ -132,26 +144,23 @@ export default function WorkoutEditor({
                             "reps" | "weightLbs"
                           >
                         ] = Number(event.target.value);
-                        setSetsToSave(data);
+                        setNewSets(data);
                       }}
                     />
                   </div>
-                  {idx === setsToSave.length - 1 && (
-                    <button
-                      onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-                        e.preventDefault();
-                        addAnotherSetField(e, exercise);
-                      }}
-                    >
-                      Add another set
-                    </button>
-                  )}
+                  <button
+                    onClick={(e: React.FormEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+                      removeSetField(e, idx);
+                    }}
+                  >
+                    Remove
+                  </button>
                 </div>
               ))}
-              <button type="submit">Save</button>
-            </form>
-            {setsToSave.length === 0 && (
+
               <button
+                className="my-2"
                 onClick={(e: React.FormEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   addAnotherSetField(e, exercise);
@@ -159,9 +168,34 @@ export default function WorkoutEditor({
               >
                 Add another set
               </button>
-            )}
+
+              {newSets.length > 0 && (
+                <button
+                  className="h-[40px] w-[90%] mb-2 self-center bg-black rounded-md text-white font-medium"
+                  type="submit"
+                >
+                  Save
+                </button>
+              )}
+            </form>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function WorkoutSetRow({ set, idx }: { set: WorkoutSet; idx: number }) {
+  return (
+    <div className="flex align-items">
+      <span className="mx-2 font-semibold text-sm">Set {idx + 1}</span>
+      <div className="flex flex-col items-center mx-2">
+        <span className="font-semibold text-sm">Reps</span>
+        <span className="text-sm">{set.reps}</span>
+      </div>
+      <div className="flex flex-col items-center mx-2">
+        <span className="font-semibold text-sm">Weight</span>
+        <span className="text-sm">{set.weightLbs}</span>
       </div>
     </div>
   );
