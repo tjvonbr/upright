@@ -1,13 +1,15 @@
 "use client";
 
+import "react-datepicker/dist/react-datepicker.css";
+
 import { Program, Workout } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/app/components/common/button";
+import { User } from "next-auth";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 
-import "react-datepicker/dist/react-datepicker.css";
-
+import { Button } from "@/app/components/common/button";
 import {
   Dialog,
   DialogContent,
@@ -16,9 +18,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/components/common/dialog";
-import { useState } from "react";
+
 import Spinner from "./Spinner";
-import { User } from "next-auth";
 
 interface ProgramOperationsProps {
   user: User;

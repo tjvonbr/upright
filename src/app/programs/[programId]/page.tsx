@@ -1,8 +1,9 @@
 import { Program } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
+
+import ProgramOperations from "@/app/components/program-operations";
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-import ProgramOperations from "@/app/components/program-operations";
 
 async function getProgramForUser(programId: Program["id"]) {
   return await db.program.findFirst({
