@@ -1,10 +1,8 @@
-import { Program, Workout } from "@prisma/client";
-import { PlusCircle } from "lucide-react";
-import Link from "next/link";
+import { Program } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
-
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
+import ProgramOperations from "@/app/components/program-operations";
 
 async function getProgramForUser(programId: Program["id"]) {
   return await db.program.findFirst({
@@ -45,76 +43,19 @@ export default async function Program({ params }: ProgramPageProps) {
   }
 
   const program = await getProgramForUser(params.programId);
-  const programWorkouts = await getWorkoutsForProgram(params.programId);
   const mostRecentWorkout = await getMostRecentWorkoutForProgra(
     params.programId
   );
 
-  if (!programWorkouts || !program) {
+  if (!program) {
     notFound();
   }
 
   return (
-    <div className="h-[90%] w-[95%] m-auto">
-      <h1>{program?.name}</h1>
-      <div className="grid grid-cols-3">
-        {mostRecentWorkout ? (
-          <LastWorkoutWidget workout={mostRecentWorkout} />
-        ) : null}
-        <AddWorkoutWidget programId={program.id as number} />
-        <WorkoutsWidget programId={program.id as number} />
-      </div>
-    </div>
-  );
-}
-
-function LastWorkoutWidget({ workout }: { workout: Workout }) {
-  return (
-    <Widget>
-      <p className="mx-3 pt-2 text-lg font-medium">Most Recent Workout</p>
-      <p className="mx-3 text-md font-medium text-gray-500">{workout.name}</p>
-    </Widget>
-  );
-}
-
-function AddWorkoutWidget({ programId }: { programId: number }) {
-  return (
-    <Widget href={`/programs/${programId}/add-workout`}>
-      <div className="h-full w-full flex flex-col justify-center items-center">
-        <p className="text-lg font-medium">Add Workout</p>
-        <PlusCircle strokeWidth={1.5} />
-      </div>
-    </Widget>
-  );
-}
-
-function WorkoutsWidget({ programId }: { programId: number }) {
-  return (
-    <Widget href={`/programs/${programId}/workouts`}>
-      <div className="h-full w-full flex flex-col justify-center items-center">
-        <p className="text-lg font-medium">See Workouts</p>
-        <PlusCircle strokeWidth={1.5} />
-      </div>
-    </Widget>
-  );
-}
-
-interface WidgetProps {
-  children: React.ReactNode;
-  href?: string;
-}
-
-function Widget({ children, href }: WidgetProps) {
-  return href ? (
-    <Link
-      className="w-[400px] h-[250px] border border-slate-200 rounded-md"
-      href={href}
-    >
-      {children}
-    </Link>
-  ) : (
-    <div className="w-[400px] h-[250px] border border-slate-200 rounded-md">
-      {children}
-    </div>
+    <ProgramOperations
+      program={program}
+      recentWorkout={mostRecentWorkout}
+      user={user}
+    />
   );
 }
