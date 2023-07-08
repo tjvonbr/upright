@@ -15,9 +15,7 @@ const DialogPortal = ({
   ...props
 }: DialogPrimitive.DialogPortalProps) => (
   <DialogPrimitive.Portal className={twMerge(className)} {...props}>
-    <div className="fixed inset-0 z-50 flex items-start justify-center sm:items-center">
-      {children}
-    </div>
+    <div>{children}</div>
   </DialogPrimitive.Portal>
 );
 DialogPortal.displayName = DialogPrimitive.Portal.displayName;
@@ -29,7 +27,8 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={twMerge(
-      "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm transition-all duration-100 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in",
+      (className =
+        "bg-black opacity-80 data-[state=open]:animate-overlayShow fixed inset-0"),
       className
     )}
     {...props}
@@ -42,12 +41,12 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay className="bg-black data-[state=isOpen]:animate-overlayShow fixed inset-0" />
+    <DialogOverlay className="bg-black data-[state=open]:animate-overlayShow fixed inset-0" />
     <DialogPrimitive.Content
       ref={ref}
       className={twMerge(
         className,
-        "data-[state=isOpen]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
+        "data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none"
       )}
       {...props}
     >
@@ -122,6 +121,7 @@ export {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogPortal,
   DialogTitle,
   DialogTrigger,
 };
