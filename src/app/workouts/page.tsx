@@ -1,24 +1,35 @@
-import { Program, Workout } from "@prisma/client";
+import { Workout } from "@prisma/client";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
-import { getWorkoutsForProgram } from "../programs/[programId]/page";
+import { db } from "@/lib/prisma";
+import { getCurrentUser } from "@/lib/session";
 
-interface ProgramWorkoutsProps {
-  params: { programId: Program["id"] };
+export async function getWorkoutsForUser(userId: string) {
+  const workouts = db.workout.findMany({
+    where: {
+      userId: Number(userId),
+    },
+  });
+
+  return workouts;
 }
 
-export default async function ProgramWorkouts({
-  params,
-}: ProgramWorkoutsProps) {
-  const workouts = await getWorkoutsForProgram(params.programId);
+export default async function ProgramWorkouts() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const workouts = await getWorkoutsForUser(user?.id);
 
   if (!workouts) {
     return notFound();
   }
 
   return (
-    <div>
+    <div className="flex flex-col">
       <h1>Workouts</h1>
       {workouts.map((workout: Workout, idx: number) => (
         <Link key={idx} href={`/workouts/${workout.id}`}>

@@ -10,9 +10,23 @@ async function getWorkout(workoutId: number) {
     where: {
       id: Number(workoutId),
     },
+    include: {
+      exercises: true,
+      workoutSets: true,
+    },
   });
 
   return workout;
+}
+
+async function getUserExercises(userId: string) {
+  const exercises = db.exercise.findMany({
+    where: {
+      userId: Number(userId),
+    },
+  });
+
+  return exercises;
 }
 
 interface WorkoutProps {
@@ -27,6 +41,7 @@ export default async function Workout({ params }: WorkoutProps) {
   }
 
   const workout = await getWorkout(params.workoutId);
+  const exercises = await getUserExercises(user.id);
 
   if (!workout) {
     notFound();
@@ -34,7 +49,7 @@ export default async function Workout({ params }: WorkoutProps) {
 
   return (
     <div className="h-full w-[95%] m-auto">
-      <WorkoutOperations workout={workout} />
+      <WorkoutOperations userExercises={exercises} workout={workout} />
     </div>
   );
 }

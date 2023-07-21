@@ -6,7 +6,7 @@ import { Program, Workout } from "@prisma/client";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { User } from "next-auth";
-import { useState } from "react";
+import { HTMLAttributes, useState } from "react";
 import DatePicker from "react-datepicker";
 
 import { Button } from "@/app/components/common/button";
@@ -19,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/app/components/common/dialog";
 
+import { toast } from "./common/use-toast";
 import Spinner from "./Spinner";
 
 interface ProgramOperationsProps {
@@ -42,15 +43,26 @@ export default function ProgramOperations({
     setIsSaving(true);
 
     try {
-      await fetch(`http://localhost:3000/api/programs/${program.id}/workouts`, {
-        method: "POST",
-        body: JSON.stringify({
-          name,
-          date,
-          programId: Number(program.id),
-          userId: Number(user.id),
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/programs/${program.id}/workouts`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            name,
+            date,
+            programId: Number(program.id),
+            userId: Number(user.id),
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        toast({
+          title: "Nope",
+          description: "Nope again.",
+          variant: "default",
+        });
+      }
 
       setIsSaving(false);
     } catch (error) {
@@ -140,7 +152,15 @@ export default function ProgramOperations({
 
 function LastWorkoutWidget({ workout }: { workout: Workout }) {
   return (
-    <Widget>
+    <Widget
+      onClick={() => {
+        toast({
+          title: "Hello",
+          description: "Hello",
+          variant: "default",
+        });
+      }}
+    >
       <p className="mx-3 pt-2 text-lg font-medium">Most Recent Workout</p>
       <p className="mx-3 text-md font-medium text-gray-500">{workout.name}</p>
     </Widget>
@@ -158,7 +178,7 @@ function WorkoutsWidget({ programId }: { programId: number }) {
   );
 }
 
-interface WidgetProps {
+interface WidgetProps extends HTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   href?: string;
 }

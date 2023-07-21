@@ -5,6 +5,8 @@ import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 import { Session } from "next-auth";
 
+import { Toaster } from "@/components/common/toaster";
+
 import AuthContext from "./dashboard/components/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,7 +38,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthContext session={session}>{children}</AuthContext>
+        <AuthContext session={session}>
+          <Toaster />
+          {children}
+        </AuthContext>
       </body>
     </html>
   );
