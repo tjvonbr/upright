@@ -1,15 +1,9 @@
-import { Program, Workout } from "@prisma/client";
+import { Workout } from "@prisma/client";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-
-import { getWorkoutsForProgram } from "../programs/[programId]/page";
-
-interface ProgramWorkoutsProps {
-  params: { programId: Program["id"] };
-}
 
 export async function getWorkoutsForUser(userId: string) {
   const workouts = db.workout.findMany({
