@@ -2,6 +2,16 @@ import { Exercise, Workout } from "@prisma/client";
 
 import { db } from "../prisma";
 
+export async function getUserWorkouts(userId: string) {
+  const workouts = await db.workout.findMany({
+    where: {
+      userId: Number(userId),
+    },
+  });
+
+  return workouts;
+}
+
 export async function getWorkout(workoutId: number) {
   const workout = await db.workout.findFirst({
     where: {

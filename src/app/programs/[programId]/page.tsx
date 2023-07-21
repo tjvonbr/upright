@@ -13,7 +13,7 @@ async function getProgramForUser(programId: Program["id"]) {
   });
 }
 
-export async function getWorkoutsForProgram(programId: Program["id"]) {
+export async function getWorkoutsForProgram(programId: string) {
   return await db.workout.findMany({
     where: {
       programId: Number(programId),
