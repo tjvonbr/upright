@@ -1,39 +1,12 @@
-import { Program } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
 import ProgramOperations from "@/app/components/program-operations";
-import { db } from "@/lib/prisma";
+import { getProgramForUser } from "@/lib/api/programs";
+import { getMostRecentWorkoutForProgram } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
 
-async function getProgramForUser(programId: Program["id"]) {
-  return await db.program.findFirst({
-    where: {
-      id: Number(programId),
-    },
-  });
-}
-
-export async function getWorkoutsForProgram(programId: Program["id"]) {
-  return await db.workout.findMany({
-    where: {
-      programId: Number(programId),
-    },
-  });
-}
-
-async function getMostRecentWorkoutForProgra(programId: Program["id"]) {
-  return await db.workout.findFirst({
-    where: {
-      programId: Number(programId),
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
-}
-
 interface ProgramPageProps {
-  params: { programId: number };
+  params: { programId: string };
 }
 
 export default async function Program({ params }: ProgramPageProps) {
@@ -44,7 +17,7 @@ export default async function Program({ params }: ProgramPageProps) {
   }
 
   const program = await getProgramForUser(params.programId);
-  const mostRecentWorkout = await getMostRecentWorkoutForProgra(
+  const mostRecentWorkout = await getMostRecentWorkoutForProgram(
     params.programId
   );
 

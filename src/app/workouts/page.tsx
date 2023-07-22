@@ -2,18 +2,8 @@ import { Workout } from "@prisma/client";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
-import { db } from "@/lib/prisma";
+import { getWorkoutsForUser } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
-
-export async function getWorkoutsForUser(userId: string) {
-  const workouts = db.workout.findMany({
-    where: {
-      userId: Number(userId),
-    },
-  });
-
-  return workouts;
-}
 
 export default async function ProgramWorkouts() {
   const user = await getCurrentUser();
@@ -22,6 +12,7 @@ export default async function ProgramWorkouts() {
     redirect("/login");
   }
 
+  // See if this works
   const workouts = await getWorkoutsForUser(user?.id);
 
   if (!workouts) {
