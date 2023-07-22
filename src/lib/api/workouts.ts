@@ -1,6 +1,25 @@
-import { Exercise, Workout } from "@prisma/client";
+import { Exercise, Program, Workout } from "@prisma/client";
 
 import { db } from "../prisma";
+
+export async function getWorkoutsForProgram(programId: Program["id"]) {
+  return await db.workout.findMany({
+    where: {
+      programId: Number(programId),
+    },
+  });
+}
+
+export async function getMostRecentWorkoutForProgram(programId: string) {
+  return await db.workout.findFirst({
+    where: {
+      programId: Number(programId),
+    },
+    orderBy: {
+      date: "desc",
+    },
+  });
+}
 
 export async function getWorkout(workoutId: number) {
   const workout = await db.workout.findFirst({
