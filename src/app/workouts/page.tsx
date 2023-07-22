@@ -12,6 +12,7 @@ export default async function ProgramWorkouts() {
     redirect("/login");
   }
 
+  // See if this works
   const workouts = await getWorkoutsForUser(user?.id);
 
   if (!workouts) {
