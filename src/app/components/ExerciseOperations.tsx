@@ -23,9 +23,9 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
     handleSubmit
   );
 
-  async function handleSubmit() {
+  async function handleSubmit(url: string) {
     try {
-      const response = await fetch(`http://localhost:3000/api/exercises`, {
+      const response = await fetch(url, {
         method: "POST",
         body: JSON.stringify({
           name,
@@ -69,13 +69,20 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
         </main>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <form className="w-[50%]" action="submit" onSubmit={() => trigger()}>
+        <form
+          className="w-[50%]"
+          action="submit"
+          onSubmit={async (e: React.FormEvent) => {
+            e.preventDefault();
+            await trigger();
+          }}
+        >
           <p className="font-semibold text-2xl">Add an exercise</p>
           <p>
             If you don&apos;t see an exercise that you want to track in the
             column on the left, you can add it below.
           </p>
-          <fieldset className="w-full flex flex-col my-5">
+          <fieldset className="w-full flex flex-col my-5 p-0">
             <label className="font-semibold" htmlFor="name">
               Name
             </label>
