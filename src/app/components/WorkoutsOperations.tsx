@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "next-auth";
-import { useState } from "react";
+import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import useSWRMutation from "swr/mutation";
 
@@ -41,6 +41,16 @@ export default function WorkoutsOperations({
     handleSubmit
   );
 
+  function resetForm() {
+    setName("");
+    setDate(new Date());
+    setProgram(null);
+  }
+
+  async function setTrigger() {
+    await trigger();
+  }
+
   async function handleSubmit(url: string) {
     try {
       const response = await fetch(url, {
@@ -55,7 +65,7 @@ export default function WorkoutsOperations({
 
       if (response.ok) {
         router.refresh();
-        setName("");
+        resetForm();
       }
     } catch (error) {}
   }
@@ -73,7 +83,14 @@ export default function WorkoutsOperations({
         </div>
       </div>
       <div className="flex flex-col justify-center items-center">
-        <form className="w-[50%]" action="submit" onSubmit={() => trigger()}>
+        <form
+          className="w-[50%]"
+          action="submit"
+          onSubmit={(e: React.FormEvent) => {
+            e.preventDefault();
+            setTrigger();
+          }}
+        >
           <p className="font-semibold text-2xl">Add a workout</p>
           <p>
             If you don&apos;t see a workout that you want to track in the column
