@@ -1,20 +1,34 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { z } from "zod";
 
+import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/prisma";
 
-export async function POST(req: Request) {
-  const data = await req.json();
-  const { name, userId } = data;
+const createExerciseSchema = z.object({
+  name: z.string(),
+  userId: z.number(),
+});
 
+export async function POST(req: Request) {
   try {
-    await db.exercise.create({
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return new NextResponse("Unauthorized", { status: 403 });
+    }
+
+    const json = await req.json();
+    const body = createExerciseSchema.parse(json);
+
+    const exercise = await db.exercise.create({
       data: {
-        name,
-        userId,
+        name: body.name,
+        userId: body.userId,
       },
     });
 
-    return NextResponse.json(data);
+    return NextResponse.json(exercise);
   } catch (err) {
     throw new Error(`Error: ${err}`);
   }
