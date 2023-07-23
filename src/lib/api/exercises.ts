@@ -1,11 +1,12 @@
-import { User } from "@prisma/client";
-
 import { db } from "../prisma";
 
-export async function getExercises(userId: User["id"]) {
+export async function getExercisesForUser(userId: string) {
   const exercises = await db.exercise.findMany({
     where: {
-      userId,
+      userId: Number(userId),
+    },
+    orderBy: {
+      name: "asc",
     },
   });
 
