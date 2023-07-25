@@ -44,12 +44,8 @@ export default async function Workout({ params }: WorkoutProps) {
   const exercises = await getUserExercises(user.id);
 
   if (!workout) {
-    notFound();
+    return notFound();
   }
 
-  return (
-    <div className="h-full w-[95%] m-auto">
-      <WorkoutOperations userExercises={exercises} workout={workout} />
-    </div>
-  );
+  return <WorkoutOperations exercises={exercises} workout={workout} />;
 }

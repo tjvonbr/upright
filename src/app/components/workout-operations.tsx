@@ -1,16 +1,21 @@
 "use client";
 
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
-import { Check, ChevronDown, X } from "lucide-react";
+import { ExternalLink, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import useSWRMutation from "swr/mutation";
+import { twJoin } from "tailwind-merge";
 
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuRadioItem,
+  DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./common/dropdown";
+} from "@/app/components/common/dropdown";
+
+import Text from "./common/Text";
+import Spinner from "./Spinner";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -18,123 +23,177 @@ interface WorkoutsWithExercises extends Workout {
 }
 
 export default function WorkoutOperations({
-  userExercises,
+  exercises,
   workout,
 }: {
-  userExercises: Exercise[];
+  exercises: Exercise[];
   workout: WorkoutsWithExercises;
 }) {
-  const [isAddingExercise, setIsAddingExercise] = useState(false);
-  const [selected, setSelected] = useState<Exercise | null>(null);
+  const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
+    []
+  );
 
   const router = useRouter();
+  const { trigger, isMutating } = useSWRMutation(
+    `http://localhost:3000/api/workouts/${workout.id}/exercises`,
+    handleSubmit
+  );
 
-  const { exercises, workoutSets } = workout;
+  const { exercises: workoutExercises, workoutSets } = workout;
 
-  async function handleSubmit(e: React.FormEvent<HTMLButtonElement>) {
-    e.preventDefault();
-
-    const response = await fetch(
-      `http://localhost:3000/api/workouts/${workout.id}/exercises`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          exerciseId: selected?.id,
-          workoutId: workout.id,
-        }),
-      }
-    );
+  async function handleSubmit(url: string) {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        exercises: selectedExercises,
+        workoutId: workout.id,
+      }),
+    });
 
     if (response.ok) {
-      setIsAddingExercise(false);
       router.refresh();
+      setSelectedExercises([]);
     }
   }
 
+  function toggleSelectedExercise(exercise: Exercise) {
+    if (selectedExercises.includes(exercise)) {
+      const filtered = selectedExercises.filter((ex) => ex.id !== exercise.id);
+      setSelectedExercises(filtered);
+    } else {
+      setSelectedExercises([...selectedExercises, exercise]);
+    }
+  }
+
+  function ExerciseItem({ exercise }: { exercise: Exercise }) {
+    const selected = selectedExercises.includes(exercise);
+
+    return (
+      <div
+        className={twJoin(
+          "h-[20px] border-b border-200-gray",
+          selected ? "bg-gray-200" : null
+        )}
+        onClick={() => toggleSelectedExercise(exercise)}
+      >
+        {exercise.name}
+      </div>
+    );
+  }
+
+  const exercisesNotInWorkout = exercises.filter(
+    (exercise) => !workoutExercises.some((item) => item.id === exercise.id)
+  );
+
   return (
-    <div>
-      <h1>{workout.name}</h1>
-      <div className="my-5">
-        <button
-          className="h-[35px] w-[90px] border border-gray-200 rounded-md text-sm"
-          onClick={() => {
-            setIsAddingExercise(true);
-          }}
-        >
-          Add Exercise
-        </button>
+    <div className="grid grid-cols-2 bg-slate-100">
+      <div className="pl-5 pt-3 border-r border-gray-200">
+        <h1>{workout.name}</h1>
+        <div className="m-5">
+          {workoutExercises.map((exercise: Exercise, idx: number) => (
+            <ExerciseInWorkoutItem
+              key={idx}
+              exercise={exercise}
+              sets={workoutSets}
+              workoutId={workout.id}
+            />
+          ))}
+        </div>
       </div>
-      <div>
-        {exercises.map((exercise: Exercise, idx: number) => {
-          return (
-            <ExerciseItem key={idx} exercise={exercise} sets={workoutSets} />
-          );
-        })}
-      </div>
-      {isAddingExercise && (
-        <form action="submit">
-          <div className="flex">
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex h-8 w-[200px] px-2 items-center justify-center bg-white text-black rounded-md border border-gray-200 hover:bg-muted">
-                <ChevronDown size={15} strokeWidth={2.5} />
-                <div className="px-2 text-md font-medium">
-                  {selected?.name ?? "Select an exercise"}
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {userExercises.map((exercise: Exercise, idx: number) => (
-                  <DropdownMenuRadioItem
-                    className="rounded-[3px] data-[highlighted]:bg-gray-300"
-                    key={idx}
-                    value={exercise.name}
-                    // eslint-disable-next-line no-unused-vars
-                    onSelect={(_: Event) => {
-                      setSelected(exercise);
-                    }}
-                  >
-                    {exercise.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {selected && (
-              <button className="m-2" onClick={handleSubmit}>
-                <Check color="green" size={15} strokeWidth={2.5} />
-              </button>
-            )}
-            <button className="m-2" onClick={() => setIsAddingExercise(false)}>
-              <X color="red" size={15} strokeWidth={2.5} />
-            </button>
-          </div>
+      <div className="w-full mt-3 flex flex-col items-center">
+        <h2>Add exercises to your workout</h2>
+        <Text>Select one or more exercises to add to your workout!</Text>
+        <form>
+          {exercisesNotInWorkout.map((exercise: Exercise, idx: number) => (
+            <ExerciseItem key={idx} exercise={exercise} />
+          ))}
+          <button
+            className="h-[40px] px-3 bg-black text-white font-semibold rounded-md"
+            onClick={async (e: React.FormEvent) => {
+              e.preventDefault;
+              await trigger();
+            }}
+          >
+            {isMutating ? <Spinner /> : "Add exercise(s)"}
+          </button>
         </form>
-      )}
+      </div>
     </div>
   );
 }
 
-function ExerciseItem({
+function ExerciseInWorkoutItem({
   exercise,
+  workoutId,
   sets,
 }: {
   exercise: Exercise;
+  workoutId: number;
   sets: WorkoutSet[];
 }) {
+  const router = useRouter();
+
+  const { trigger, isMutating } = useSWRMutation(
+    `http://localhost:3000/api/workouts/${workoutId}/exercises`,
+    deleteExercise
+  );
+
+  async function deleteExercise(url: string) {
+    const response = await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify({
+        exerciseId: exercise.id,
+        workoutId,
+      }),
+    });
+
+    if (response.ok) {
+      router.refresh();
+    }
+  }
+
   const filteredSets = sets.filter((set) => set.exerciseId === exercise.id);
 
   return (
-    <div className="my-2 flex flex-col">
-      <span className="font-semibold text-md">{exercise.name}</span>
-      <div className="flex">
-        {filteredSets.length > 0 ? (
-          filteredSets.map((set: WorkoutSet, idx: number) => (
-            <p
-              className="mr-2 text-sm"
-              key={idx}
-            >{`${set.reps}x${set.weightLbs}`}</p>
-          ))
-        ) : (
-          <p className="text-sm">No data for this exercise</p>
-        )}
+    <div className="my-2 flex justify-between items-center bg-white rounded-md px-3 py-2">
+      <div className="flex flex-col">
+        <span className="font-semibold text-md">{exercise.name}</span>
+        <div className="flex">
+          {filteredSets.length > 0 ? (
+            filteredSets.map((set: WorkoutSet, idx: number) => (
+              <p
+                className="mr-2 text-sm"
+                key={idx}
+              >{`${set.reps}x${set.weightLbs}`}</p>
+            ))
+          ) : (
+            <p className="text-sm">No data for this exercise</p>
+          )}
+        </div>
+      </div>
+      <div>
+        <button className="mr-5">
+          <ExternalLink color="black" size={18} />
+        </button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <button className="border border-slate-200 rounded-md">
+              <MoreHorizontal color="black" size={18} />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem
+              className="rounded-[3px] text-red-500 data-[highlighted]:bg-gray-300"
+              onClick={async (e: React.FormEvent) => {
+                e.preventDefault();
+                await trigger();
+              }}
+            >
+              {isMutating ? <Spinner /> : "Delete"}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
