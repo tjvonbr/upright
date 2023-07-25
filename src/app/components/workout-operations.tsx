@@ -1,7 +1,7 @@
 "use client";
 
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
-import { ExternalLink, MoreHorizontal } from "lucide-react";
+import { ExternalLink, MoreHorizontal, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
@@ -86,7 +86,7 @@ export default function WorkoutOperations({
   );
 
   return (
-    <div className="grid grid-cols-2 bg-slate-100">
+    <div className="min-h-full grid grid-cols-2 bg-slate-100">
       <div className="pl-5 pt-3 border-r border-gray-200">
         <h1>{workout.name}</h1>
         <div className="m-5">
@@ -175,7 +175,19 @@ function ExerciseInWorkoutItem({
         <button className="mr-5">
           <ExternalLink color="black" size={18} />
         </button>
-
+        <button
+          className="mr-5"
+          onClick={async (e: React.FormEvent) => {
+            e.preventDefault();
+            await trigger();
+          }}
+        >
+          {isMutating ? (
+            <Spinner color={"black"} size={"15"} />
+          ) : (
+            <Trash2 color="black" size={18} />
+          )}
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger>
             <button className="border border-slate-200 rounded-md">
@@ -183,14 +195,8 @@ function ExerciseInWorkoutItem({
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              className="rounded-[3px] text-red-500 data-[highlighted]:bg-gray-300"
-              onClick={async (e: React.FormEvent) => {
-                e.preventDefault();
-                await trigger();
-              }}
-            >
-              {isMutating ? <Spinner /> : "Delete"}
+            <DropdownMenuItem className="rounded-[3px] text-red-500 data-[highlighted]:bg-gray-300">
+              Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
