@@ -5,7 +5,18 @@ import { z } from "zod";
 import { getWorkout } from "@/lib/api/workouts";
 import { db } from "@/lib/prisma";
 
+const exerciseSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  userId: z.number(),
+});
+
 const createWorkoutExerciseSchema = z.object({
+  exercises: z.array(exerciseSchema),
+  workoutId: z.number(),
+});
+
+const deleteWorkoutExerciseSchema = z.object({
   exerciseId: z.number(),
   workoutId: z.number(),
 });
@@ -26,28 +37,18 @@ export async function POST(req: NextRequest) {
     return new NextResponse(null, { status: 404 });
   }
 
-  // Validate that exercise isn't already included in the workout
-  const alreadyInWorkout = workout.exercises.some(
-    (exercise) => exercise.id === body.exerciseId
-  );
-
-  if (alreadyInWorkout) {
-    return NextResponse.json(
-      { error: "This exercise is already part of the workout." },
-      { status: 400 }
-    );
-  }
-
   try {
+    const exerciseIds = body.exercises.map((exercise) => {
+      return { id: exercise.id };
+    });
+
     const workout = await db.workout.update({
       where: {
         id: Number(body.workoutId),
       },
       data: {
         exercises: {
-          connect: {
-            id: Number(body.exerciseId),
-          },
+          connect: exerciseIds,
         },
       },
     });
@@ -59,5 +60,33 @@ export async function POST(req: NextRequest) {
     }
 
     return new NextResponse(null, { status: 500 });
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getServerSession();
+
+    if (!session?.user) {
+      return new NextResponse(null, { status: 403 });
+    }
+
+    const json = await req.json();
+    const body = deleteWorkoutExerciseSchema.parse(json);
+
+    const exercise = await db.workout.update({
+      where: {
+        id: Number(body.workoutId),
+      },
+      data: {
+        exercises: {
+          disconnect: [{ id: body.exerciseId }],
+        },
+      },
+    });
+
+    return NextResponse.json(exercise);
+  } catch (error) {
+    return Error;
   }
 }
