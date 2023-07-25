@@ -161,9 +161,7 @@ function ExerciseInWorkoutItem({
   workoutId: number;
   sets: WorkoutSet[];
 }) {
-  const [setValues, setSetValues] = useState<Set[]>([
-    { reps: "0", weight: "0" },
-  ]);
+  const [setValues, setSetValues] = useState<Set[]>([{ reps: "", weight: "" }]);
 
   const router = useRouter();
 
@@ -208,7 +206,7 @@ function ExerciseInWorkoutItem({
     e.preventDefault();
 
     const prevSets = [...setValues];
-    setSetValues([...prevSets, { reps: "0", weight: "0" }]);
+    setSetValues([...prevSets, { reps: "", weight: "" }]);
   }
 
   function removeSet(e: React.FormEvent, idx: number) {
@@ -243,6 +241,7 @@ function ExerciseInWorkoutItem({
                 (set: { reps: string; weight: string }, idx: number) => (
                   <div key={idx} className="mt-2 flex items-center">
                     <Input
+                      autoComplete="off"
                       className="w-[40px] mr-2 py-1 text-center text-sm"
                       name="reps"
                       type="text"
@@ -251,6 +250,7 @@ function ExerciseInWorkoutItem({
                     />
                     <span className="mr-2">x</span>
                     <Input
+                      autoComplete="off"
                       className="w-[40px] mr-3 py-1 text-center text-sm"
                       name="weight"
                       type="text"
