@@ -9,6 +9,7 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
@@ -171,16 +172,21 @@ function ExerciseInWorkoutItem({
   );
 
   const { trigger: setTrigger, isMutating: isSetMutating } = useSWRMutation(
-    `http://localhost:3000/api/workouts/${workoutId}/exercises/${exercise.id}`,
-    createWorkoutSet
+    "http://localhost:3000/api/sets",
+    createSet
   );
 
   const isEditingExercise = exercise.id === exerciseToEdit?.id;
 
-  async function createWorkoutSet(url: string) {
+  async function createSet(url: string, { arg }: { arg: number }) {
     const response = await fetch(url, {
       method: "POST",
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        exerciseId: exercise.id,
+        workoutId,
+        reps: setValues[arg]["reps"],
+        weight: setValues[arg]["weight"],
+      }),
     });
 
     if (response.ok) {
@@ -234,12 +240,23 @@ function ExerciseInWorkoutItem({
     <div className="my-2 flex justify-between items-center bg-white rounded-md px-3 py-2">
       <div className="flex flex-col">
         <span className="font-semibold text-md">{exercise.name}</span>
-        <div className="flex">
+        <div className="flex flex-col">
+          {filteredSets.length > 0 ? (
+            <div className="flex">
+              {filteredSets.map((set: WorkoutSet, idx: number) => (
+                <p className="mr-2 mb-0 text-sm" key={idx}>
+                  {`${set.reps}x${set.weightLbs}`}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-sm">No data for this exercise</p>
+          )}
           {isEditing && isEditingExercise ? (
-            <form action="submit">
+            <form className="mt-2" action="submit">
               {setValues.map(
                 (set: { reps: string; weight: string }, idx: number) => (
-                  <div key={idx} className="mt-2 flex items-center">
+                  <div key={idx} className="flex items-center">
                     <Input
                       autoComplete="off"
                       className="w-[40px] mr-2 py-1 text-center text-sm"
@@ -266,29 +283,32 @@ function ExerciseInWorkoutItem({
                     >
                       <XCircle color="black" size={18} />
                     </button>
-                    <button>
-                      <Check color="green" size={18} />
+                    <button
+                      onClick={async (e: React.FormEvent) => {
+                        e.preventDefault();
+                        await setTrigger(idx);
+                      }}
+                    >
+                      {isSetMutating ? (
+                        <Spinner color={"black"} size={"15"} />
+                      ) : (
+                        <Check color="green" size={18} />
+                      )}
                     </button>
                   </div>
                 )
               )}
             </form>
-          ) : filteredSets.length > 0 ? (
-            filteredSets.map((set: WorkoutSet, idx: number) => (
-              <p
-                className="mr-2 text-sm"
-                key={idx}
-              >{`${set.reps}x${set.weightLbs}`}</p>
-            ))
-          ) : (
-            <p className="text-sm">No data for this exercise</p>
-          )}
+          ) : null}
         </div>
       </div>
       <div className="flex">
-        <button className="mr-5">
+        <Link
+          className="mr-5 hover:cursor-pointer"
+          href={`/exercises/${exercise.id}`}
+        >
           <ExternalLink color="black" size={18} />
-        </button>
+        </Link>
         <button
           className="mr-5"
           onClick={async (e: React.FormEvent) => {
