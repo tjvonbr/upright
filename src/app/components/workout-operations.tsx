@@ -1,19 +1,21 @@
 "use client";
 
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
-import { ExternalLink, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  ArrowDownFromLine,
+  Check,
+  ExternalLink,
+  Pencil,
+  Trash2,
+  XCircle,
+} from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin } from "tailwind-merge";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/app/components/common/dropdown";
-
+import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
 
@@ -29,6 +31,8 @@ export default function WorkoutOperations({
   exercises: Exercise[];
   workout: WorkoutsWithExercises;
 }) {
+  const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
     []
   );
@@ -54,6 +58,15 @@ export default function WorkoutOperations({
       router.refresh();
       setSelectedExercises([]);
     }
+  }
+
+  function beginEditing(exercise: Exercise) {
+    setIsEditing(true);
+    setExerciseToEdit(exercise);
+  }
+
+  function ceaseEditing() {
+    setIsEditing(false);
   }
 
   function toggleSelectedExercise(exercise: Exercise) {
@@ -93,7 +106,11 @@ export default function WorkoutOperations({
           {workoutExercises.map((exercise: Exercise, idx: number) => (
             <ExerciseInWorkoutItem
               key={idx}
+              beginEditing={beginEditing}
+              ceaseEditing={ceaseEditing}
               exercise={exercise}
+              exerciseToEdit={exerciseToEdit}
+              isEditing={isEditing}
               sets={workoutSets}
               workoutId={workout.id}
             />
@@ -122,21 +139,60 @@ export default function WorkoutOperations({
   );
 }
 
+interface Set {
+  reps: string;
+  weight: string;
+}
+
 function ExerciseInWorkoutItem({
+  beginEditing,
+  ceaseEditing,
   exercise,
+  exerciseToEdit,
+  isEditing,
   workoutId,
   sets,
 }: {
+  // eslint-disable-next-line no-unused-vars
+  beginEditing: (e: Exercise) => void;
+  ceaseEditing: () => void;
   exercise: Exercise;
+  exerciseToEdit: Exercise | null;
+  isEditing: boolean;
   workoutId: number;
   sets: WorkoutSet[];
 }) {
+  const [setValues, setSetValues] = useState<Set[]>([{ reps: "", weight: "" }]);
+
   const router = useRouter();
 
   const { trigger, isMutating } = useSWRMutation(
     `http://localhost:3000/api/workouts/${workoutId}/exercises`,
     deleteExercise
   );
+
+  const { trigger: setTrigger, isMutating: isSetMutating } = useSWRMutation(
+    "http://localhost:3000/api/sets",
+    createSet
+  );
+
+  const isEditingExercise = exercise.id === exerciseToEdit?.id;
+
+  async function createSet(url: string, { arg }: { arg: number }) {
+    const response = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify({
+        exerciseId: exercise.id,
+        workoutId,
+        reps: setValues[arg]["reps"],
+        weight: setValues[arg]["weight"],
+      }),
+    });
+
+    if (response.ok) {
+      router.refresh();
+    }
+  }
 
   async function deleteExercise(url: string) {
     const response = await fetch(url, {
@@ -152,29 +208,107 @@ function ExerciseInWorkoutItem({
     }
   }
 
+  function addAnotherSet(e: React.FormEvent) {
+    e.preventDefault();
+
+    const prevSets = [...setValues];
+    setSetValues([...prevSets, { reps: "", weight: "" }]);
+  }
+
+  function removeSet(e: React.FormEvent, idx: number) {
+    e.preventDefault();
+
+    if (idx === 0) {
+      ceaseEditing();
+      return;
+    }
+
+    const newSets = [...setValues];
+    newSets.splice(idx, 1);
+    setSetValues(newSets);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>, idx: number) {
+    const newFormValues = [...setValues];
+    newFormValues[idx][e.target.name as keyof Set] = e.target.value;
+    setSetValues(newFormValues);
+  }
+
   const filteredSets = sets.filter((set) => set.exerciseId === exercise.id);
 
   return (
     <div className="my-2 flex justify-between items-center bg-white rounded-md px-3 py-2">
       <div className="flex flex-col">
         <span className="font-semibold text-md">{exercise.name}</span>
-        <div className="flex">
+        <div className="flex flex-col">
           {filteredSets.length > 0 ? (
-            filteredSets.map((set: WorkoutSet, idx: number) => (
-              <p
-                className="mr-2 text-sm"
-                key={idx}
-              >{`${set.reps}x${set.weightLbs}`}</p>
-            ))
+            <div className="flex">
+              {filteredSets.map((set: WorkoutSet, idx: number) => (
+                <p className="mr-2 mb-0 text-sm" key={idx}>
+                  {`${set.reps}x${set.weightLbs}`}
+                </p>
+              ))}
+            </div>
           ) : (
             <p className="text-sm">No data for this exercise</p>
           )}
+          {isEditing && isEditingExercise ? (
+            <form className="mt-2" action="submit">
+              {setValues.map(
+                (set: { reps: string; weight: string }, idx: number) => (
+                  <div key={idx} className="flex items-center">
+                    <Input
+                      autoComplete="off"
+                      className="w-[40px] mr-2 py-1 text-center text-sm"
+                      name="reps"
+                      type="text"
+                      value={set.reps}
+                      onChange={(e) => handleChange(e, idx)}
+                    />
+                    <span className="mr-2">x</span>
+                    <Input
+                      autoComplete="off"
+                      className="w-[40px] mr-3 py-1 text-center text-sm"
+                      name="weight"
+                      type="text"
+                      value={set.weight}
+                      onChange={(e) => handleChange(e, idx)}
+                    />
+                    <button className="mr-3" onClick={addAnotherSet}>
+                      <ArrowDownFromLine color="black" size={18} />
+                    </button>
+                    <button
+                      className="mr-3"
+                      onClick={(e: React.FormEvent) => removeSet(e, idx)}
+                    >
+                      <XCircle color="black" size={18} />
+                    </button>
+                    <button
+                      onClick={async (e: React.FormEvent) => {
+                        e.preventDefault();
+                        await setTrigger(idx);
+                      }}
+                    >
+                      {isSetMutating ? (
+                        <Spinner color={"black"} size={"15"} />
+                      ) : (
+                        <Check color="green" size={18} />
+                      )}
+                    </button>
+                  </div>
+                )
+              )}
+            </form>
+          ) : null}
         </div>
       </div>
-      <div>
-        <button className="mr-5">
+      <div className="flex">
+        <Link
+          className="mr-5 hover:cursor-pointer"
+          href={`/exercises/${exercise.id}`}
+        >
           <ExternalLink color="black" size={18} />
-        </button>
+        </Link>
         <button
           className="mr-5"
           onClick={async (e: React.FormEvent) => {
@@ -188,18 +322,19 @@ function ExerciseInWorkoutItem({
             <Trash2 color="black" size={18} />
           )}
         </button>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <button className="border border-slate-200 rounded-md">
-              <MoreHorizontal color="black" size={18} />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem className="rounded-[3px] text-red-500 data-[highlighted]:bg-gray-300">
-              Delete
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {isEditing && exercise.id === exerciseToEdit?.id ? (
+          <button onClick={ceaseEditing}>
+            <XCircle color="red" size={18} />
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              beginEditing(exercise);
+            }}
+          >
+            <Pencil color="black" size={18} />
+          </button>
+        )}
       </div>
     </div>
   );
