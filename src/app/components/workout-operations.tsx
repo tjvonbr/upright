@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
