@@ -9,7 +9,6 @@ import { User } from "next-auth";
 import { HTMLAttributes, useState } from "react";
 import DatePicker from "react-datepicker";
 
-import { Button } from "@/app/components/common/button";
 import {
   Dialog,
   DialogContent,
@@ -19,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/app/components/common/dialog";
 
+import { Button } from "./common/Button";
 import { toast } from "./common/use-toast";
 import Spinner from "./Spinner";
 
