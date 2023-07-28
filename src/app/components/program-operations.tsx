@@ -9,7 +9,7 @@ import { User } from "next-auth";
 import { HTMLAttributes, useState } from "react";
 import DatePicker from "react-datepicker";
 
-import { Button } from "@/app/components/common/button";
+import { Button } from "@/app/components/common/Button";
 import {
   Dialog,
   DialogContent,
