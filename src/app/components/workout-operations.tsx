@@ -1,3 +1,4 @@
+/* eslint-disable */
 "use client";
 
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
@@ -103,18 +104,24 @@ export default function WorkoutOperations({
       <div className="pl-5 pt-3 border-r border-gray-200">
         <h1>{workout.name}</h1>
         <div className="m-5">
-          {workoutExercises.map((exercise: Exercise, idx: number) => (
-            <ExerciseInWorkoutItem
-              key={idx}
-              beginEditing={beginEditing}
-              ceaseEditing={ceaseEditing}
-              exercise={exercise}
-              exerciseToEdit={exerciseToEdit}
-              isEditing={isEditing}
-              sets={workoutSets}
-              workoutId={workout.id}
-            />
-          ))}
+          {workoutExercises.map((exercise: Exercise, idx: number) => {
+            const exerciseSets = workoutSets
+              .filter((set) => set.exerciseId === exercise.id)
+              .sort((a, b) => b.id - a.id);
+
+            return (
+              <ExerciseInWorkoutItem
+                key={idx}
+                beginEditing={beginEditing}
+                ceaseEditing={ceaseEditing}
+                exercise={exercise}
+                exerciseToEdit={exerciseToEdit}
+                isEditing={isEditing}
+                exerciseSets={exerciseSets}
+                workoutId={workout.id}
+              />
+            );
+          })}
         </div>
       </div>
       <div className="w-full mt-3 flex flex-col items-center">
@@ -140,8 +147,9 @@ export default function WorkoutOperations({
 }
 
 interface Set {
+  id: number;
   reps: string;
-  weight: string;
+  weightLbs: string;
 }
 
 function ExerciseInWorkoutItem({
@@ -151,7 +159,7 @@ function ExerciseInWorkoutItem({
   exerciseToEdit,
   isEditing,
   workoutId,
-  sets,
+  exerciseSets,
 }: {
   // eslint-disable-next-line no-unused-vars
   beginEditing: (e: Exercise) => void;
@@ -160,9 +168,16 @@ function ExerciseInWorkoutItem({
   exerciseToEdit: Exercise | null;
   isEditing: boolean;
   workoutId: number;
-  sets: WorkoutSet[];
+  exerciseSets: WorkoutSet[];
 }) {
-  const [setValues, setSetValues] = useState<Set[]>([{ reps: "", weight: "" }]);
+  const [setValues, setSetValues] = useState(
+    exerciseSets.map((set) => ({
+      id: set.id,
+      reps: set.reps.toString(),
+      weightLbs: set.weightLbs.toString(),
+    }))
+  );
+  const [newSets, setNewSets] = useState([{ reps: "", weightLbs: "" }]);
 
   const router = useRouter();
 
@@ -171,10 +186,8 @@ function ExerciseInWorkoutItem({
     deleteExercise
   );
 
-  const { trigger: setTrigger, isMutating: isSetMutating } = useSWRMutation(
-    "http://localhost:3000/api/sets",
-    createSet
-  );
+  const { trigger: createTrigger, isMutating: isCreateMutating } =
+    useSWRMutation("http://localhost:3000/api/sets", createSet);
 
   const isEditingExercise = exercise.id === exerciseToEdit?.id;
 
@@ -185,7 +198,7 @@ function ExerciseInWorkoutItem({
         exerciseId: exercise.id,
         workoutId,
         reps: setValues[arg]["reps"],
-        weight: setValues[arg]["weight"],
+        weight: setValues[arg]["weightLbs"],
       }),
     });
 
@@ -208,11 +221,11 @@ function ExerciseInWorkoutItem({
     }
   }
 
-  function addAnotherSet(e: React.FormEvent) {
+  function addSet(e: React.FormEvent) {
     e.preventDefault();
 
-    const prevSets = [...setValues];
-    setSetValues([...prevSets, { reps: "", weight: "" }]);
+    const prevSets = [...newSets];
+    setNewSets([...prevSets, { reps: "", weightLbs: "" }]);
   }
 
   function removeSet(e: React.FormEvent, idx: number) {
@@ -230,20 +243,28 @@ function ExerciseInWorkoutItem({
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>, idx: number) {
     const newFormValues = [...setValues];
-    newFormValues[idx][e.target.name as keyof Set] = e.target.value;
+    newFormValues[idx][e.target.name as keyof Pick<Set, "reps" | "weightLbs">] =
+      e.target.value;
     setSetValues(newFormValues);
   }
 
-  const filteredSets = sets.filter((set) => set.exerciseId === exercise.id);
+  function handleNewSetChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number
+  ) {
+    const newFormValues = [...newSets];
+    newFormValues[idx][e.target.name as keyof Omit<Set, "id">] = e.target.value;
+    setNewSets(newFormValues);
+  }
 
   return (
     <div className="my-2 flex justify-between items-center bg-white rounded-md px-3 py-2">
       <div className="flex flex-col">
         <span className="font-semibold text-md">{exercise.name}</span>
         <div className="flex flex-col">
-          {filteredSets.length > 0 ? (
+          {exerciseSets.length > 0 ? (
             <div className="flex">
-              {filteredSets.map((set: WorkoutSet, idx: number) => (
+              {exerciseSets.map((set: WorkoutSet, idx: number) => (
                 <p className="mr-2 mb-0 text-sm" key={idx}>
                   {`${set.reps}x${set.weightLbs}`}
                 </p>
@@ -253,51 +274,29 @@ function ExerciseInWorkoutItem({
             <p className="text-sm">No data for this exercise</p>
           )}
           {isEditing && isEditingExercise ? (
-            <form className="mt-2" action="submit">
-              {setValues.map(
-                (set: { reps: string; weight: string }, idx: number) => (
-                  <div key={idx} className="flex items-center">
-                    <Input
-                      autoComplete="off"
-                      className="w-[40px] mr-2 py-1 text-center text-sm"
-                      name="reps"
-                      type="text"
-                      value={set.reps}
-                      onChange={(e) => handleChange(e, idx)}
-                    />
-                    <span className="mr-2">x</span>
-                    <Input
-                      autoComplete="off"
-                      className="w-[40px] mr-3 py-1 text-center text-sm"
-                      name="weight"
-                      type="text"
-                      value={set.weight}
-                      onChange={(e) => handleChange(e, idx)}
-                    />
-                    <button className="mr-3" onClick={addAnotherSet}>
-                      <ArrowDownFromLine color="black" size={18} />
-                    </button>
-                    <button
-                      className="mr-3"
-                      onClick={(e: React.FormEvent) => removeSet(e, idx)}
-                    >
-                      <XCircle color="black" size={18} />
-                    </button>
-                    <button
-                      onClick={async (e: React.FormEvent) => {
-                        e.preventDefault();
-                        await setTrigger(idx);
-                      }}
-                    >
-                      {isSetMutating ? (
-                        <Spinner color={"black"} size={"15"} />
-                      ) : (
-                        <Check color="green" size={18} />
-                      )}
-                    </button>
-                  </div>
-                )
-              )}
+            <form action="submit">
+              {setValues.map((set: Set, idx: number) => (
+                <PrevSet
+                  key={idx}
+                  addSet={addSet}
+                  handleChange={handleChange}
+                  idx={idx}
+                  set={set}
+                  setValues={setValues}
+                />
+              ))}
+              {newSets.map((set: any, idx: number) => (
+                <NewSet
+                  key={idx}
+                  addSet={addSet}
+                  createTrigger={createTrigger}
+                  handleChange={handleNewSetChange}
+                  idx={idx}
+                  isCreateMutating={isCreateMutating}
+                  removeSet={removeSet}
+                  set={set}
+                />
+              ))}
             </form>
           ) : null}
         </div>
@@ -336,6 +335,161 @@ function ExerciseInWorkoutItem({
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+interface PrevSetProps {
+  addSet: (e: React.FormEvent) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>, idx: number) => void;
+  idx: number;
+  set: Set;
+  setValues: Set[];
+}
+
+function PrevSet({ addSet, handleChange, idx, set, setValues }: PrevSetProps) {
+  const router = useRouter();
+
+  const { trigger: updateTrigger, isMutating: isUpdateMutating } =
+    useSWRMutation(`http://localhost:3000/api/sets/${set.id}`, updateSet);
+
+  async function updateSet(url: string) {
+    const response = await fetch(url, {
+      method: "PUT",
+      body: JSON.stringify({
+        reps: setValues[idx]["reps" as keyof Set],
+        weight: setValues[idx]["weightLbs" as keyof Set],
+      }),
+    });
+
+    if (response.ok) {
+      router.refresh();
+    }
+  }
+
+  const { trigger: deleteTrigger, isMutating: isDeleteMutating } =
+    useSWRMutation(`http://localhost:3000/api/sets/${set.id}`, deleteSet);
+
+  async function deleteSet(url: string) {
+    const response = await fetch(url, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      router.refresh();
+    }
+  }
+
+  return (
+    <div className="flex items-center">
+      <Input
+        autoComplete="off"
+        className="w-[40px] mr-2 py-1 text-center text-sm"
+        name="reps"
+        type="text"
+        value={set.reps.toString()}
+        onChange={(e) => handleChange(e, idx)}
+      />
+      <span className="mr-2">x</span>
+      <Input
+        autoComplete="off"
+        className="w-[40px] mr-3 py-1 text-center text-sm"
+        name="weightLbs"
+        type="text"
+        value={set.weightLbs.toString()}
+        onChange={(e) => handleChange(e, idx)}
+      />
+      <button className="mr-3" onClick={(e: React.FormEvent) => addSet(e)}>
+        <ArrowDownFromLine color="black" size={18} />
+      </button>
+      <button
+        className="mr-3"
+        onClick={async (e: React.FormEvent) => {
+          e.preventDefault();
+          await deleteTrigger();
+        }}
+      >
+        {isDeleteMutating ? (
+          <Spinner color="black" size={"15"} />
+        ) : (
+          <Trash2 color="red" size={18} />
+        )}
+      </button>
+      <button
+        onClick={async (e: React.FormEvent) => {
+          e.preventDefault();
+          await updateTrigger();
+        }}
+      >
+        {isUpdateMutating ? (
+          <Spinner color="black" size={"18"} />
+        ) : (
+          <Check color="green" size={18} />
+        )}
+      </button>
+    </div>
+  );
+}
+
+interface NewSetProps {
+  addSet: (e: React.FormEvent) => void;
+  createTrigger: (arg: number) => void;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>, idx: number) => void;
+  idx: number;
+  isCreateMutating: boolean;
+  removeSet: (e: React.FormEvent, idx: number) => void;
+  set: Set;
+}
+
+function NewSet({
+  addSet,
+  createTrigger,
+  handleChange,
+  idx,
+  isCreateMutating,
+  removeSet,
+  set,
+}: NewSetProps) {
+  return (
+    <div className="flex items-center">
+      <Input
+        autoComplete="off"
+        className="w-[40px] mr-2 py-1 text-center text-sm"
+        name="reps"
+        type="text"
+        value={set.reps}
+        onChange={(e) => handleChange(e, idx)}
+      />
+      <span className="mr-2">x</span>
+      <Input
+        autoComplete="off"
+        className="w-[40px] mr-3 py-1 text-center text-sm"
+        name="weightLbs"
+        type="text"
+        value={set.weightLbs.toString()}
+        onChange={(e) => handleChange(e, idx)}
+      />
+      <button className="mr-3" onClick={(e: React.FormEvent) => addSet(e)}>
+        <ArrowDownFromLine color="black" size={18} />
+      </button>
+      <button
+        className="mr-3"
+        onClick={(e: React.FormEvent) => removeSet(e, idx)}
+      >
+        <XCircle color="black" size={18} />
+      </button>
+      <button
+        onClick={async (e: React.FormEvent) => {
+          e.preventDefault();
+          await createTrigger(idx);
+        }}
+      >
+        {isCreateMutating ? (
+          <Spinner color="black" size={"18"} />
+        ) : (
+          <Check color="green" size={18} />
+        )}
+      </button>
     </div>
   );
 }
