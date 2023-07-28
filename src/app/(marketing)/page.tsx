@@ -43,7 +43,7 @@ export default function Index() {
           </Link>
           <Link
             className={twMerge(buttonVariants({ variant: "outline" }))}
-            href="https://githut"
+            href={links.social.repo}
           >
             See Github repo
           </Link>
