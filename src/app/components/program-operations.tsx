@@ -18,7 +18,7 @@ import {
   DialogTrigger,
 } from "@/app/components/common/dialog";
 
-import { Button } from "./common/Button";
+import { Button } from "./common/button";
 import { toast } from "./common/use-toast";
 import Spinner from "./Spinner";
 

@@ -3,24 +3,8 @@
 export const navbarItems = {
   mainNavbar: [
     {
-      name: "Home",
-      href: "/dashboard",
-    },
-    {
-      name: "Exercises",
-      href: "/exercises",
-    },
-    {
-      name: "Programs",
-      href: "/programs",
-    },
-    {
-      name: "Workouts",
-      href: "/workouts",
-    },
-    {
-      name: "Personal Bests",
-      href: "/personal-bests",
+      name: "Features",
+      href: "/#features",
     },
   ],
 };

@@ -6,7 +6,7 @@ import { twMerge } from "tailwind-merge";
 
 import { navbarItems } from "@/config/navigation";
 
-import { buttonVariants } from "../components/common/Button";
+import { buttonVariants } from "../components/common/button";
 import Navbar from "../components/Navbar";
 
 export default async function RootLayout({
