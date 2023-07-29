@@ -16,7 +16,7 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
     <SessionProvider session={session}>
       <html lang="en" suppressHydrationWarning>
         <head />
-        <body className="min-h-screen bg-background font-sans antialiased">
+        <body className="min-h-screen bg-slate-50 font-sans antialiased">
           {children}
           <Toaster />
         </body>
