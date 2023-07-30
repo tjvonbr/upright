@@ -12,12 +12,13 @@ datasource db {
 }
 
 model Exercise {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    Int?
-  workouts  Workout[]
-  workoutSets WorkoutSet[]
+  id              Int             @id @default(autoincrement())
+  name            String          @unique
+  user            User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          Int?
+  workouts        Workout[]
+  workoutSets     WorkoutSet[]
+  personalBests   PersonalBest[]  
 
   
   @@map("exercises")
@@ -57,6 +58,7 @@ model User {
   exercises     Exercise[]
   programs      Program[]
   workouts      Workout[]
+  personalBests PersonalBest[]
 
   @@map("users")
 }
@@ -98,4 +100,18 @@ model WorkoutSet {
   weightLbs   Float     @map("weight_lbs")
 
   @@map("workout_sets")
+}
+
+model PersonalBest {
+  type        String      
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  userId      Int         
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId  Int
+  exercise    Exercise    @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  weight      Float
+
+  @@id([exerciseId, type])
+  @@map("personal_bests")
 }
