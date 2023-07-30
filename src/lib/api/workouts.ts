@@ -45,6 +45,27 @@ export async function getWorkout(workoutId: number) {
   return workout;
 }
 
+export async function getWorkoutsWithExercise(exerciseId: number) {
+  const workouts = await db.workout.findMany({
+    where: {
+      exercises: {
+        some: {
+          id: Number(exerciseId),
+        },
+      },
+    },
+    include: {
+      workoutSets: {
+        where: {
+          exerciseId,
+        },
+      },
+    },
+  });
+
+  return workouts;
+}
+
 export async function addWorkoutExercise(
   workoutId: Workout["id"],
   exerciseId: Exercise["id"]
