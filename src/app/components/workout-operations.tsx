@@ -100,7 +100,7 @@ export default function WorkoutOperations({
   );
 
   return (
-    <div className="min-h-full grid grid-cols-2 bg-slate-100">
+    <div className="min-h-screen grid grid-cols-2">
       <div className="pl-5 pt-3 border-r border-gray-200">
         <h1>{workout.name}</h1>
         <div className="m-5">

@@ -71,18 +71,18 @@ export default function WorkoutsOperations({
   }
 
   return (
-    <div className="h-full w-full grid grid-cols-2">
+    <div className="grid grid-cols-2">
       <div className="pl-5 pt-3 border-r border-gray-200">
-        <h1>Workouts</h1>
+        <h1 className="text-2xl font-semibold">Workouts</h1>
         <div className="flex flex-col">
           {workouts.map((workout: Workout, idx: number) => (
             <Link key={idx} href={`/workouts/${workout.id}`}>
-              {workout.name}
+              {workout.name}s
             </Link>
           ))}
         </div>
       </div>
-      <div className="flex flex-col justify-center items-center">
+      <div className="min-h-screen flex flex-col justify-center items-center">
         <form
           className="w-[50%]"
           action="submit"
@@ -91,8 +91,8 @@ export default function WorkoutsOperations({
             setTrigger();
           }}
         >
-          <p className="font-semibold text-2xl">Add a workout</p>
-          <p>
+          <h2 className="text-xl font-semibold">Add a workout</h2>
+          <p className="text-slate-500">
             If you don&apos;t see a workout that you want to track in the column
             on the left, you can add it below.
           </p>
