@@ -102,7 +102,8 @@ export default function WorkoutOperations({
   return (
     <div className="min-h-screen grid grid-cols-2">
       <div className="pl-5 pt-3 border-r border-gray-200">
-        <h1>{workout.name}</h1>
+        <h1 className="text-2xl font-bold">{workout.name}</h1>
+        <p className="text-slate-500">{workout.date.toDateString()}</p>
         <div className="m-5">
           {workoutExercises.map((exercise: Exercise, idx: number) => {
             const exerciseSets = workoutSets
@@ -138,7 +139,13 @@ export default function WorkoutOperations({
               await trigger();
             }}
           >
-            {isMutating ? <Spinner /> : "Add exercise(s)"}
+            {isMutating ? (
+              <Spinner />
+            ) : selectedExercises.length > 1 ? (
+              "Add exercises"
+            ) : (
+              "Add exercise"
+            )}
           </button>
         </form>
       </div>
@@ -197,8 +204,8 @@ function ExerciseInWorkoutItem({
       body: JSON.stringify({
         exerciseId: exercise.id,
         workoutId,
-        reps: setValues[arg]["reps"],
-        weight: setValues[arg]["weightLbs"],
+        reps: newSets[arg]["reps"],
+        weight: newSets[arg]["weightLbs"],
       }),
     });
 
@@ -301,15 +308,14 @@ function ExerciseInWorkoutItem({
           ) : null}
         </div>
       </div>
-      <div className="flex">
+      <div className="flex space-x-2">
         <Link
-          className="mr-5 hover:cursor-pointer"
+          className="hover:cursor-pointer"
           href={`/exercises/${exercise.id}`}
         >
           <ExternalLink color="black" size={18} />
         </Link>
         <button
-          className="mr-5"
           onClick={async (e: React.FormEvent) => {
             e.preventDefault();
             await trigger();
