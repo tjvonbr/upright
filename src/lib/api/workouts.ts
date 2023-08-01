@@ -1,6 +1,7 @@
 import { Exercise, Program, Workout } from "@prisma/client";
 
 import { db } from "../prisma";
+import { ExerciseWorkoutMap, WorkoutWithSets } from "@/types/workouts";
 
 export async function getWorkoutsForUser(userId: string) {
   const workouts = db.workout.findMany({
@@ -62,6 +63,29 @@ export async function getWorkoutsWithExercise(exerciseId: number) {
       },
     },
   });
+
+  return workouts;
+}
+
+export async function getMostRecentWorkoutByExerciseIds(exerciseIds: number[]) {
+  const workouts: ExerciseWorkoutMap = {};
+
+  for (const exerciseId of exerciseIds) {
+    const workout = await db.workout.findFirst({
+      where: {
+        exercises: {
+          some: {
+            id: exerciseId,
+          },
+        },
+      },
+      include: {
+        workoutSets: true,
+      },
+    });
+
+    workouts[exerciseId as keyof ExerciseWorkoutMap] = workout;
+  }
 
   return workouts;
 }

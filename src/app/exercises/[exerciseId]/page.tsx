@@ -5,7 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import { getExerciseById } from "@/lib/api/exercises";
 import { getWorkoutsWithExercise } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
-import { WorkoutWithWorkoutSets } from "@/types/workouts";
+import { WorkoutWithSets } from "@/types/workouts";
 
 interface ExerciseProps {
   params: {
@@ -36,20 +36,18 @@ export default async function Exercise({ params }: ExerciseProps) {
           <p className="text-sm font-semibold">
             Recent workouts with {exercise.name}
           </p>
-          {workoutsWithExercise.map(
-            (workout: WorkoutWithWorkoutSets, idx: number) => (
-              <div className="flex flex-col text-sm" key={idx}>
-                <Link href={`/workouts/${workout.id}`}>{workout.name}</Link>
-                <div className="flex space-x-1">
-                  {workout.workoutSets.map((set: WorkoutSet, idx: number) => (
-                    <span key={idx}>
-                      {set.reps}x{set.weightLbs}
-                    </span>
-                  ))}
-                </div>
+          {workoutsWithExercise.map((workout: WorkoutWithSets, idx: number) => (
+            <div className="flex flex-col text-sm" key={idx}>
+              <Link href={`/workouts/${workout.id}`}>{workout.name}</Link>
+              <div className="flex space-x-1">
+                {workout.workoutSets.map((set: WorkoutSet, idx: number) => (
+                  <span key={idx}>
+                    {set.reps}x{set.weightLbs}
+                  </span>
+                ))}
               </div>
-            )
-          )}
+            </div>
+          ))}
         </div>
         <div className="py-2 px-4 w-min-content border border-slate-200 rounded-md">
           <p className="text-sm font-semibold">Personal Best</p>
