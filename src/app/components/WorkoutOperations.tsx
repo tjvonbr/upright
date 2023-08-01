@@ -201,6 +201,8 @@ function ExerciseInWorkoutItem({
   );
   const [newSets, setNewSets] = useState([{ reps: "", weightLbs: "" }]);
 
+  console.log("RECENT: ", recentWorkouts);
+
   const router = useRouter();
 
   const { trigger, isMutating } = useSWRMutation(
@@ -279,6 +281,8 @@ function ExerciseInWorkoutItem({
     setNewSets(newFormValues);
   }
 
+  console.log(recentWorkouts);
+
   return (
     <div className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-slate-200">
       <div className="w-1/2 flex flex-col space-y-3">
@@ -325,12 +329,15 @@ function ExerciseInWorkoutItem({
         <div>
           <p className="text-sm font-semibold">Most Recent</p>
           <div className="flex space-x-1 overflow-scroll">
-            {recentWorkouts[exercise.id]!.workoutSets.length > 1 ? (
+            {!recentWorkouts[exercise.id] ? (
+              <p className="text-sm">No previous workout data</p>
+            ) : recentWorkouts[exercise.id]!.workoutSets.length > 0 ? (
               recentWorkouts[exercise.id]?.workoutSets.map(
                 (set: any, idx: number) => (
-                  <p className="mb-0 text-sm" key={idx}>
-                    {`${set.reps}x${set.weightLbs}`}
-                  </p>
+                  <p
+                    className="mb-0 text-sm"
+                    key={idx}
+                  >{`${set.reps}x${set.weightLbs}`}</p>
                 )
               )
             ) : (
