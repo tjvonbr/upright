@@ -6,5 +6,5 @@ interface TextProps {
 }
 
 export default function Text({ children }: TextProps) {
-  return <p className="font-semibold text-gray-700">{children}</p>;
+  return <p className="text-slate-500">{children}</p>;
 }
