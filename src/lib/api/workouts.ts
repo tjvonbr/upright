@@ -1,7 +1,8 @@
 import { Exercise, Program, Workout } from "@prisma/client";
 
-import { db } from "../prisma";
 import { ExerciseWorkoutMap } from "@/types/workouts";
+
+import { db } from "../prisma";
 
 export async function getWorkoutsForUser(userId: string) {
   const workouts = db.workout.findMany({
