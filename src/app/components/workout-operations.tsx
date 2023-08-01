@@ -19,6 +19,7 @@ import { twJoin } from "tailwind-merge";
 import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
+import { ExerciseWorkoutMap } from "@/types/workouts";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -27,9 +28,11 @@ interface WorkoutsWithExercises extends Workout {
 
 export default function WorkoutOperations({
   exercises,
+  recentWorkouts,
   workout,
 }: {
   exercises: Exercise[];
+  recentWorkouts: ExerciseWorkoutMap;
   workout: WorkoutsWithExercises;
 }) {
   const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
@@ -101,10 +104,10 @@ export default function WorkoutOperations({
 
   return (
     <div className="min-h-screen grid grid-cols-2">
-      <div className="pl-5 pt-3 border-r border-gray-200">
+      <div className="px-4 py-2 border-r border-slate-200 overflow-y-auto">
         <h1 className="text-2xl font-bold">{workout.name}</h1>
         <p className="text-slate-500">{workout.date.toDateString()}</p>
-        <div className="m-5">
+        <div className="mt-3 space-y-2">
           {workoutExercises.map((exercise: Exercise, idx: number) => {
             const exerciseSets = workoutSets
               .filter((set) => set.exerciseId === exercise.id)
@@ -119,6 +122,7 @@ export default function WorkoutOperations({
                 exerciseToEdit={exerciseToEdit}
                 isEditing={isEditing}
                 exerciseSets={exerciseSets}
+                recentWorkouts={recentWorkouts}
                 workoutId={workout.id}
               />
             );
@@ -148,6 +152,12 @@ export default function WorkoutOperations({
             )}
           </button>
         </form>
+        <Text>
+          Don't see an exercise. Add one{" "}
+          <Link className="text-indigo-500" href="/exercises">
+            here
+          </Link>
+        </Text>
       </div>
     </div>
   );
@@ -165,6 +175,7 @@ function ExerciseInWorkoutItem({
   exercise,
   exerciseToEdit,
   isEditing,
+  recentWorkouts,
   workoutId,
   exerciseSets,
 }: {
@@ -174,6 +185,7 @@ function ExerciseInWorkoutItem({
   exercise: Exercise;
   exerciseToEdit: Exercise | null;
   isEditing: boolean;
+  recentWorkouts: ExerciseWorkoutMap;
   workoutId: number;
   exerciseSets: WorkoutSet[];
 }) {
@@ -265,14 +277,14 @@ function ExerciseInWorkoutItem({
   }
 
   return (
-    <div className="my-2 flex justify-between items-center bg-white rounded-md px-3 py-2">
-      <div className="flex flex-col">
-        <span className="font-semibold text-md">{exercise.name}</span>
+    <div className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-indigo-200">
+      <div className="w-1/2 flex flex-col space-y-3">
         <div className="flex flex-col">
+          <span className="font-semibold text-sm">{exercise.name}</span>
           {exerciseSets.length > 0 ? (
-            <div className="flex">
+            <div className="flex space-x-1">
               {exerciseSets.map((set: WorkoutSet, idx: number) => (
-                <p className="mr-2 mb-0 text-sm" key={idx}>
+                <p className="mb-0 text-sm" key={idx}>
                   {`${set.reps}x${set.weightLbs}`}
                 </p>
               ))}
@@ -306,6 +318,22 @@ function ExerciseInWorkoutItem({
               ))}
             </form>
           ) : null}
+        </div>
+        <div>
+          <p className="text-sm font-semibold">Most Recent</p>
+          <div className="flex space-x-1 overflow-scroll">
+            {recentWorkouts[exercise.id]!.workoutSets.length > 1 ? (
+              recentWorkouts[exercise.id]?.workoutSets.map(
+                (set: any, idx: number) => (
+                  <p className="mb-0 text-sm" key={idx}>
+                    {`${set.reps}x${set.weightLbs}`}
+                  </p>
+                )
+              )
+            ) : (
+              <p className="text-sm">No previous workout data</p>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex space-x-2">
