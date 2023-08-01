@@ -1,7 +1,7 @@
 import { Workout } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
-import WorkoutOperations from "@/app/components/workout-operations";
+import WorkoutOperations from "@/app/components/WorkoutOperations";
 import { getMostRecentWorkoutByExerciseIds } from "@/lib/api/workouts";
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
@@ -42,6 +42,11 @@ export default async function Workout({ params }: WorkoutProps) {
   }
 
   const workout = await getWorkout(params.workoutId);
+
+  if (!workout) {
+    notFound();
+  }
+
   const exercises = await getUserExercises(user.id);
 
   const workoutExercises = exercises.filter((exercise) =>
@@ -52,7 +57,8 @@ export default async function Workout({ params }: WorkoutProps) {
 
   const workoutExerciseIds = workoutExercises.map((exercise) => exercise.id);
   const recentWorkouts = await getMostRecentWorkoutByExerciseIds(
-    workoutExerciseIds
+    workoutExerciseIds,
+    workout.date
   );
 
   if (!workout) {

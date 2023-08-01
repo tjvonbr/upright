@@ -77,7 +77,7 @@ export default function WorkoutsOperations({
         <div className="flex flex-col">
           {workouts.map((workout: Workout, idx: number) => (
             <Link key={idx} href={`/workouts/${workout.id}`}>
-              {workout.name}s
+              {workout.name}
             </Link>
           ))}
         </div>

@@ -68,20 +68,30 @@ export async function getWorkoutsWithExercise(exerciseId: number) {
   return workouts;
 }
 
-export async function getMostRecentWorkoutByExerciseIds(exerciseIds: number[]) {
+export async function getMostRecentWorkoutByExerciseIds(
+  exerciseIds: number[],
+  workoutDate: Date
+) {
   const workouts: ExerciseWorkoutMap = {};
 
   for (const exerciseId of exerciseIds) {
     const workout = await db.workout.findFirst({
       where: {
-        exercises: {
-          some: {
-            id: exerciseId,
+        AND: [
+          { exercises: { some: { id: exerciseId } } },
+          { date: { lt: new Date(workoutDate) } },
+        ],
+      },
+      include: {
+        exercises: true,
+        workoutSets: {
+          where: {
+            exerciseId,
           },
         },
       },
-      include: {
-        workoutSets: true,
+      orderBy: {
+        date: "desc",
       },
     });
 
