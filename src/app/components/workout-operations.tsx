@@ -20,6 +20,7 @@ import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
+import { buttonVariants } from "./common/button";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -88,8 +89,8 @@ export default function WorkoutOperations({
     return (
       <div
         className={twJoin(
-          "h-[20px] border-b border-200-gray",
-          selected ? "bg-gray-200" : null
+          "h-10 w-full px-3 flex flex-col justify-center bg-white border border-200-slate rounded-md text-sm font-semibold hover:cursor-pointer",
+          selected ? "border-2 border-indigo-500" : ""
         )}
         onClick={() => toggleSelectedExercise(exercise)}
       >
@@ -129,15 +130,17 @@ export default function WorkoutOperations({
           })}
         </div>
       </div>
-      <div className="w-full mt-3 flex flex-col items-center">
-        <h2>Add exercises to your workout</h2>
-        <Text>Select one or more exercises to add to your workout!</Text>
-        <form>
+      <div className="w-full my-3 flex flex-col items-center">
+        <h2 className="text-2xl font-bold">Add exercises to your workout</h2>
+        <p className="text-slate-500">
+          Select one or more exercises to add to your workout!
+        </p>
+        <form className="w-full px-4 mt-3 flex flex-col items-center space-y-2">
           {exercisesNotInWorkout.map((exercise: Exercise, idx: number) => (
             <ExerciseItem key={idx} exercise={exercise} />
           ))}
           <button
-            className="h-[40px] px-3 bg-black text-white font-semibold rounded-md"
+            className={twJoin(buttonVariants({ variant: "primary" }))}
             onClick={async (e: React.FormEvent) => {
               e.preventDefault;
               await trigger();
@@ -277,7 +280,7 @@ function ExerciseInWorkoutItem({
   }
 
   return (
-    <div className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-indigo-200">
+    <div className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-slate-200">
       <div className="w-1/2 flex flex-col space-y-3">
         <div className="flex flex-col">
           <span className="font-semibold text-sm">{exercise.name}</span>
