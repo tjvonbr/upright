@@ -2,9 +2,9 @@ import { Workout } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
 import WorkoutOperations from "@/app/components/workout-operations";
+import { getMostRecentWorkoutByExerciseIds } from "@/lib/api/workouts";
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
-import { getMostRecentWorkoutByExerciseIds } from "@/lib/api/workouts";
 
 async function getWorkout(workoutId: number) {
   const workout = db.workout.findFirst({
