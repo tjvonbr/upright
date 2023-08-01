@@ -19,7 +19,7 @@ import { twJoin } from "tailwind-merge";
 import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
-import { ExerciseWorkoutMap, WorkoutWithSets } from "@/types/workouts";
+import { ExerciseWorkoutMap } from "@/types/workouts";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];

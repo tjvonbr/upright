@@ -1,4 +1,4 @@
-import { Exercise, Workout } from "@prisma/client";
+import { Workout } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
 import WorkoutOperations from "@/app/components/workout-operations";
