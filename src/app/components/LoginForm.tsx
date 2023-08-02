@@ -13,14 +13,17 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
-    setIsLoading(true);
     e.preventDefault();
 
     try {
-      signIn("email", { callbackUrl: "/dashboard", email });
+      setIsLoading(true);
+      await signIn("email", { callbackUrl: "/dashboard", email });
       setIsLoading(false);
     } catch (err) {
+      setIsLoading(false);
       throw new Error(`Error: ${err}`);
+    } finally {
+      setIsLoading(false);
     }
   }
 

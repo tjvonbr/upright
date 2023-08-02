@@ -21,7 +21,10 @@ export default function Login() {
           Please enter your email below and be on the lookout for an email
         </p>
         <LoginForm />
-        <Link className="text-sm text-slate-500" href="/register">
+        <Link
+          className="text-sm text-slate-500 hover:underline"
+          href="/register"
+        >
           Don&#39;t have an account? Sign up
         </Link>
       </div>
