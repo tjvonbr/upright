@@ -5,10 +5,10 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";
 
-async function getProgramsForUser(userId: number) {
+async function getProgramsForUser(userId: string) {
   return await db.program.findMany({
     where: {
-      userId,
+      userId: Number(userId),
     },
     orderBy: {
       name: "asc",
@@ -23,7 +23,7 @@ export default async function Programs() {
     redirect("/login");
   }
 
-  const programs = await getProgramsForUser(Number(user.id));
+  const programs = await getProgramsForUser(user.id);
 
   return (
     <div className="h-[95%] w-[95%] m-auto">
