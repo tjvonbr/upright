@@ -20,7 +20,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="h-10 py-2 px-4 flex justify-between items-center">
+      <header className="h-10 py-2 px-4">
         <UserNav />
       </header>
       <main>{children}</main>

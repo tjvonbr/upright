@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 
 import { getProgramsForUser } from "@/lib/api/programs";
 import { getWorkoutsForUser } from "@/lib/api/workouts";
@@ -13,12 +13,8 @@ export default async function Workouts() {
     redirect("/login");
   }
 
-  const programs = await getProgramsForUser(user?.id);
-  const workouts = await getWorkoutsForUser(user?.id);
-
-  if (!workouts || !programs) {
-    return notFound();
-  }
+  const programs = await getProgramsForUser(user.id);
+  const workouts = await getWorkoutsForUser(user.id);
 
   return (
     <WorkoutsOperations user={user} programs={programs} workouts={workouts} />

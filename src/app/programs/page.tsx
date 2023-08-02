@@ -2,19 +2,8 @@ import { Program } from "@prisma/client";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { db } from "@/lib/prisma";
+import { getProgramsForUser } from "@/lib/api/programs";
 import { getCurrentUser } from "@/lib/session";
-
-async function getProgramsForUser(userId: string) {
-  return await db.program.findMany({
-    where: {
-      userId: Number(userId),
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
-}
 
 export default async function Programs() {
   const user = await getCurrentUser();
@@ -23,7 +12,7 @@ export default async function Programs() {
     redirect("/login");
   }
 
-  const programs = await getProgramsForUser(user.id);
+  const programs = await getProgramsForUser("1");
 
   return (
     <div className="h-[95%] w-[95%] m-auto">

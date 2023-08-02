@@ -1,13 +1,14 @@
 import { db } from "../prisma";
 
 export async function getProgramsForUser(userId: string) {
-  const programs = await db.program.findMany({
+  return await db.program.findMany({
     where: {
       userId: Number(userId),
     },
+    orderBy: {
+      name: "asc",
+    },
   });
-
-  return programs;
 }
 
 export async function getProgramForUser(programId: string) {

@@ -53,28 +53,6 @@ export const authOptions: NextAuthOptions = {
     updateAge: THIRTY_MINUTES,
   },
   callbacks: {
-    async jwt({ token, user }) {
-      const dbUser = await db.user.findFirst({
-        where: {
-          email: token.email as string,
-        },
-      });
-
-      if (!dbUser) {
-        if (user) {
-          token.id = user.id;
-        }
-
-        return token;
-      }
-
-      return {
-        ...token,
-        firstName: dbUser.firstName,
-        lastName: dbUser.lastName,
-        email: dbUser.email,
-      };
-    },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id;
@@ -84,6 +62,28 @@ export const authOptions: NextAuthOptions = {
       }
 
       return session;
+    },
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findFirst({
+        where: {
+          email: token.email as string,
+        },
+      });
+
+      if (!dbUser) {
+        if (user) {
+          token.id = user?.id;
+        }
+        return token;
+      }
+
+      return {
+        ...token,
+        id: token.id,
+        firstName: dbUser.firstName,
+        lastName: dbUser.lastName,
+        email: dbUser.email,
+      };
     },
   },
 };
