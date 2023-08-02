@@ -1,6 +1,9 @@
 import { MoveUpRight } from "lucide-react";
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+
+import { getCurrentUser } from "@/lib/session";
 
 import LoginForm from "../components/LoginForm";
 
@@ -9,7 +12,11 @@ export const metadata: Metadata = {
   description: "Login to your account",
 };
 
-export default function Login() {
+export default async function Login() {
+  const user = await getCurrentUser();
+
+  if (user) redirect("/dashboard");
+
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center">
       <div className="w-1/3 flex flex-col justify-center items-center space-y-2">
