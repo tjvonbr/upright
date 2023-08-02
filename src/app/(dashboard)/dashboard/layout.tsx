@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 import React from "react";
-import { twJoin } from "tailwind-merge";
 
-import { buttonVariants } from "@/app/components/common/button";
 import UserNav from "@/components/UserNav";
 
 import { getCurrentUser } from "../../../lib/session";
