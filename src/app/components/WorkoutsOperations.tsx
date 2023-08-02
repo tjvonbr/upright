@@ -101,7 +101,7 @@ export default function WorkoutsOperations({
               Name
             </label>
             <input
-              className="w-full px-2 py-2 border border-gray-200 rounded-md"
+              className="w-full px-2 py-2 border border-slate-200 rounded-md"
               id="name"
               name="name"
               type="text"
