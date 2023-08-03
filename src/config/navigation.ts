@@ -1,33 +1,10 @@
 // Main navbar items for dashboard layout
 
-export interface NavbarItem {
-  name: string;
-  href: string;
-}
-
 export const navbarItems = {
   mainNavbar: [
     {
       name: "Features",
       href: "/#features",
-    },
-  ],
-  dashboard: [
-    {
-      name: "Dashboard",
-      href: "/dashboard",
-    },
-    {
-      name: "Programs",
-      href: "/programs",
-    },
-    {
-      name: "Workouts",
-      href: "/workouts",
-    },
-    {
-      name: "Exercises",
-      href: "/exercises",
     },
   ],
 };
