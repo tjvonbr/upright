@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 
-import Spinner from "../components/Spinner";
+import Spinner from "../../components/Spinner";
 
 interface FormElements extends HTMLFormControlsCollection {
   usernameInput: HTMLInputElement;
