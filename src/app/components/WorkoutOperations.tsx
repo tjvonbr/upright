@@ -5,22 +5,24 @@ import { Exercise, Workout, WorkoutSet } from "@prisma/client";
 import {
   ArrowDownFromLine,
   Check,
+  ChevronLeft,
   ExternalLink,
   Pencil,
   Trash2,
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
-import { twJoin } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 
 import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
+import next from "next/types";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -41,27 +43,33 @@ export default function WorkoutOperations({
   const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
     []
   );
+  const [isMutating, setIsMutating] = useState(false);
 
   const router = useRouter();
-  const { trigger, isMutating } = useSWRMutation(
-    `http://localhost:3000/api/workouts/${workout.id}/exercises`,
-    handleSubmit
-  );
+  const pathname = usePathname();
 
   const { exercises: workoutExercises, workoutSets } = workout;
 
-  async function handleSubmit(url: string) {
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        exercises: selectedExercises,
-        workoutId: workout.id,
-      }),
-    });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setIsMutating(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workout.id}/exercises`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          exercises: selectedExercises,
+          workoutId: workout.id,
+        }),
+      }
+    );
+
+    setIsMutating(false);
 
     if (response.ok) {
-      router.refresh();
       setSelectedExercises([]);
+      router.refresh();
     }
   }
 
@@ -106,8 +114,19 @@ export default function WorkoutOperations({
   return (
     <div className="min-h-screen grid grid-cols-2">
       <div className="px-4 py-2 border-r border-slate-200 overflow-y-auto">
-        <h1 className="text-2xl font-bold">{workout.name}</h1>
-        <p className="text-slate-500">{workout.date.toDateString()}</p>
+        <div className="flex justify-between">
+          <Link
+            className={twMerge(buttonVariants({ variant: "ghost" }), "p-0")}
+            href="/workouts"
+          >
+            <ChevronLeft color="black" size={18} />
+            <p>Back</p>
+          </Link>
+          <div className="flex flex-col items-end">
+            <h1 className="text-2xl font-bold">{workout.name}</h1>
+            <p className="text-slate-500">{workout.date.toDateString()}</p>
+          </div>
+        </div>
         <div className="mt-3 space-y-2">
           {workoutExercises.map((exercise: Exercise, idx: number) => {
             const exerciseSets = workoutSets
@@ -141,10 +160,7 @@ export default function WorkoutOperations({
           ))}
           <button
             className={twJoin(buttonVariants({ variant: "primary" }))}
-            onClick={async (e: React.FormEvent) => {
-              e.preventDefault;
-              await trigger();
-            }}
+            onClick={(e: React.FormEvent) => handleSubmit(e)}
           >
             {isMutating ? (
               <Spinner />
@@ -200,8 +216,6 @@ function ExerciseInWorkoutItem({
     }))
   );
   const [newSets, setNewSets] = useState([{ reps: "", weightLbs: "" }]);
-
-  console.log("RECENT: ", recentWorkouts);
 
   const router = useRouter();
 
@@ -280,8 +294,6 @@ function ExerciseInWorkoutItem({
     newFormValues[idx][e.target.name as keyof Omit<Set, "id">] = e.target.value;
     setNewSets(newFormValues);
   }
-
-  console.log(recentWorkouts);
 
   return (
     <div className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-slate-200">
