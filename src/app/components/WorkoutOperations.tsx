@@ -12,7 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin, twMerge } from "tailwind-merge";
@@ -22,6 +22,7 @@ import Text from "./common/Text";
 import Spinner from "./Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
+import next from "next/types";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -42,27 +43,33 @@ export default function WorkoutOperations({
   const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
     []
   );
+  const [isMutating, setIsMutating] = useState(false);
 
   const router = useRouter();
-  const { trigger, isMutating } = useSWRMutation(
-    `http://localhost:3000/api/workouts/${workout.id}/exercises`,
-    handleSubmit
-  );
+  const pathname = usePathname();
 
   const { exercises: workoutExercises, workoutSets } = workout;
 
-  async function handleSubmit(url: string) {
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        exercises: selectedExercises,
-        workoutId: workout.id,
-      }),
-    });
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setIsMutating(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workout.id}/exercises`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          exercises: selectedExercises,
+          workoutId: workout.id,
+        }),
+      }
+    );
+
+    setIsMutating(false);
 
     if (response.ok) {
-      router.refresh();
       setSelectedExercises([]);
+      router.refresh();
     }
   }
 
@@ -115,7 +122,7 @@ export default function WorkoutOperations({
             <ChevronLeft color="black" size={18} />
             <p>Back</p>
           </Link>
-          <div className="flex flex-col">
+          <div className="flex flex-col items-end">
             <h1 className="text-2xl font-bold">{workout.name}</h1>
             <p className="text-slate-500">{workout.date.toDateString()}</p>
           </div>
@@ -153,10 +160,7 @@ export default function WorkoutOperations({
           ))}
           <button
             className={twJoin(buttonVariants({ variant: "primary" }))}
-            onClick={async (e: React.FormEvent) => {
-              e.preventDefault;
-              await trigger();
-            }}
+            onClick={(e: React.FormEvent) => handleSubmit(e)}
           >
             {isMutating ? (
               <Spinner />
@@ -212,8 +216,6 @@ function ExerciseInWorkoutItem({
     }))
   );
   const [newSets, setNewSets] = useState([{ reps: "", weightLbs: "" }]);
-
-  console.log("RECENT: ", recentWorkouts);
 
   const router = useRouter();
 

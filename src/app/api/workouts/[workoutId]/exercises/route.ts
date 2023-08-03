@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
@@ -52,6 +53,8 @@ export async function POST(req: NextRequest) {
         },
       },
     });
+
+    revalidateTag("workouts");
 
     return NextResponse.json(workout);
   } catch (error) {
