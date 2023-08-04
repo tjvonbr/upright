@@ -4,10 +4,13 @@ import { MoveUpRight } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
 import { Button, buttonVariants } from "@/app/components/common/button";
 import { NavbarItem } from "@/config/navigation";
+
+import Spinner from "./Spinner";
 
 interface UserNavProps {
   navbarItems?: NavbarItem[];
@@ -51,9 +54,17 @@ export default function UserNav({ navbarItems }: UserNavProps) {
 }
 
 function SignOutButton() {
+  const [isSigningOut, setIsSigningOut] = useState(false);
+
+  async function handleSignOut() {
+    setIsSigningOut(true);
+    await signOut({ callbackUrl: "/login" });
+    setIsSigningOut(false);
+  }
+
   return (
-    <Button variant="ghost" onClick={() => signOut({ callbackUrl: "/login" })}>
-      Sign out
+    <Button variant="ghost" onClick={handleSignOut}>
+      {isSigningOut ? <Spinner color="black" size="15" /> : "Sign out"}
     </Button>
   );
 }
@@ -62,7 +73,10 @@ function LoginButton() {
   return (
     <Link
       href="/login"
-      className={twJoin(buttonVariants({ variant: "outline" }))}
+      className={twJoin(
+        buttonVariants({ variant: "outline" }),
+        "flex justify-center align-items"
+      )}
     >
       Login
     </Link>

@@ -3,9 +3,9 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
+import Spinner from "../../components/Spinner";
 import { Button } from "./common/button";
 import Input from "./common/Input";
-import Spinner from "./Spinner";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
