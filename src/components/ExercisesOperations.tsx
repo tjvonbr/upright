@@ -7,6 +7,8 @@ import { User } from "next-auth";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
 
+import { searchFilter } from "@/lib/helpers/search";
+
 import { Button } from "../app/components/common/button";
 import Spinner from "./Spinner";
 
@@ -26,17 +28,7 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
     handleSubmit
   );
 
-  function filterExercises() {
-    if (!query) {
-      return exercises;
-    }
-
-    return exercises.filter(({ name }) =>
-      name.toLowerCase().includes(query.toLowerCase())
-    );
-  }
-
-  const filteredExercises = filterExercises();
+  const filteredExercises = searchFilter(exercises, query);
 
   async function handleSubmit(url: string) {
     try {

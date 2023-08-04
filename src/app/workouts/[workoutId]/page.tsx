@@ -1,7 +1,7 @@
 import { Workout } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
-import WorkoutOperations from "@/app/components/WorkoutOperations";
+import WorkoutOperations from "@/components/WorkoutOperations";
 import { getMostRecentWorkoutByExerciseIds } from "@/lib/api/workouts";
 import { db } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/session";

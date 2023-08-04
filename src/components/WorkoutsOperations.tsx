@@ -16,10 +16,11 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "@/app/components/common/dropdown";
+import { searchFilter } from "@/lib/helpers/search";
 
-import Spinner from "../../components/Spinner";
-import { Button } from "./common/button";
-import Input from "./common/Input";
+import { Button } from "../app/components/common/button";
+import Input from "../app/components/common/Input";
+import Spinner from "./Spinner";
 
 interface WorkoutsOperationsProps {
   user: User;
@@ -35,6 +36,7 @@ export default function WorkoutsOperations({
   const [name, setName] = useState("");
   const [date, setDate] = useState<Date | null>(new Date());
   const [program, setProgram] = useState<Program | null>(null);
+  const [query, setQuery] = useState("");
 
   const router = useRouter();
   const { trigger, isMutating } = useSWRMutation(
@@ -71,12 +73,24 @@ export default function WorkoutsOperations({
     } catch (error) {}
   }
 
+  const filteredWorkouts = searchFilter(workouts, query);
+
   return (
     <div className="min-h-screen grid grid-cols-2">
       <div className="px-4 py-2 border-r border-slate-200 overflow-y-scroll">
         <h1 className="text-2xl font-bold">Workouts</h1>
+        <div className="w-full pt-3 mb-3">
+          <input
+            className="h-7 w-full px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
+            placeholder="Search..."
+            type="text"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setQuery(e.target.value)
+            }
+          />
+        </div>
         <div className="mt-3 space-y-2 flex flex-col">
-          {workouts.map((workout: Workout, idx: number) => (
+          {filteredWorkouts.map((workout: Workout, idx: number) => (
             <WorkoutItem
               key={idx}
               href={`/workouts/${workout.id}`}
