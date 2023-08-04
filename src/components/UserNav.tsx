@@ -19,8 +19,6 @@ export default function UserNav({ navbarItems }: UserNavProps) {
   const isMarketing = pathname === "/";
   const isAuth = pathname === "/login" || pathname === "/register";
 
-  console.log(isMarketing);
-
   return (
     <header
       className={twMerge(
