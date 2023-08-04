@@ -13,11 +13,11 @@ import { Button } from "../app/components/common/button";
 import Spinner from "./Spinner";
 
 interface ExerciseProps {
-  user: User;
   exercises: Exercise[];
+  user: User;
 }
 
-export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
+export default function ExerciseOperations({ exercises, user }: ExerciseProps) {
   const [name, setName] = useState("");
   const [query, setQuery] = useState("");
 
@@ -27,8 +27,6 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
     "http://localhost:3000/api/exercises",
     handleSubmit
   );
-
-  const filteredExercises = searchFilter(exercises, query);
 
   async function handleSubmit(url: string) {
     try {
@@ -46,6 +44,8 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
       }
     } catch (error) {}
   }
+
+  const filteredExercises = searchFilter(exercises, query);
 
   return (
     <div className="h-full w-full grid grid-cols-2">

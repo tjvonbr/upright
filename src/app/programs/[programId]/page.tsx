@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import ProgramOperations from "@/app/components/program-operations";
+import ProgramOperations from "@/components/ProgramOperations";
 import { getProgramForUser } from "@/lib/api/programs";
 import { getMostRecentWorkoutForProgram } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";

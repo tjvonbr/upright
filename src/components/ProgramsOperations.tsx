@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { Button } from "@/app/components/common/button";
 import Input from "@/app/components/common/Input";
+import { searchFilter } from "@/lib/helpers/search";
 
 import Spinner from "./Spinner";
 
@@ -21,6 +22,7 @@ export default function ProgramsOperations({
 }: ProgramsOperationsProps) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [query, setQuery] = useState("");
   const [isMutating, setIsMutating] = useState(false);
 
   const router = useRouter();
@@ -52,12 +54,24 @@ export default function ProgramsOperations({
     setIsMutating(false);
   }
 
+  const filteredPrograms = searchFilter(programs, query);
+
   return (
     <div className="min-h-screen grid grid-cols-2">
       <div className="px-4 py-2 border-r border-slate-200 overflow-y-scroll">
-        <h1 className="text-2xl font-bold">Workouts</h1>
+        <h1 className="text-2xl font-bold">Programs</h1>
+        <div className="w-full pt-3 mb-3">
+          <input
+            className="h-7 w-full px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
+            placeholder="Search..."
+            type="text"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setQuery(e.target.value)
+            }
+          />
+        </div>
         <div className="mt-3 space-y-2 flex flex-col">
-          {programs.map((program: Program, idx: number) => (
+          {filteredPrograms.map((program: Program, idx: number) => (
             <ProgramItem
               key={idx}
               href={`/programs/${program.id}`}
