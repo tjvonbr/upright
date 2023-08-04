@@ -4,7 +4,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { Program, Workout } from "@prisma/client";
 import { ChevronDown } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "next-auth";
 import React, { useState } from "react";
@@ -19,6 +18,8 @@ import {
 } from "@/app/components/common/dropdown";
 
 import Spinner from "../../components/Spinner";
+import { Button } from "./common/button";
+import Input from "./common/Input";
 
 interface WorkoutsOperationsProps {
   user: User;
@@ -71,37 +72,41 @@ export default function WorkoutsOperations({
   }
 
   return (
-    <div className="grid grid-cols-2">
-      <div className="pl-5 pt-3 border-r border-slate-200">
-        <h1 className="text-2xl font-semibold">Workouts</h1>
-        <div className="flex flex-col">
+    <div className="min-h-screen grid grid-cols-2">
+      <div className="px-4 py-2 border-r border-slate-200 overflow-y-scroll">
+        <h1 className="text-2xl font-bold">Workouts</h1>
+        <div className="mt-3 space-y-2 flex flex-col">
           {workouts.map((workout: Workout, idx: number) => (
-            <Link key={idx} href={`/workouts/${workout.id}`}>
-              {workout.name}
-            </Link>
+            <WorkoutItem
+              key={idx}
+              href={`/workouts/${workout.id}`}
+              workout={workout}
+            />
           ))}
         </div>
       </div>
-      <div className="min-h-screen flex flex-col justify-center items-center">
+      <div className="flex flex-col justify-center items-center">
         <form
-          className="w-[50%]"
+          className="w-[50%] space-y-2"
           action="submit"
           onSubmit={(e: React.FormEvent) => {
             e.preventDefault();
             setTrigger();
           }}
         >
-          <h2 className="text-xl font-semibold">Add a workout</h2>
-          <p className="text-slate-500">
-            If you don&apos;t see a workout that you want to track in the column
-            on the left, you can add it below.
-          </p>
-          <fieldset className="w-full flex flex-col my-5 p-0">
-            <label className="font-semibold" htmlFor="name">
+          <div>
+            <h2 className="text-2xl font-bold">Add a workout</h2>
+            <p className="text-slate-500">
+              If you don&apos;t see a workout that you want to track in the
+              column on the left, you can add it below.
+            </p>
+          </div>
+          <fieldset className="w-full flex flex-col">
+            <label className="text-sm font-semibold" htmlFor="name">
               Name
             </label>
-            <input
-              className="w-full px-2 py-2 border border-slate-200 rounded-md"
+            <Input
+              className="h-8 w-full px-3 py-2 border border-slate-200 rounded-md text-sm"
               id="name"
               name="name"
               type="text"
@@ -111,29 +116,29 @@ export default function WorkoutsOperations({
               }
             />
           </fieldset>
-          <fieldset className="w-full flex flex-col my-5 p-0">
-            <label className="font-semibold" htmlFor="date">
+          <fieldset className="w-full flex flex-col">
+            <label className="text-sm font-semibold" htmlFor="date">
               Workout date
             </label>
             <DatePicker
               selected={date}
               onChange={(date) => setDate(date)}
-              className="h-[30px] p-2 border border-gray-200 rounded-md"
+              className="h-8 p-2 text-sm border border-gray-200 rounded-md"
             />
           </fieldset>
-          <label className="font-semibold">Program</label>
-          <div className="mb-5">
+          <div>
+            <label className="text-sm font-semibold">Program</label>
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex h-8 w-[200px] px-2 items-center justify-center bg-white text-black rounded-md border border-gray-200 hover:bg-muted">
+              <DropdownMenuTrigger className="h-8 w-full px-2 flex items-center justify-center bg-white text-black rounded-md border border-gray-200 hover:bg-muted">
                 <ChevronDown size={15} strokeWidth={2.5} />
-                <div className="px-2 text-md font-medium">
-                  {program?.name ?? "Select a program"}
+                <div className="px-2 text-sm">
+                  {program?.name ?? "No program selected"}
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {programs.map((program: Program, idx: number) => (
                   <DropdownMenuRadioItem
-                    className="rounded-[3px] data-[highlighted]:bg-gray-300"
+                    className="rounded-md data-[highlighted]:bg-gray-300"
                     key={idx}
                     value={program.name}
                     // eslint-disable-next-line no-unused-vars
@@ -147,11 +152,29 @@ export default function WorkoutsOperations({
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <button className="h-[40px] w-full flex justify-center items-center bg-black text-white font-semibold rounded-md">
+          <Button variant="primary" className="w-full">
             {isMutating ? <Spinner /> : "Submit"}
-          </button>
+          </Button>
         </form>
       </div>
+    </div>
+  );
+}
+
+interface WorkoutItemProps {
+  href: string;
+  workout: Workout;
+}
+
+function WorkoutItem({ href, workout }: WorkoutItemProps) {
+  const router = useRouter();
+
+  return (
+    <div
+      className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-slate-200 hover:cursor-pointer"
+      onClick={() => router.push(href)}
+    >
+      <span className="font-semibold text-sm">{workout.name}</span>
     </div>
   );
 }
