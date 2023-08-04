@@ -136,6 +136,7 @@ export default function ProgramOperations({
               </div>
               <Button
                 className="absolute bottom-[10px] right-[10px]"
+                disabled={isSaving}
                 type="submit"
                 variant="default"
                 onClick={handleSubmit}

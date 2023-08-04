@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { twJoin } from "tailwind-merge";
 
-import { Button, buttonVariants } from "@/app/components/common/button";
+import { Button } from "@/app/components/common/button";
 import Input from "@/app/components/common/Input";
 
 import Spinner from "./Spinner";
@@ -97,10 +96,7 @@ export default function RegisterForm() {
           }
         />
       </fieldset>
-      <Button
-        className={twJoin(buttonVariants({ variant: "primary" }))}
-        type="submit"
-      >
+      <Button variant="primary" disabled={isMutating} type="submit">
         {isMutating ? <Spinner /> : "Continue"}
       </Button>
     </form>
