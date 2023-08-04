@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/app/components/common/dropdown";
 
-import Spinner from "./Spinner";
+import Spinner from "../../components/Spinner";
 
 interface AddExerciseFormProps {
   exercises: Exercise[];

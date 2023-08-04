@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/app/components/common/dropdown";
 
-import Spinner from "./Spinner";
+import Spinner from "../../components/Spinner";
 
 interface WorkoutsOperationsProps {
   user: User;
@@ -72,7 +72,7 @@ export default function WorkoutsOperations({
 
   return (
     <div className="grid grid-cols-2">
-      <div className="pl-5 pt-3 border-r border-gray-200">
+      <div className="pl-5 pt-3 border-r border-slate-200">
         <h1 className="text-2xl font-semibold">Workouts</h1>
         <div className="flex flex-col">
           {workouts.map((workout: Workout, idx: number) => (

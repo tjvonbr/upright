@@ -18,9 +18,9 @@ import {
   DialogTrigger,
 } from "@/app/components/common/dialog";
 
+import Spinner from "../../components/Spinner";
 import { Button } from "./common/button";
 import { toast } from "./common/use-toast";
-import Spinner from "./Spinner";
 
 interface ProgramOperationsProps {
   user: User;

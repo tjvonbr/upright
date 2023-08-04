@@ -19,7 +19,7 @@ import { twJoin, twMerge } from "tailwind-merge";
 
 import Input from "./common/Input";
 import Text from "./common/Text";
-import Spinner from "./Spinner";
+import Spinner from "../../components/Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
 import next from "next/types";

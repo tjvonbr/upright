@@ -7,7 +7,8 @@ import { User } from "next-auth";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
 
-import Spinner from "./Spinner";
+import Spinner from "../../components/Spinner";
+import { Button } from "./common/button";
 
 interface ExerciseProps {
   user: User;
@@ -42,33 +43,31 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
 
   return (
     <div className="h-full w-full grid grid-cols-2">
-      <div className="pl-5 pt-3 border-r border-gray-200">
-        <h1>Exercises</h1>
-        <main>
-          <div className="w-full mb-3">
-            <input
-              className="h-[25px] w-[400px] px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
-              placeholder="Search..."
-              type="text"
-            />
-          </div>
-          {exercises.length > 0 ? (
-            exercises.map((exercise, idx) => (
-              <div key={idx}>
-                <Link
-                  className="py-3 font-medium text-black hover:text-black"
-                  href={`/exercises/${exercise.id}`}
-                >
-                  {exercise.name}
-                </Link>
-              </div>
-            ))
-          ) : (
-            <p>No exercises to show</p>
-          )}
-        </main>
+      <div className="px-5 pt-3 border-r border-slate-200">
+        <h1 className="text-2xl font-semibold">Exercises</h1>
+        <div className="w-full pt-3 mb-3">
+          <input
+            className="h-7 w-full px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
+            placeholder="Search..."
+            type="text"
+          />
+        </div>
+        {exercises.length > 0 ? (
+          exercises.map((exercise, idx) => (
+            <div key={idx}>
+              <Link
+                className="py-3 font-medium text-black hover:text-black"
+                href={`/exercises/${exercise.id}`}
+              >
+                {exercise.name}
+              </Link>
+            </div>
+          ))
+        ) : (
+          <p>No exercises to show</p>
+        )}
       </div>
-      <div className="flex flex-col justify-center items-center">
+      <div className="min-h-screen flex flex-col justify-center items-center">
         <form
           className="w-[50%]"
           action="submit"
@@ -77,8 +76,8 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
             await trigger();
           }}
         >
-          <p className="font-semibold text-2xl">Add an exercise</p>
-          <p>
+          <h2 className="text-xl font-semibold">Add an exercise</h2>
+          <p className="text-slate-500">
             If you don&apos;t see an exercise that you want to track in the
             column on the left, you can add it below.
           </p>
@@ -87,7 +86,7 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
               Name
             </label>
             <input
-              className="w-full px-2 py-2 border border-gray-200 rounded-md"
+              className="h-10 w-full px-3 py-2 border border-slate-200 rounded-md"
               id="name"
               name="name"
               type="text"
@@ -97,9 +96,13 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
               }
             />
           </fieldset>
-          <button className="h-[40px] w-full flex justify-center items-center bg-black text-white font-semibold rounded-md">
+          <Button
+            className="w-full"
+            variant="primary"
+            disabled={isMutating || name.length === 0}
+          >
             {isMutating ? <Spinner /> : "Submit"}
-          </button>
+          </Button>
         </form>
       </div>
     </div>
