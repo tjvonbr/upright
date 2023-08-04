@@ -4,7 +4,7 @@ import { getProgramsForUser } from "@/lib/api/programs";
 import { getWorkoutsForUser } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
 
-import WorkoutsOperations from "../components/WorkoutsOperations";
+import WorkoutsOperations from "../../components/WorkoutsOperations";
 
 export default async function Workouts() {
   const user = await getCurrentUser();

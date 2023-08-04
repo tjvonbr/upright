@@ -17,11 +17,11 @@ import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin, twMerge } from "tailwind-merge";
 
-import Input from "./common/Input";
-import Text from "./common/Text";
-import Spinner from "../../components/Spinner";
+import Input from "../app/components/common/Input";
+import Text from "../app/components/common/Text";
+import Spinner from "./Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
-import { buttonVariants } from "./common/button";
+import { buttonVariants } from "../app/components/common/button";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
