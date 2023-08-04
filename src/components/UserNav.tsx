@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { twJoin, twMerge } from "tailwind-merge";
 
-import { buttonVariants } from "@/app/components/common/button";
+import { Button, buttonVariants } from "@/app/components/common/button";
 import { NavbarItem } from "@/config/navigation";
 
 interface UserNavProps {
@@ -52,12 +52,9 @@ export default function UserNav({ navbarItems }: UserNavProps) {
 
 function SignOutButton() {
   return (
-    <button
-      className={twJoin(buttonVariants({ variant: "ghost" }))}
-      onClick={() => signOut({ callbackUrl: "/login" })}
-    >
+    <Button variant="ghost" onClick={() => signOut({ callbackUrl: "/login" })}>
       Sign out
-    </button>
+    </Button>
   );
 }
 

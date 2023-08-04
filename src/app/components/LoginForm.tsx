@@ -2,9 +2,8 @@
 
 import { signIn } from "next-auth/react";
 import { useState } from "react";
-import { twJoin } from "tailwind-merge";
 
-import { Button, buttonVariants } from "./common/button";
+import { Button } from "./common/button";
 import Input from "./common/Input";
 import Spinner from "./Spinner";
 
@@ -43,10 +42,7 @@ export default function LoginForm() {
           }
         />
       </fieldset>
-      <Button
-        className={twJoin(buttonVariants({ variant: "primary" }))}
-        type="submit"
-      >
+      <Button variant="primary" disabled={isLoading} type="submit">
         {isLoading ? <Spinner /> : "Continue"}
       </Button>
     </form>
