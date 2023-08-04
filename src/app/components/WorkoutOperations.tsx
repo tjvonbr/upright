@@ -12,7 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin, twMerge } from "tailwind-merge";
@@ -22,7 +22,6 @@ import Text from "./common/Text";
 import Spinner from "../../components/Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
-import next from "next/types";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -40,13 +39,13 @@ export default function WorkoutOperations({
 }) {
   const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
     []
   );
   const [isMutating, setIsMutating] = useState(false);
 
   const router = useRouter();
-  const pathname = usePathname();
 
   const { exercises: workoutExercises, workoutSets } = workout;
 
@@ -71,6 +70,24 @@ export default function WorkoutOperations({
       setSelectedExercises([]);
       router.refresh();
     }
+  }
+
+  async function deleteExercise() {
+    setIsDeleting(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workout.id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (response.ok) {
+      router.replace("/workouts");
+      setIsDeleting(false);
+    }
+
+    setIsDeleting(false);
   }
 
   function beginEditing(exercise: Exercise) {
@@ -124,7 +141,16 @@ export default function WorkoutOperations({
           </Link>
           <div className="flex flex-col items-end">
             <h1 className="text-2xl font-bold">{workout.name}</h1>
-            <p className="text-slate-500">{workout.date.toDateString()}</p>
+            <div className="flex items-center space-x-2">
+              <button onClick={deleteExercise}>
+                {isDeleting ? (
+                  <Spinner color="black" size="15" />
+                ) : (
+                  <Trash2 color="gray" size={18} />
+                )}
+              </button>
+              <p className="text-slate-500">{workout.date.toDateString()}</p>
+            </div>
           </div>
         </div>
         <div className="mt-3 space-y-2">
@@ -149,7 +175,7 @@ export default function WorkoutOperations({
           })}
         </div>
       </div>
-      <div className="w-full my-3 flex flex-col items-center">
+      <div className="my-3 flex flex-col items-center">
         <h2 className="text-2xl font-bold">Add exercises to your workout</h2>
         <p className="text-slate-500">
           Select one or more exercises to add to your workout!
