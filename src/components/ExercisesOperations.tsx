@@ -7,8 +7,8 @@ import { User } from "next-auth";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
 
-import Spinner from "../../components/Spinner";
-import { Button } from "./common/button";
+import { Button } from "../app/components/common/button";
+import Spinner from "./Spinner";
 
 interface ExerciseProps {
   user: User;
@@ -17,12 +17,26 @@ interface ExerciseProps {
 
 export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
   const [name, setName] = useState("");
+  const [query, setQuery] = useState("");
 
   const router = useRouter();
+
   const { trigger, isMutating } = useSWRMutation(
     "http://localhost:3000/api/exercises",
     handleSubmit
   );
+
+  function filterExercises() {
+    if (!query) {
+      return exercises;
+    }
+
+    return exercises.filter(({ name }) =>
+      name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  const filteredExercises = filterExercises();
 
   async function handleSubmit(url: string) {
     try {
@@ -50,10 +64,13 @@ export default function ExerciseOperations({ user, exercises }: ExerciseProps) {
             className="h-7 w-full px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
             placeholder="Search..."
             type="text"
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setQuery(e.target.value)
+            }
           />
         </div>
-        {exercises.length > 0 ? (
-          exercises.map((exercise, idx) => (
+        {filteredExercises.length > 0 ? (
+          filteredExercises.map((exercise, idx) => (
             <div key={idx}>
               <Link
                 className="py-3 font-medium text-black hover:text-black"

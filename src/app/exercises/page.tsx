@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
 
+import ExercisesOperations from "@/components/ExercisesOperations";
 import { getExercisesForUser } from "@/lib/api/exercises";
 import { getCurrentUser } from "@/lib/session";
-
-import ExerciseOperations from "../components/ExerciseOperations";
 
 export default async function Exercises() {
   const user = await getCurrentUser();
@@ -14,5 +13,5 @@ export default async function Exercises() {
 
   const exercises = await getExercisesForUser(user.id);
 
-  return <ExerciseOperations user={user} exercises={exercises} />;
+  return <ExercisesOperations user={user} exercises={exercises} />;
 }
