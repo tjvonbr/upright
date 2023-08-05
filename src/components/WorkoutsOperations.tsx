@@ -3,12 +3,13 @@
 import "react-datepicker/dist/react-datepicker.css";
 
 import { Program, Workout } from "@prisma/client";
-import { ChevronDown } from "lucide-react";
+import { Calendar, ChevronDown, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { User } from "next-auth";
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import useSWRMutation from "swr/mutation";
+import { twJoin } from "tailwind-merge";
 
 import {
   DropdownMenu,
@@ -28,6 +29,11 @@ interface WorkoutsOperationsProps {
   workouts: Workout[];
 }
 
+enum WorkoutViews {
+  Calendar = "Calendar",
+  List = "List",
+}
+
 export default function WorkoutsOperations({
   user,
   programs,
@@ -37,6 +43,7 @@ export default function WorkoutsOperations({
   const [date, setDate] = useState<Date | null>(new Date());
   const [program, setProgram] = useState<Program | null>(null);
   const [query, setQuery] = useState("");
+  const [view, setView] = useState<WorkoutViews>(WorkoutViews.List);
 
   const router = useRouter();
   const { trigger, isMutating } = useSWRMutation(
@@ -78,26 +85,66 @@ export default function WorkoutsOperations({
   return (
     <div className="min-h-screen grid grid-cols-2">
       <div className="px-4 py-2 border-r border-slate-200 overflow-y-scroll">
-        <h1 className="text-2xl font-bold">Workouts</h1>
-        <div className="w-full pt-3 mb-3">
-          <input
-            className="h-7 w-full px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
-            placeholder="Search..."
-            type="text"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setQuery(e.target.value)
-            }
-          />
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold">Workouts</h1>
+          <div className="flex space-x-2">
+            <button
+              className={twJoin(
+                "p-1 border rounded-md",
+                view === WorkoutViews.List
+                  ? "border-indigo-500"
+                  : "border-slate-200"
+              )}
+              onClick={() => setView(WorkoutViews.List)}
+            >
+              <List
+                color={view === WorkoutViews.List ? "indigo" : "black"}
+                size={18}
+              />
+            </button>
+            <button
+              className={twJoin(
+                "p-1 border rounded-md",
+                view === WorkoutViews.Calendar
+                  ? "border-indigo-500"
+                  : "border-slate-200"
+              )}
+              onClick={() => setView(WorkoutViews.Calendar)}
+            >
+              <Calendar
+                color={view === WorkoutViews.Calendar ? "indigo" : "black"}
+                size={18}
+              />
+            </button>
+          </div>
         </div>
-        <div className="mt-3 space-y-2 flex flex-col">
-          {filteredWorkouts.map((workout: Workout, idx: number) => (
-            <WorkoutItem
-              key={idx}
-              href={`/workouts/${workout.id}`}
-              workout={workout}
-            />
-          ))}
-        </div>
+        {view === WorkoutViews.List ? (
+          <>
+            <div className="w-full pt-3 mb-3">
+              <input
+                className="h-7 w-full px-2 rounded-md bg-slate-100 border border-slate-200 text-sm"
+                placeholder="Search..."
+                type="text"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setQuery(e.target.value)
+                }
+              />
+            </div>
+            <div className="mt-3 space-y-2 flex flex-col">
+              {filteredWorkouts.map((workout: Workout, idx: number) => (
+                <WorkoutItem
+                  key={idx}
+                  href={`/workouts/${workout.id}`}
+                  workout={workout}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <div className="min-h-screen flex flex-col justify-center items-center">
+            <h2 className="text-2xl font-bold">Calendar View</h2>
+          </div>
+        )}
       </div>
       <div className="flex flex-col justify-center items-center">
         <form

@@ -1,10 +1,12 @@
 {
-  "extends": "next/core-web-vitals",
-  "plugins": ["simple-import-sort"],
+  "parser": "@typescript-eslint/parser",
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["simple-import-sort", "@typescript-eslint"],
   "rules": {
     "import/first": "error",
     "no-console": "error",
-    "no-unused-vars": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": ["error"],
     "simple-import-sort/exports": "error",
     "simple-import-sort/imports": "error"
   }
