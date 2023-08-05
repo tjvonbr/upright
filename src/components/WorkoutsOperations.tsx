@@ -29,9 +29,9 @@ interface WorkoutsOperationsProps {
   workouts: Workout[];
 }
 
-enum WorkoutsView {
-  CALENDAR,
-  LIST,
+enum WorkoutViews {
+  Calendar = "Calendar",
+  List = "List",
 }
 
 export default function WorkoutsOperations({
@@ -43,7 +43,7 @@ export default function WorkoutsOperations({
   const [date, setDate] = useState<Date | null>(new Date());
   const [program, setProgram] = useState<Program | null>(null);
   const [query, setQuery] = useState("");
-  const [view, setView] = useState<WorkoutsView>(WorkoutsView.LIST);
+  const [view, setView] = useState<WorkoutViews>(WorkoutViews.List);
 
   const router = useRouter();
   const { trigger, isMutating } = useSWRMutation(
@@ -91,34 +91,34 @@ export default function WorkoutsOperations({
             <button
               className={twJoin(
                 "p-1 border rounded-md",
-                view === WorkoutsView.LIST
+                view === WorkoutViews.List
                   ? "border-indigo-500"
                   : "border-slate-200"
               )}
-              onClick={() => setView(WorkoutsView.LIST)}
+              onClick={() => setView(WorkoutViews.List)}
             >
               <List
-                color={view === WorkoutsView.LIST ? "indigo" : "black"}
+                color={view === WorkoutViews.List ? "indigo" : "black"}
                 size={18}
               />
             </button>
             <button
               className={twJoin(
                 "p-1 border rounded-md",
-                view === WorkoutsView.CALENDAR
+                view === WorkoutViews.Calendar
                   ? "border-indigo-500"
                   : "border-slate-200"
               )}
-              onClick={() => setView(WorkoutsView.CALENDAR)}
+              onClick={() => setView(WorkoutViews.Calendar)}
             >
               <Calendar
-                color={view === WorkoutsView.CALENDAR ? "indigo" : "black"}
+                color={view === WorkoutViews.Calendar ? "indigo" : "black"}
                 size={18}
               />
             </button>
           </div>
         </div>
-        {view === WorkoutsView.LIST ? (
+        {view === WorkoutViews.List ? (
           <>
             <div className="w-full pt-3 mb-3">
               <input
