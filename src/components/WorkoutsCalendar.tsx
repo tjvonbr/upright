@@ -1,5 +1,7 @@
 import { isSameDay } from "@/lib/helpers/dates";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { Workout } from "@prisma/client";
+import { Calendar, ChevronLeft, ChevronRight, Dumbbell } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { twJoin } from "tailwind-merge";
 
@@ -20,7 +22,11 @@ const months = [
 
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function WorkoutsCalendar() {
+interface WorkoutsCalendarProps {
+  workouts: Workout[];
+}
+
+export default function WorkoutsCalendar({ workouts }: WorkoutsCalendarProps) {
   const [currentDay, setCurrentDay] = useState(new Date());
 
   function incrementMonth() {
@@ -54,7 +60,7 @@ export default function WorkoutsCalendar() {
           </p>
         ))}
       </div>
-      <CalendarDays day={currentDay} />
+      <CalendarDays day={currentDay} workouts={workouts} />
     </div>
   );
 }
@@ -66,12 +72,18 @@ interface CalendarDay {
   number: number;
   today: boolean;
   year: number;
+  workouts: Workout[];
 }
 
-function CalendarDays({ day }: { day: Date }) {
-  const firstDayOfMonth = new Date(day.getFullYear(), day.getMonth(), 1);
-  const weekdayOfFirstDay = firstDayOfMonth.getDay();
-  const currentDays: CalendarDay[] = [];
+interface CalendarDaysProps {
+  day: Date;
+  workouts: Workout[];
+}
+
+function CalendarDays({ day, workouts }: CalendarDaysProps) {
+  let firstDayOfMonth = new Date(day.getFullYear(), day.getMonth(), 1);
+  let weekdayOfFirstDay = firstDayOfMonth.getDay();
+  let currentDays: CalendarDay[] = [];
 
   for (let dayNumber = 0; dayNumber < 42; dayNumber++) {
     if (dayNumber === 0 && weekdayOfFirstDay === 0) {
@@ -91,6 +103,9 @@ function CalendarDays({ day }: { day: Date }) {
       number: firstDayOfMonth.getDate(),
       today: isSameDay(new Date(), new Date(firstDayOfMonth)),
       year: firstDayOfMonth.getFullYear(),
+      workouts: workouts.filter((workout) =>
+        isSameDay(firstDayOfMonth, workout.date)
+      ),
     };
 
     currentDays.push(calendarDay);
@@ -124,6 +139,14 @@ function CalendarDays({ day }: { day: Date }) {
             >
               {day.number}
             </p>
+            {day.workouts.length > 0 && (
+              <Link
+                className="absolute bottom-1 right-1"
+                href={`/workouts/${day.workouts[0].id}`}
+              >
+                <Dumbbell color="black" size={15} />
+              </Link>
+            )}
           </div>
         );
       })}
