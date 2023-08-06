@@ -1,3 +1,4 @@
+import { isSameDay } from "@/lib/helpers/dates";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { twJoin } from "tailwind-merge";
@@ -63,14 +64,14 @@ interface CalendarDay {
   date: Date;
   month: number;
   number: number;
-  selected: boolean;
+  today: boolean;
   year: number;
 }
 
 function CalendarDays({ day }: { day: Date }) {
-  let firstDayOfMonth = new Date(day.getFullYear(), day.getMonth(), 1);
-  let weekdayOfFirstDay = firstDayOfMonth.getDay();
-  let currentDays: CalendarDay[] = [];
+  const firstDayOfMonth = new Date(day.getFullYear(), day.getMonth(), 1);
+  const weekdayOfFirstDay = firstDayOfMonth.getDay();
+  const currentDays: CalendarDay[] = [];
 
   for (let dayNumber = 0; dayNumber < 42; dayNumber++) {
     if (dayNumber === 0 && weekdayOfFirstDay === 0) {
@@ -83,12 +84,12 @@ function CalendarDays({ day }: { day: Date }) {
       firstDayOfMonth.setDate(firstDayOfMonth.getDate() + 1);
     }
 
-    let calendarDay: CalendarDay = {
+    const calendarDay: CalendarDay = {
       currentMonth: firstDayOfMonth.getMonth() === day.getMonth(),
       date: new Date(firstDayOfMonth),
       month: firstDayOfMonth.getMonth(),
       number: firstDayOfMonth.getDate(),
-      selected: firstDayOfMonth.toDateString() === day.toDateString(),
+      today: isSameDay(new Date(), new Date(firstDayOfMonth)),
       year: firstDayOfMonth.getFullYear(),
     };
 
@@ -118,7 +119,7 @@ function CalendarDays({ day }: { day: Date }) {
               className={twJoin(
                 "px-0.5 py-0.5 text-sm",
                 !day.currentMonth && "text-gray-400",
-                day.selected && "text-indigo-500 font-semibold"
+                day.today && "text-indigo-500 font-semibold"
               )}
             >
               {day.number}
