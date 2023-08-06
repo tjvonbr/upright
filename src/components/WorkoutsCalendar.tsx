@@ -70,7 +70,7 @@ interface CalendarDay {
   date: Date;
   month: number;
   number: number;
-  selected: boolean;
+  today: boolean;
   year: number;
   workouts: Workout[];
 }
@@ -96,12 +96,12 @@ function CalendarDays({ day, workouts }: CalendarDaysProps) {
       firstDayOfMonth.setDate(firstDayOfMonth.getDate() + 1);
     }
 
-    let calendarDay: CalendarDay = {
+    const calendarDay: CalendarDay = {
       currentMonth: firstDayOfMonth.getMonth() === day.getMonth(),
       date: new Date(firstDayOfMonth),
       month: firstDayOfMonth.getMonth(),
       number: firstDayOfMonth.getDate(),
-      selected: firstDayOfMonth.toDateString() === day.toDateString(),
+      today: isSameDay(new Date(), new Date(firstDayOfMonth)),
       year: firstDayOfMonth.getFullYear(),
       workouts: workouts.filter((workout) =>
         isSameDay(firstDayOfMonth, workout.date)
@@ -134,7 +134,7 @@ function CalendarDays({ day, workouts }: CalendarDaysProps) {
               className={twJoin(
                 "px-0.5 py-0.5 text-sm",
                 !day.currentMonth && "text-gray-400",
-                day.selected && "text-indigo-500 font-semibold"
+                day.today && "text-indigo-500 font-semibold"
               )}
             >
               {day.number}
