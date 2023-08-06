@@ -16,11 +16,11 @@ import {
   DropdownMenuContent,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/app/components/common/dropdown";
+} from "@/components/common/dropdown";
 import { searchFilter } from "@/lib/helpers/search";
 
-import { Button } from "../app/components/common/button";
-import Input from "../app/components/common/Input";
+import { Button } from "./common/button";
+import Input from "./common/Input";
 import Spinner from "./Spinner";
 import { isSameDay } from "@/lib/helpers/dates";
 import WorkoutsCalendar from "./WorkoutsCalendar";

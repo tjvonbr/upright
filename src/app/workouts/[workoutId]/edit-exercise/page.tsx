@@ -1,7 +1,7 @@
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
-import WorkoutEditor from "@/app/components/workout-editor";
+import WorkoutEditor from "@/components/workout-editor";
 import { getWorkout } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
 

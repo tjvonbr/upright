@@ -16,10 +16,10 @@ import {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
-} from "@/app/components/common/dialog";
+} from "@/components/common/dialog";
 
-import { Button } from "../app/components/common/button";
-import { toast } from "../app/components/common/use-toast";
+import { Button } from "./common/button";
+import { toast } from "./common/use-toast";
 import Spinner from "./Spinner";
 
 interface ProgramOperationsProps {

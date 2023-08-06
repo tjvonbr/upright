@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Button } from "@/app/components/common/button";
-import Input from "@/app/components/common/Input";
+import { Button } from "@/components/common/button";
+import Input from "@/components/common/Input";
 
 import Spinner from "./Spinner";
 

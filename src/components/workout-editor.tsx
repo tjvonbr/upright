@@ -4,7 +4,7 @@ import { Exercise, WorkoutSet } from "@prisma/client";
 import React, { useState } from "react";
 import { twJoin } from "tailwind-merge";
 
-import { CompleteWorkout } from "../workouts/[workoutId]/edit-exercise/page";
+import { CompleteWorkout } from "../app/workouts/[workoutId]/edit-exercise/page";
 
 interface WorkoutSetState {
   reps: number | null;
