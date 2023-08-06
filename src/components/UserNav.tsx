@@ -10,7 +10,7 @@ import { twJoin, twMerge } from "tailwind-merge";
 import { Button, buttonVariants } from "@/app/components/common/button";
 import { NavbarItem } from "@/config/navigation";
 
-import Spinner from "./Spinner";
+import Spinner from "@/components/Spinner";
 
 interface UserNavProps {
   navbarItems?: NavbarItem[];
