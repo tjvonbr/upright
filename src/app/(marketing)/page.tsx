@@ -13,7 +13,7 @@ import { twMerge } from "tailwind-merge";
 
 import { links } from "@/config/siteConfig";
 
-import { buttonVariants } from "../components/common/button";
+import { buttonVariants } from "../../components/common/button";
 
 export default function Index() {
   return (

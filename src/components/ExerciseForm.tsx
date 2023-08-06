@@ -9,9 +9,9 @@ import {
   DropdownMenuContent,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from "@/app/components/common/dropdown";
+} from "@/components/common/dropdown";
 
-import Spinner from "../../components/Spinner";
+import Spinner from "./Spinner";
 
 interface AddExerciseFormProps {
   exercises: Exercise[];

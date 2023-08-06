@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { User } from "next-auth";
 import { useState } from "react";
 
-import { Button } from "@/app/components/common/button";
-import Input from "@/app/components/common/Input";
+import { Button } from "@/components/common/button";
+import Input from "@/components/common/Input";
 import { searchFilter } from "@/lib/helpers/search";
 
 import Spinner from "./Spinner";

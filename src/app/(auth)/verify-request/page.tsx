@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { twJoin } from "tailwind-merge";
 
-import { buttonVariants } from "../../components/common/button";
+import { buttonVariants } from "../../../components/common/button";
 
 export const metadata: Metadata = {
   title: "Verify Login Request",

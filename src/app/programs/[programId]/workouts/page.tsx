@@ -1,6 +1,6 @@
 import { Program } from "@prisma/client";
 
-import WorkoutList, { Controls } from "@/app/components/workout-list";
+import WorkoutList, { Controls } from "@/components/workout-list";
 import { db } from "@/lib/prisma";
 
 interface ProgramWorkoutsProps {

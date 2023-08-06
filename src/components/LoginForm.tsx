@@ -3,7 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 
-import Spinner from "../../components/Spinner";
+import Spinner from "./Spinner";
 import { Button } from "./common/button";
 import Input from "./common/Input";
 

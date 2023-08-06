@@ -9,7 +9,7 @@ import useSWRMutation from "swr/mutation";
 
 import { searchFilter } from "@/lib/helpers/search";
 
-import { Button } from "../app/components/common/button";
+import { Button } from "./common/button";
 import Spinner from "./Spinner";
 
 interface ExerciseProps {

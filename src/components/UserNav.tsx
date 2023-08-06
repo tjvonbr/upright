@@ -7,7 +7,7 @@ import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { twJoin, twMerge } from "tailwind-merge";
 
-import { Button, buttonVariants } from "@/app/components/common/button";
+import { Button, buttonVariants } from "@/components/common/button";
 import { NavbarItem } from "@/config/navigation";
 
 import Spinner from "@/components/Spinner";
