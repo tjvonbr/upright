@@ -31,7 +31,7 @@ export default function WorkoutsCalendar() {
   }
 
   return (
-    <div className="py-5 flex flex-col items-center border border-slate-200 rounded-md">
+    <div className="flex flex-col items-center rounded-md">
       <div className="w-full px-5 py-3 flex justify-between items-center">
         <button onClick={decrementMonth}>
           <ChevronLeft color="black" size={22} />
@@ -47,8 +47,10 @@ export default function WorkoutsCalendar() {
         </button>
       </div>
       <div className="h-10 box-border flex items-center text-sm font-semibold">
-        {weekdays.map((day) => (
-          <p className="w-[67px] text-center">{day}</p>
+        {weekdays.map((day, idx) => (
+          <p key={idx} className="w-[67px] text-center">
+            {day}
+          </p>
         ))}
       </div>
       <CalendarDays day={currentDay} />
@@ -93,11 +95,25 @@ function CalendarDays({ day }: { day: Date }) {
     currentDays.push(calendarDay);
   }
 
+  const firstSevenDays = currentDays.slice(0, 7);
+  const finalSevenDays = currentDays.slice(-7);
+
+  if (finalSevenDays.every((day) => !day.currentMonth)) {
+    currentDays.splice(-7);
+  }
+
+  if (firstSevenDays.every((day) => !day.currentMonth)) {
+    currentDays.splice(0, 7);
+  }
+
   return (
     <div className="w-[490px] flex justify-center flex-wrap">
-      {currentDays.map((day: CalendarDay) => {
+      {currentDays.map((day: CalendarDay, idx: number) => {
         return (
-          <div className="w-[67px] h-[67px] border border-slate-200 relative">
+          <div
+            key={idx}
+            className="w-[67px] h-[67px] border border-slate-200 relative"
+          >
             <p
               className={twJoin(
                 "px-0.5 py-0.5 text-sm",
