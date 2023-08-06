@@ -1,7 +1,6 @@
 "use client";
 
 import "react-datepicker/dist/react-datepicker.css";
-import "react-calendar/dist/Calendar.css";
 
 import { Program, Workout } from "@prisma/client";
 import { Calendar, ChevronDown, Dumbbell, List } from "lucide-react";
