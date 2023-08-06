@@ -3,7 +3,7 @@
 import "react-datepicker/dist/react-datepicker.css";
 
 import { Program, Workout } from "@prisma/client";
-import { Calendar, ChevronDown, Dumbbell, List } from "lucide-react";
+import { Calendar, ChevronDown, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { User } from "next-auth";
 import React, { useState } from "react";
@@ -22,7 +22,6 @@ import { searchFilter } from "@/lib/helpers/search";
 import { Button } from "./common/button";
 import Input from "./common/Input";
 import Spinner from "./Spinner";
-import { isSameDay } from "@/lib/helpers/dates";
 import WorkoutsCalendar from "./WorkoutsCalendar";
 
 interface WorkoutsOperationsProps {
@@ -36,8 +35,6 @@ enum WorkoutViews {
   List = "List",
 }
 
-type CalendarDate = Date | null;
-
 export default function WorkoutsOperations({
   user,
   programs,
@@ -48,7 +45,6 @@ export default function WorkoutsOperations({
   const [program, setProgram] = useState<Program | null>(null);
   const [query, setQuery] = useState("");
   const [view, setView] = useState<WorkoutViews>(WorkoutViews.List);
-  const [value, setValue] = useState<CalendarDate>(new Date());
 
   const router = useRouter();
   const { trigger, isMutating } = useSWRMutation(
@@ -60,10 +56,6 @@ export default function WorkoutsOperations({
     setName("");
     setDate(new Date());
     setProgram(null);
-  }
-
-  function handleCalendarChange(nextValue: CalendarDate) {
-    setValue(nextValue);
   }
 
   async function setTrigger() {
@@ -88,24 +80,6 @@ export default function WorkoutsOperations({
       }
     } catch (error) {}
   }
-
-  function tileClassName({ date, view }: { date: Date; view: string }) {
-    if (workouts.find((workout: Workout) => isSameDay(workout.date, date))) {
-      return "flex flex-col items-center border border-indigo-500 rounded-md space-1";
-    } else {
-      return "";
-    }
-  }
-
-  function tileContent({ date, view }: { date: Date; view: string }) {
-    if (view === "month") {
-      if (workouts.find((workout: Workout) => isSameDay(workout.date, date))) {
-        return <Dumbbell color="black" size={15} />;
-      }
-    }
-  }
-
-  function handleClickDay() {}
 
   const filteredWorkouts = searchFilter(workouts, query);
 
@@ -169,7 +143,7 @@ export default function WorkoutsOperations({
           </>
         ) : (
           <div className="min-h-screen flex flex-col justify-center items-center">
-            <WorkoutsCalendar />
+            <WorkoutsCalendar workouts={workouts} />
           </div>
         )}
       </div>
