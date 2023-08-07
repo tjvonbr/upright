@@ -328,11 +328,13 @@ function ExerciseInWorkoutItem({
           <span className="font-semibold text-sm">{exercise.name}</span>
           {exerciseSets.length > 0 ? (
             <div className="flex space-x-1">
-              {exerciseSets.map((set: WorkoutSet, idx: number) => (
-                <p className="mb-0 text-sm" key={idx}>
-                  {`${set.reps}x${set.weightLbs}`}
-                </p>
-              ))}
+              {exerciseSets
+                .sort((a, b) => +new Date(a.createdAt) - +new Date(b.createdAt))
+                .map((set: WorkoutSet, idx: number) => (
+                  <p className="mb-0 text-sm" key={idx}>
+                    {`${set.reps}x${set.weightLbs}`}
+                  </p>
+                ))}
             </div>
           ) : (
             <p className="text-sm">No data for this exercise</p>
@@ -365,10 +367,10 @@ function ExerciseInWorkoutItem({
           ) : null}
         </div>
         <div>
-          <p className="text-sm font-semibold">Most Recent</p>
-          <div className="flex space-x-1 overflow-scroll">
+          <p className="m-0 text-sm font-semibold">Most Recent</p>
+          <div className="flex space-x-1 overflow-visible">
             {!recentWorkouts[exercise.id] ? (
-              <p className="text-sm">No previous workout data</p>
+              <p className="m-0 text-sm">No previous workout data</p>
             ) : recentWorkouts[exercise.id]!.workoutSets.length > 0 ? (
               recentWorkouts[exercise.id]?.workoutSets.map(
                 (set: any, idx: number) => (
@@ -463,7 +465,7 @@ function PrevSet({ addSet, handleChange, idx, set, setValues }: PrevSetProps) {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="mt-2 flex items-center">
       <Input
         autoComplete="off"
         className="w-[40px] mr-2 py-1 text-center text-sm"
@@ -475,7 +477,7 @@ function PrevSet({ addSet, handleChange, idx, set, setValues }: PrevSetProps) {
       <span className="mr-2">x</span>
       <Input
         autoComplete="off"
-        className="w-[40px] mr-3 py-1 text-center text-sm"
+        className="w-[50px] mr-3 py-1 text-center text-sm"
         name="weightLbs"
         type="text"
         value={set.weightLbs.toString()}
@@ -533,7 +535,7 @@ function NewSet({
   set,
 }: NewSetProps) {
   return (
-    <div className="flex items-center">
+    <div className="mt-2 flex items-center">
       <Input
         autoComplete="off"
         className="w-[40px] mr-2 py-1 text-center text-sm"
@@ -545,7 +547,7 @@ function NewSet({
       <span className="mr-2">x</span>
       <Input
         autoComplete="off"
-        className="w-[40px] mr-3 py-1 text-center text-sm"
+        className="w-[50px] mr-3 py-1 text-center text-sm"
         name="weightLbs"
         type="text"
         value={set.weightLbs.toString()}
