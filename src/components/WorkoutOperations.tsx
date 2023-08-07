@@ -5,9 +5,10 @@ import { Exercise, Workout, WorkoutSet } from "@prisma/client";
 import {
   ArrowDownFromLine,
   Check,
-  ChevronLeft,
   ExternalLink,
   Pencil,
+  Play,
+  StopCircle,
   Trash2,
   XCircle,
 } from "lucide-react";
@@ -15,13 +16,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import useSWRMutation from "swr/mutation";
-import { twJoin, twMerge } from "tailwind-merge";
+import { twJoin } from "tailwind-merge";
 
 import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
+import WorkoutTimer from "./WorkoutTimer";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -44,6 +46,7 @@ export default function WorkoutOperations({
     []
   );
   const [isMutating, setIsMutating] = useState(false);
+  const [isWorkoutTimeMutating, setIsWorkoutTimeMutating] = useState(false);
 
   const router = useRouter();
 
@@ -124,33 +127,111 @@ export default function WorkoutOperations({
     );
   }
 
+  async function startWorkout() {
+    setIsWorkoutTimeMutating(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workout.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          startedAt: new Date(),
+        }),
+      }
+    );
+
+    if (response.ok) {
+      router.refresh();
+      setIsWorkoutTimeMutating(false);
+    }
+
+    setIsWorkoutTimeMutating(false);
+  }
+
+  async function endWorkout() {
+    setIsWorkoutTimeMutating(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workout.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          completedAt: new Date(),
+        }),
+      }
+    );
+
+    if (response.ok) {
+      router.refresh();
+      setIsWorkoutTimeMutating(false);
+    }
+
+    setIsWorkoutTimeMutating(false);
+  }
+
   const exercisesNotInWorkout = exercises.filter(
     (exercise) => !workoutExercises.some((item) => item.id === exercise.id)
   );
 
   return (
     <div className="min-h-screen grid grid-cols-2">
-      <div className="px-4 py-2 border-r border-slate-200 overflow-y-auto">
-        <div className="flex justify-between">
-          <Link
-            className={twMerge(buttonVariants({ variant: "ghost" }), "p-0")}
-            href="/workouts"
-          >
-            <ChevronLeft color="black" size={18} />
-            <p>Back</p>
-          </Link>
-          <div className="flex flex-col items-end">
+      <div className="px-4 py-2 border-r border-slate-200">
+        <div className="flex flex-col">
+          <div className="w-full flex justify-between">
             <h1 className="text-2xl font-bold">{workout.name}</h1>
             <div className="flex items-center space-x-2">
+              <button>
+                {isDeleting ? (
+                  <Spinner color="black" size="15" />
+                ) : (
+                  <Pencil
+                    className="text-slate-400 hover:text-indigo-500 transition-colors"
+                    size={18}
+                  />
+                )}
+              </button>
               <button onClick={deleteExercise}>
                 {isDeleting ? (
                   <Spinner color="black" size="15" />
                 ) : (
-                  <Trash2 color="gray" size={18} />
+                  <Trash2
+                    className="text-slate-400 hover:text-red-500 transition-colors"
+                    size={18}
+                  />
                 )}
               </button>
-              <p className="text-slate-500">{workout.date.toDateString()}</p>
             </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <p className="text-slate-500">
+              {workout.date.toLocaleDateString()}
+            </p>
+            <WorkoutTimer workout={workout} />
+            {workout.completedAt ? (
+              <p className="text-sm">Workout completed</p>
+            ) : workout.startedAt ? (
+              <button onClick={endWorkout}>
+                {isWorkoutTimeMutating ? (
+                  <Spinner color="black" size="15" />
+                ) : (
+                  <StopCircle
+                    className="text-red-500 hover:text-red-600 transition-colors"
+                    size={18}
+                  />
+                )}
+              </button>
+            ) : (
+              <button onClick={startWorkout}>
+                {isWorkoutTimeMutating ? (
+                  <Spinner color="black" size="15" />
+                ) : (
+                  <Play
+                    className="text-green-500 hover:text-green-600 transition-colors"
+                    size={18}
+                  />
+                )}
+              </button>
+            )}
           </div>
         </div>
         <div className="mt-3 space-y-2">
@@ -569,7 +650,7 @@ function NewSet({
         }}
       >
         {isCreateMutating ? (
-          <Spinner color="black" size={"18"} />
+          <Spinner color="black" size="18" />
         ) : (
           <Check color="green" size={18} />
         )}

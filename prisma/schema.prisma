@@ -75,6 +75,8 @@ model VerificationToken {
 model Workout {
   id          Int           @id @default(autoincrement())
   name        String        @unique
+  startedAt   DateTime?
+  completedAt DateTime?
   date        DateTime      @db.Date
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int       
