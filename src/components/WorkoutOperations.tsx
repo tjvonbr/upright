@@ -7,14 +7,12 @@ import {
   Check,
   ExternalLink,
   Pencil,
-  Play,
-  StopCircle,
   Trash2,
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { createRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin } from "tailwind-merge";
 
@@ -41,6 +39,8 @@ export default function WorkoutOperations({
 }) {
   const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isMutatingName, setIsMutatingName] = useState(false);
+  const [name, setName] = useState(workout.name);
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
     []
@@ -49,6 +49,8 @@ export default function WorkoutOperations({
   const [isWorkoutTimeMutating, setIsWorkoutTimeMutating] = useState(false);
 
   const router = useRouter();
+
+  const inputRef = document.getElementById("titleInput");
 
   const { exercises: workoutExercises, workoutSets } = workout;
 
@@ -131,23 +133,76 @@ export default function WorkoutOperations({
     (exercise) => !workoutExercises.some((item) => item.id === exercise.id)
   );
 
+  async function handleEdit(e: React.FormEvent) {
+    e.preventDefault();
+
+    setIsMutatingName(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workout.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          name,
+        }),
+      }
+    );
+
+    if (response.ok) {
+      router.refresh();
+      setIsMutatingName(false);
+      setIsEditing(false);
+    }
+
+    setIsMutatingName(false);
+  }
+
   return (
     <div className="min-h-screen grid grid-cols-2">
       <div className="px-4 py-2 border-r border-slate-200">
         <div className="flex flex-col">
-          <div className="w-full flex justify-between">
-            <h1 className="text-2xl font-bold">{workout.name}</h1>
+          <div className="box-border w-full flex justify-between">
+            {isEditing ? (
+              <form className="w-full">
+                <input
+                  id="titleInput"
+                  className="min-w-[90%] bg-slate-50 text-2xl font-bold"
+                  type="text"
+                  value={name}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setName(e.target.value)
+                  }
+                />
+              </form>
+            ) : (
+              <h1 className="text-2xl font-bold">{workout.name}</h1>
+            )}
             <div className="flex items-center space-x-2">
-              <button>
-                {isDeleting ? (
-                  <Spinner color="black" size="15" />
-                ) : (
+              {isEditing ? (
+                <button onClick={handleEdit}>
+                  {isMutatingName ? (
+                    <Spinner color="black" size="15" />
+                  ) : (
+                    <Check
+                      className="text-slate-400 hover:text-green-500 transition-colors"
+                      size={18}
+                    />
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                    inputRef && inputRef.focus();
+                  }}
+                >
                   <Pencil
                     className="text-slate-400 hover:text-indigo-500 transition-colors"
                     size={18}
                   />
-                )}
-              </button>
+                </button>
+              )}
+
               <button onClick={deleteExercise}>
                 {isDeleting ? (
                   <Spinner color="black" size="15" />
@@ -160,27 +215,11 @@ export default function WorkoutOperations({
               </button>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="mt-2 flex items-center space-x-2">
             <p className="text-slate-500">
               {workout.date.toLocaleDateString()}
             </p>
             <WorkoutTimer workout={workout} />
-            {/* {workout.completedAt ? (
-              <p className="text-sm">Workout completed</p>
-            ) : workout.startedAt ? (
-
-            ) : (
-              <button onClick={startWorkout}>
-                {isWorkoutTimeMutating ? (
-                  <Spinner color="black" size="15" />
-                ) : (
-                  <Play
-                    className="text-green-500 hover:text-green-600 transition-colors"
-                    size={18}
-                  />
-                )}
-              </button>
-            )} */}
           </div>
         </div>
         <div className="mt-3 space-y-2">
