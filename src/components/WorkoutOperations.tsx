@@ -127,48 +127,6 @@ export default function WorkoutOperations({
     );
   }
 
-  async function startWorkout() {
-    setIsWorkoutTimeMutating(true);
-
-    const response = await fetch(
-      `http://localhost:3000/api/workouts/${workout.id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          startedAt: new Date(),
-        }),
-      }
-    );
-
-    if (response.ok) {
-      router.refresh();
-      setIsWorkoutTimeMutating(false);
-    }
-
-    setIsWorkoutTimeMutating(false);
-  }
-
-  async function endWorkout() {
-    setIsWorkoutTimeMutating(true);
-
-    const response = await fetch(
-      `http://localhost:3000/api/workouts/${workout.id}`,
-      {
-        method: "PUT",
-        body: JSON.stringify({
-          completedAt: new Date(),
-        }),
-      }
-    );
-
-    if (response.ok) {
-      router.refresh();
-      setIsWorkoutTimeMutating(false);
-    }
-
-    setIsWorkoutTimeMutating(false);
-  }
-
   const exercisesNotInWorkout = exercises.filter(
     (exercise) => !workoutExercises.some((item) => item.id === exercise.id)
   );
@@ -207,19 +165,10 @@ export default function WorkoutOperations({
               {workout.date.toLocaleDateString()}
             </p>
             <WorkoutTimer workout={workout} />
-            {workout.completedAt ? (
+            {/* {workout.completedAt ? (
               <p className="text-sm">Workout completed</p>
             ) : workout.startedAt ? (
-              <button onClick={endWorkout}>
-                {isWorkoutTimeMutating ? (
-                  <Spinner color="black" size="15" />
-                ) : (
-                  <StopCircle
-                    className="text-red-500 hover:text-red-600 transition-colors"
-                    size={18}
-                  />
-                )}
-              </button>
+
             ) : (
               <button onClick={startWorkout}>
                 {isWorkoutTimeMutating ? (
@@ -231,7 +180,7 @@ export default function WorkoutOperations({
                   />
                 )}
               </button>
-            )}
+            )} */}
           </div>
         </div>
         <div className="mt-3 space-y-2">
