@@ -27,7 +27,7 @@ export default function UserNav({ navbarItems }: UserNavProps) {
       className={twMerge(
         "h-10 w-full py-2 px-4 flex justify-between items-center",
         !isMarketing && "border-b border-slate-200",
-        isMarketing && "h-15"
+        isMarketing && "h-15 bg-white"
       )}
     >
       <div className="flex items-center space-x-6">
