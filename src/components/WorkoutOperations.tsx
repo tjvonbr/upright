@@ -2,26 +2,19 @@
 "use client";
 
 import { Exercise, Workout, WorkoutSet } from "@prisma/client";
-import {
-  ArrowDownFromLine,
-  Check,
-  ExternalLink,
-  Pencil,
-  Trash2,
-  XCircle,
-} from "lucide-react";
+import { Check, ExternalLink, Pencil, Trash2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { createRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin } from "tailwind-merge";
 
-import Input from "./common/Input";
 import Text from "./common/Text";
 import Spinner from "./Spinner";
 import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
 import WorkoutTimer from "./WorkoutTimer";
+import WorkoutSetForm from "./WorkoutSetForm";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -46,7 +39,6 @@ export default function WorkoutOperations({
     []
   );
   const [isMutating, setIsMutating] = useState(false);
-  const [isWorkoutTimeMutating, setIsWorkoutTimeMutating] = useState(false);
 
   const router = useRouter();
 
@@ -278,7 +270,7 @@ export default function WorkoutOperations({
   );
 }
 
-interface Set {
+export interface Set {
   id: number;
   reps: string;
   weightLbs: string;
@@ -304,7 +296,7 @@ function ExerciseInWorkoutItem({
   workoutId: number;
   exerciseSets: WorkoutSet[];
 }) {
-  const [setValues, setSetValues] = useState(
+  const [oldSets, setOldSets] = useState(
     exerciseSets.map((set) => ({
       id: set.id,
       reps: set.reps.toString(),
@@ -320,26 +312,7 @@ function ExerciseInWorkoutItem({
     deleteExercise
   );
 
-  const { trigger: createTrigger, isMutating: isCreateMutating } =
-    useSWRMutation("http://localhost:3000/api/sets", createSet);
-
   const isEditingExercise = exercise.id === exerciseToEdit?.id;
-
-  async function createSet(url: string, { arg }: { arg: number }) {
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({
-        exerciseId: exercise.id,
-        workoutId,
-        reps: newSets[arg]["reps"],
-        weight: newSets[arg]["weightLbs"],
-      }),
-    });
-
-    if (response.ok) {
-      router.refresh();
-    }
-  }
 
   async function deleteExercise(url: string) {
     const response = await fetch(url, {
@@ -370,16 +343,19 @@ function ExerciseInWorkoutItem({
       return;
     }
 
-    const newSets = [...setValues];
+    const newSets = [...oldSets];
     newSets.splice(idx, 1);
-    setSetValues(newSets);
+    setOldSets(newSets);
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>, idx: number) {
-    const newFormValues = [...setValues];
+  function handleOldSetChange(
+    e: React.ChangeEvent<HTMLInputElement>,
+    idx: number
+  ) {
+    const newFormValues = [...oldSets];
     newFormValues[idx][e.target.name as keyof Pick<Set, "reps" | "weightLbs">] =
       e.target.value;
-    setSetValues(newFormValues);
+    setOldSets(newFormValues);
   }
 
   function handleNewSetChange(
@@ -410,30 +386,16 @@ function ExerciseInWorkoutItem({
             <p className="text-sm">No data for this exercise</p>
           )}
           {isEditing && isEditingExercise ? (
-            <form action="submit">
-              {setValues.map((set: Set, idx: number) => (
-                <PrevSet
-                  key={idx}
-                  addSet={addSet}
-                  handleChange={handleChange}
-                  idx={idx}
-                  set={set}
-                  setValues={setValues}
-                />
-              ))}
-              {newSets.map((set: any, idx: number) => (
-                <NewSet
-                  key={idx}
-                  addSet={addSet}
-                  createTrigger={createTrigger}
-                  handleChange={handleNewSetChange}
-                  idx={idx}
-                  isCreateMutating={isCreateMutating}
-                  removeSet={removeSet}
-                  set={set}
-                />
-              ))}
-            </form>
+            <WorkoutSetForm
+              addSet={addSet}
+              exercise={exercise}
+              handleOldSetChange={handleOldSetChange}
+              handleNewSetChange={handleNewSetChange}
+              newSets={newSets}
+              removeSet={removeSet}
+              oldSets={oldSets}
+              workoutId={workoutId}
+            />
           ) : null}
         </div>
         <div>
@@ -489,161 +451,6 @@ function ExerciseInWorkoutItem({
           </button>
         )}
       </div>
-    </div>
-  );
-}
-
-interface PrevSetProps {
-  addSet: (e: React.FormEvent) => void;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>, idx: number) => void;
-  idx: number;
-  set: Set;
-  setValues: Set[];
-}
-
-function PrevSet({ addSet, handleChange, idx, set, setValues }: PrevSetProps) {
-  const router = useRouter();
-
-  const { trigger: updateTrigger, isMutating: isUpdateMutating } =
-    useSWRMutation(`http://localhost:3000/api/sets/${set.id}`, updateSet);
-
-  async function updateSet(url: string) {
-    const response = await fetch(url, {
-      method: "PUT",
-      body: JSON.stringify({
-        reps: setValues[idx]["reps" as keyof Set],
-        weight: setValues[idx]["weightLbs" as keyof Set],
-      }),
-    });
-
-    if (response.ok) {
-      router.refresh();
-    }
-  }
-
-  const { trigger: deleteTrigger, isMutating: isDeleteMutating } =
-    useSWRMutation(`http://localhost:3000/api/sets/${set.id}`, deleteSet);
-
-  async function deleteSet(url: string) {
-    const response = await fetch(url, {
-      method: "DELETE",
-    });
-
-    if (response.ok) {
-      router.refresh();
-    }
-  }
-
-  return (
-    <div className="mt-2 flex items-center">
-      <Input
-        autoComplete="off"
-        className="w-[40px] mr-2 py-1 text-center text-sm"
-        name="reps"
-        type="text"
-        value={set.reps.toString()}
-        onChange={(e) => handleChange(e, idx)}
-      />
-      <span className="mr-2">x</span>
-      <Input
-        autoComplete="off"
-        className="w-[50px] mr-3 py-1 text-center text-sm"
-        name="weightLbs"
-        type="text"
-        value={set.weightLbs.toString()}
-        onChange={(e) => handleChange(e, idx)}
-      />
-      <button className="mr-3" onClick={(e: React.FormEvent) => addSet(e)}>
-        <ArrowDownFromLine color="black" size={18} />
-      </button>
-      <button
-        className="mr-3"
-        onClick={async (e: React.FormEvent) => {
-          e.preventDefault();
-          await deleteTrigger();
-        }}
-      >
-        {isDeleteMutating ? (
-          <Spinner color="black" size={"15"} />
-        ) : (
-          <Trash2 color="red" size={18} />
-        )}
-      </button>
-      <button
-        onClick={async (e: React.FormEvent) => {
-          e.preventDefault();
-          await updateTrigger();
-        }}
-      >
-        {isUpdateMutating ? (
-          <Spinner color="black" size={"18"} />
-        ) : (
-          <Check color="green" size={18} />
-        )}
-      </button>
-    </div>
-  );
-}
-
-interface NewSetProps {
-  addSet: (e: React.FormEvent) => void;
-  createTrigger: (arg: number) => void;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>, idx: number) => void;
-  idx: number;
-  isCreateMutating: boolean;
-  removeSet: (e: React.FormEvent, idx: number) => void;
-  set: Set;
-}
-
-function NewSet({
-  addSet,
-  createTrigger,
-  handleChange,
-  idx,
-  isCreateMutating,
-  removeSet,
-  set,
-}: NewSetProps) {
-  return (
-    <div className="mt-2 flex items-center">
-      <Input
-        autoComplete="off"
-        className="w-[40px] mr-2 py-1 text-center text-sm"
-        name="reps"
-        type="text"
-        value={set.reps}
-        onChange={(e) => handleChange(e, idx)}
-      />
-      <span className="mr-2">x</span>
-      <Input
-        autoComplete="off"
-        className="w-[50px] mr-3 py-1 text-center text-sm"
-        name="weightLbs"
-        type="text"
-        value={set.weightLbs.toString()}
-        onChange={(e) => handleChange(e, idx)}
-      />
-      <button className="mr-3" onClick={(e: React.FormEvent) => addSet(e)}>
-        <ArrowDownFromLine color="black" size={18} />
-      </button>
-      <button
-        className="mr-3"
-        onClick={(e: React.FormEvent) => removeSet(e, idx)}
-      >
-        <XCircle color="black" size={18} />
-      </button>
-      <button
-        onClick={async (e: React.FormEvent) => {
-          e.preventDefault();
-          await createTrigger(idx);
-        }}
-      >
-        {isCreateMutating ? (
-          <Spinner color="black" size="18" />
-        ) : (
-          <Check color="green" size={18} />
-        )}
-      </button>
     </div>
   );
 }
