@@ -5,7 +5,7 @@ import { Exercise, Workout, WorkoutSet } from "@prisma/client";
 import { Check, ExternalLink, Pencil, Trash2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { createRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { twJoin } from "tailwind-merge";
 
@@ -40,9 +40,15 @@ export default function WorkoutOperations({
   );
   const [isMutating, setIsMutating] = useState(false);
 
-  const router = useRouter();
+  let inputRef = useRef<HTMLInputElement>(null);
 
-  const inputRef = createRef<HTMLInputElement>();
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current && inputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  const router = useRouter();
 
   const { exercises: workoutExercises, workoutSets } = workout;
 
@@ -154,22 +160,18 @@ export default function WorkoutOperations({
       <div className="px-4 py-2 border-r border-slate-200">
         <div className="flex flex-col">
           <div className="box-border w-full flex items-center justify-between">
-            {isEditing ? (
-              <form className="w-full">
-                <input
-                  ref={inputRef}
-                  id="titleInput"
-                  className="min-w-[90%] bg-slate-50 text-2xl font-bold"
-                  type="text"
-                  value={name}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setName(e.target.value)
-                  }
-                />
-              </form>
-            ) : (
-              <h1 className="text-2xl font-bold">{workout.name}</h1>
-            )}
+            <form className="w-full">
+              <input
+                ref={inputRef}
+                className="min-w-[90%] bg-slate-50 text-2xl font-bold"
+                disabled={!isEditing}
+                type="text"
+                value={name}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setName(e.target.value)
+                }
+              />
+            </form>
             <div className="flex items-center space-x-2">
               {isEditing ? (
                 <button onClick={handleEdit}>
@@ -183,12 +185,7 @@ export default function WorkoutOperations({
                   )}
                 </button>
               ) : (
-                <button
-                  onClick={() => {
-                    setIsEditing(true);
-                    inputRef.current && inputRef.current.focus();
-                  }}
-                >
+                <button onClick={() => setIsEditing(true)}>
                   <Pencil
                     className="text-slate-400 hover:text-indigo-500 transition-colors"
                     size={18}
