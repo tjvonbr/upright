@@ -1,7 +1,7 @@
 "use client";
 
 import { Workout } from "@prisma/client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Pillbox from "./common/pillbox";
 import { useRouter } from "next/navigation";
 import Spinner from "./Spinner";
