@@ -58,7 +58,7 @@ export default function ProgramsOperations({
 
   return (
     <div className="min-h-screen grid grid-cols-2">
-      <div className="px-4 py-2 border-r border-slate-200 overflow-y-scroll">
+      <div className="px-4 py-2 border-r border-slate-200">
         <h1 className="text-2xl font-bold">Programs</h1>
         <div className="w-full pt-3 mb-3">
           <input
