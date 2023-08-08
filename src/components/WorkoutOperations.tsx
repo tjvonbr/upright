@@ -50,7 +50,7 @@ export default function WorkoutOperations({
 
   const router = useRouter();
 
-  const inputRef = document.getElementById("titleInput");
+  const inputRef = createRef<HTMLInputElement>();
 
   const { exercises: workoutExercises, workoutSets } = workout;
 
@@ -161,10 +161,11 @@ export default function WorkoutOperations({
     <div className="min-h-screen grid grid-cols-2">
       <div className="px-4 py-2 border-r border-slate-200">
         <div className="flex flex-col">
-          <div className="box-border w-full flex justify-between">
+          <div className="box-border w-full flex items-center justify-between">
             {isEditing ? (
               <form className="w-full">
                 <input
+                  ref={inputRef}
                   id="titleInput"
                   className="min-w-[90%] bg-slate-50 text-2xl font-bold"
                   type="text"
@@ -193,7 +194,7 @@ export default function WorkoutOperations({
                 <button
                   onClick={() => {
                     setIsEditing(true);
-                    inputRef && inputRef.focus();
+                    inputRef.current && inputRef.current.focus();
                   }}
                 >
                   <Pencil
@@ -215,7 +216,7 @@ export default function WorkoutOperations({
               </button>
             </div>
           </div>
-          <div className="mt-2 flex items-center space-x-2">
+          <div className="pt-1 flex items-center space-x-2">
             <p className="text-slate-500">
               {workout.date.toLocaleDateString()}
             </p>
