@@ -2,7 +2,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
 const pillboxVariants = cva(
-  "h-[25px] w-[100px] px-2 flex justify-between items-center text-white font-medium rounded-md",
+  "px-2 py-1 flex justify-between items-center text-white text-xs font-semibold rounded-xl",
   {
     variants: {
       variant: {
