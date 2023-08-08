@@ -85,7 +85,7 @@ export default function WorkoutsOperations({
 
   return (
     <div className="min-h-screen grid grid-cols-2">
-      <div className="px-4 py-2 border-r border-slate-200 overflow-y-scroll">
+      <div className="px-4 py-2 border-r border-slate-200">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Workouts</h1>
           <div className="flex space-x-2">
