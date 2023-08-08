@@ -18,7 +18,7 @@ import { buttonVariants } from "../../components/common/button";
 export default function Index() {
   return (
     <>
-      <section className="py-64 flex flex-col items-center">
+      <section className="py-64 flex flex-col items-center bg-white">
         <div className="max-w-[64rem] text-center">
           <div className="space-x-4">
             <Link
@@ -59,7 +59,7 @@ export default function Index() {
           </div>
         </div>
       </section>
-      <section className="py-36 flex flex-col items-center bg-slate-50">
+      <section id="features" className="py-36 flex flex-col items-center">
         <div className="max-w-[64rem] text-center">
           <h2 className="text-3xl">Features</h2>
           <p className="text-2xl text-slate-500">
