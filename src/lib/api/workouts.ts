@@ -39,7 +39,11 @@ export async function getWorkout(workoutId: number) {
       id: Number(workoutId),
     },
     include: {
-      exercises: true,
+      exercises: {
+        include: {
+          exercise: true,
+        },
+      },
       workoutSets: true,
     },
   });
@@ -52,7 +56,7 @@ export async function getWorkoutsWithExercise(exerciseId: number) {
     where: {
       exercises: {
         some: {
-          id: Number(exerciseId),
+          exerciseId: Number(exerciseId),
         },
       },
     },
@@ -78,7 +82,7 @@ export async function getMostRecentWorkoutByExerciseIds(
     const workout = await db.workout.findFirst({
       where: {
         AND: [
-          { exercises: { some: { id: exerciseId } } },
+          { exercises: { some: { exerciseId } } },
           { date: { lt: new Date(workoutDate) } },
         ],
       },
@@ -103,18 +107,18 @@ export async function getMostRecentWorkoutByExerciseIds(
 
 export async function addWorkoutExercise(
   workoutId: Workout["id"],
-  exerciseId: Exercise["id"]
+  exerciseId: Exercise["id"],
+  instructions: string
 ) {
-  const workout = await db.workout.update({
+  const workout = await db.workoutsExercises.update({
     where: {
-      id: Number(workoutId),
+      workoutId_exerciseId: {
+        exerciseId,
+        workoutId,
+      },
     },
     data: {
-      exercises: {
-        connect: {
-          id: exerciseId,
-        },
-      },
+      instructions: instructions || undefined,
     },
   });
 

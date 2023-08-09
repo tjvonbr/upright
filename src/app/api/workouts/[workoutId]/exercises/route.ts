@@ -1,4 +1,3 @@
-import { revalidateTag } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
@@ -13,6 +12,7 @@ const exerciseSchema = z.object({
 });
 
 const createWorkoutExerciseSchema = z.object({
+  instructions: z.string(),
   exercises: z.array(exerciseSchema),
   workoutId: z.number(),
 });
@@ -32,31 +32,22 @@ export async function POST(req: NextRequest) {
   const json = await req.json();
   const body = createWorkoutExerciseSchema.parse(json);
 
-  const workout = await getWorkout(Number(body.workoutId));
-
-  if (!workout) {
-    return new NextResponse(null, { status: 404 });
-  }
-
   try {
-    const exerciseIds = body.exercises.map((exercise) => {
-      return { id: exercise.id };
+    const workout = await getWorkout(body.workoutId);
+
+    if (!workout) {
+      return new NextResponse(null, { status: 404 });
+    }
+
+    const workoutExercises = body.exercises.map((exercise) => {
+      return { exerciseId: exercise.id, workoutId: workout.id };
     });
 
-    const workout = await db.workout.update({
-      where: {
-        id: Number(body.workoutId),
-      },
-      data: {
-        exercises: {
-          connect: exerciseIds,
-        },
-      },
+    const newWorkoutExercises = await db.workoutsExercises.createMany({
+      data: workoutExercises,
     });
 
-    revalidateTag("workouts");
-
-    return NextResponse.json(workout);
+    return NextResponse.json(newWorkoutExercises);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return new NextResponse(JSON.stringify(error.issues), { status: 422 });
@@ -77,13 +68,11 @@ export async function PUT(req: NextRequest) {
     const json = await req.json();
     const body = deleteWorkoutExerciseSchema.parse(json);
 
-    const exercise = await db.workout.update({
+    const exercise = await db.workoutsExercises.delete({
       where: {
-        id: Number(body.workoutId),
-      },
-      data: {
-        exercises: {
-          disconnect: [{ id: body.exerciseId }],
+        workoutId_exerciseId: {
+          workoutId: body.workoutId,
+          exerciseId: body.exerciseId,
         },
       },
     });
