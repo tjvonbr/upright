@@ -95,7 +95,7 @@ model WorkoutsExercises {
   workoutId     Int
   exercise      Exercise    @relation(fields: [exerciseId], references: [id])
   exerciseId    Int
-  instructions  String
+  instructions  String?
   
   @@id([workoutId, exerciseId])
   @@map("workouts_exercises")
