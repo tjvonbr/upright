@@ -19,7 +19,6 @@ import {
 } from "@/components/common/dialog";
 
 import { Button } from "./common/button";
-import { toast } from "./common/use-toast";
 import Spinner from "./Spinner";
 
 interface ProgramOperationsProps {
@@ -57,11 +56,6 @@ export default function ProgramOperations({
       );
 
       if (!response.ok) {
-        toast({
-          title: "Nope",
-          description: "Nope again.",
-          variant: "default",
-        });
       }
 
       setIsSaving(false);
@@ -153,15 +147,7 @@ export default function ProgramOperations({
 
 function LastWorkoutWidget({ workout }: { workout: Workout }) {
   return (
-    <Widget
-      onClick={() => {
-        toast({
-          title: "Hello",
-          description: "Hello",
-          variant: "default",
-        });
-      }}
-    >
+    <Widget onClick={() => {}}>
       <p className="mx-3 pt-2 text-lg font-medium">Most Recent Workout</p>
       <p className="mx-3 text-md font-medium text-gray-500">{workout.name}</p>
     </Widget>

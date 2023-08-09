@@ -5,8 +5,8 @@ import "./globals.css";
 import { usePathname } from "next/navigation";
 import { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
 
-import { Toaster } from "@/components/common/toaster";
 import UserNav from "@/components/UserNav";
 import { navbarItems } from "@/config/navigation";
 interface RootLayoutProps {
