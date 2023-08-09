@@ -9,11 +9,6 @@ interface EditExerciseProps {
   params: { workoutId: Workout["id"] };
 }
 
-export interface CompleteWorkout extends Workout {
-  exercises: Exercise[];
-  workoutSets: WorkoutSet[];
-}
-
 export default async function EditExercise({ params }: EditExerciseProps) {
   const user = await getCurrentUser();
 
@@ -21,7 +16,7 @@ export default async function EditExercise({ params }: EditExerciseProps) {
     redirect("/login");
   }
 
-  const workout: CompleteWorkout | null = await getWorkout(params.workoutId);
+  const workout = await getWorkout(params.workoutId);
 
   if (!workout) {
     notFound();

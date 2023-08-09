@@ -39,7 +39,11 @@ export async function getWorkout(workoutId: number) {
       id: Number(workoutId),
     },
     include: {
-      exercises: true,
+      exercises: {
+        include: {
+          exercise: true,
+        },
+      },
       workoutSets: true,
     },
   });
