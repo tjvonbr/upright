@@ -17,11 +17,6 @@ import WorkoutTimer from "./WorkoutTimer";
 import WorkoutSetForm from "./WorkoutSetForm";
 import { convertUTCToLocal } from "@/lib/helpers/dates";
 
-interface WorkoutsWithExercises extends Workout {
-  exercises: Exercise[];
-  workoutSets: WorkoutSet[];
-}
-
 export default function WorkoutOperations({
   exercises,
   recentWorkouts,
@@ -29,7 +24,7 @@ export default function WorkoutOperations({
 }: {
   exercises: Exercise[];
   recentWorkouts: ExerciseWorkoutMap;
-  workout: WorkoutsWithExercises;
+  workout: any;
 }) {
   const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -129,7 +124,7 @@ export default function WorkoutOperations({
   }
 
   const exercisesNotInWorkout = exercises.filter(
-    (exercise) => !workoutExercises.some((item) => item.id === exercise.id)
+    (exercise) => !workoutExercises.some((item: any) => item.id === exercise.id)
   );
 
   async function handleEdit(e: React.FormEvent) {
@@ -221,8 +216,8 @@ export default function WorkoutOperations({
         <div className="mt-3 space-y-2">
           {workoutExercises.map((exercise: Exercise, idx: number) => {
             const exerciseSets = workoutSets
-              .filter((set) => set.exerciseId === exercise.id)
-              .sort((a, b) => b.id - a.id);
+              .filter((set: any) => set.exerciseId === exercise.id)
+              .sort((a: any, b: any) => b.id - a.id);
 
             return (
               <ExerciseInWorkoutItem

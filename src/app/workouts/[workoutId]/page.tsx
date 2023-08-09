@@ -12,7 +12,11 @@ async function getWorkout(workoutId: number) {
       id: Number(workoutId),
     },
     include: {
-      exercises: true,
+      exercises: {
+        include: {
+          exercise: true,
+        },
+      },
       workoutSets: true,
     },
   });
@@ -51,7 +55,7 @@ export default async function Workout({ params }: WorkoutProps) {
 
   const workoutExercises = exercises.filter((exercise) =>
     workout?.exercises.some(
-      (workoutExercise) => workoutExercise.id === exercise.id
+      (workoutExercise) => workoutExercise.exerciseId === exercise.id
     )
   );
 
