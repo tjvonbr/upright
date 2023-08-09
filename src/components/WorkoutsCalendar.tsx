@@ -1,6 +1,6 @@
 import { isSameDay } from "@/lib/helpers/dates";
 import { Workout } from "@prisma/client";
-import { Calendar, ChevronLeft, ChevronRight, Dumbbell } from "lucide-react";
+import { ChevronLeft, ChevronRight, Dumbbell } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { twJoin } from "tailwind-merge";
@@ -60,7 +60,7 @@ export default function WorkoutsCalendar({ workouts }: WorkoutsCalendarProps) {
           </p>
         ))}
       </div>
-      <CalendarDays day={currentDay} workouts={workouts} />
+      <CalendarDays currentDay={currentDay} workouts={workouts} />
     </div>
   );
 }
@@ -76,12 +76,18 @@ interface CalendarDay {
 }
 
 interface CalendarDaysProps {
-  day: Date;
+  currentDay: Date;
   workouts: Workout[];
 }
 
-function CalendarDays({ day, workouts }: CalendarDaysProps) {
-  let firstDayOfMonth = new Date(day.getFullYear(), day.getMonth(), 1);
+function CalendarDays({ currentDay, workouts }: CalendarDaysProps) {
+  console.log(workouts);
+
+  let firstDayOfMonth = new Date(
+    currentDay.getFullYear(),
+    currentDay.getMonth(),
+    1
+  );
   let weekdayOfFirstDay = firstDayOfMonth.getDay();
   let currentDays: CalendarDay[] = [];
 
@@ -97,7 +103,7 @@ function CalendarDays({ day, workouts }: CalendarDaysProps) {
     }
 
     const calendarDay: CalendarDay = {
-      currentMonth: firstDayOfMonth.getMonth() === day.getMonth(),
+      currentMonth: firstDayOfMonth.getMonth() === currentDay.getMonth(),
       date: new Date(firstDayOfMonth),
       month: firstDayOfMonth.getMonth(),
       number: firstDayOfMonth.getDate(),

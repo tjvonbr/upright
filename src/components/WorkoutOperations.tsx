@@ -15,6 +15,7 @@ import { ExerciseWorkoutMap } from "@/types/workouts";
 import { buttonVariants } from "./common/button";
 import WorkoutTimer from "./WorkoutTimer";
 import WorkoutSetForm from "./WorkoutSetForm";
+import { convertUTCToLocal } from "@/lib/helpers/dates";
 
 interface WorkoutsWithExercises extends Workout {
   exercises: Exercise[];
@@ -210,7 +211,12 @@ export default function WorkoutOperations({
           </div>
           <div className="pt-1 flex items-center space-x-2">
             <p className="text-slate-500">
-              {workout.date.toLocaleDateString()}
+              {convertUTCToLocal(workout.date).toLocaleDateString("en-us", {
+                weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </p>
             <WorkoutTimer workout={workout} />
           </div>
