@@ -4,8 +4,6 @@ import { Exercise, WorkoutSet } from "@prisma/client";
 import React, { useState } from "react";
 import { twJoin } from "tailwind-merge";
 
-import { CompleteWorkout } from "../app/workouts/[workoutId]/edit-exercise/page";
-
 interface WorkoutSetState {
   reps: number | null;
   weightLbs: number | null;
@@ -14,17 +12,13 @@ interface WorkoutSetState {
   exerciseId: number | null;
 }
 
-export default function WorkoutEditor({
-  workout,
-}: {
-  workout: CompleteWorkout;
-}) {
+export default function WorkoutEditor({ workout }: { workout: any }) {
   const [newSets, setNewSets] = useState<Array<WorkoutSetState>>([]);
 
   const exerciseMap = new Map();
 
-  workout.exercises.forEach((exercise) => {
-    const exerciseSets = workout.workoutSets.filter((set) => {
+  workout.exercises.forEach((exercise: Exercise) => {
+    const exerciseSets = workout.workoutSets.filter((set: WorkoutSet) => {
       return set.exerciseId === exercise.id;
     });
 
