@@ -7,8 +7,6 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 
-import { toast } from "./common/use-toast";
-
 interface WorkoutFormProps {
   programId: number;
 }
@@ -40,11 +38,6 @@ export default function WorkoutForm({ programId }: WorkoutFormProps) {
     );
 
     if (!response?.ok) {
-      return toast({
-        title: "Something went wrong.",
-        description: "Your post was not saved. Please try again.",
-        variant: "destructive",
-      });
     }
   }
 
