@@ -16,7 +16,7 @@ model Exercise {
   name            String          @unique
   user            User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          Int?
-  workouts        Workout[]
+  workouts        WorkoutsExercises[]
   workoutSets     WorkoutSet[]
   personalBests   PersonalBest[]  
 
@@ -82,10 +82,23 @@ model Workout {
   userId      Int       
   program     Program?      @relation(fields: [programId], references: [id], onDelete: Cascade)
   programId   Int?
-  exercises   Exercise[]
+  exercises   WorkoutsExercises[]
   workoutSets WorkoutSet[]
 
   @@map("workouts")
+}
+
+model WorkoutsExercises {
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  workout       Workout     @relation(fields:[workoutId], references:[id])
+  workoutId     Int
+  exercise      Exercise    @relation(fields: [exerciseId], references: [id])
+  exerciseId    Int
+  instructions  String
+  
+  @@id([workoutId, exerciseId])
+  @@map("workouts_exercises")
 }
 
 model WorkoutSet {
