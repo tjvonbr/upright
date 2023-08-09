@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/prisma";
+import { getCloneableBody } from "next/dist/server/body-streams";
 
 const createExerciseSchema = z.object({
   name: z.string(),
@@ -29,7 +30,11 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(exercise);
-  } catch (err) {
-    throw new Error(`Error: ${err}`);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new NextResponse(JSON.stringify(error.issues), { status: 422 });
+    }
+
+    return new NextResponse(null, { status: 500 });
   }
 }

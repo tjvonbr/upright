@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User } from "next-auth";
 import { useState } from "react";
-import useSWRMutation from "swr/mutation";
+import toast from "react-hot-toast";
 
 import { searchFilter } from "@/lib/helpers/search";
 
@@ -20,29 +20,31 @@ interface ExerciseProps {
 export default function ExerciseOperations({ exercises, user }: ExerciseProps) {
   const [name, setName] = useState("");
   const [query, setQuery] = useState("");
+  const [isCreating, setIsCreating] = useState(false);
 
   const router = useRouter();
 
-  const { trigger, isMutating } = useSWRMutation(
-    "http://localhost:3000/api/exercises",
-    handleSubmit
-  );
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setIsCreating(true);
 
-  async function handleSubmit(url: string) {
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: JSON.stringify({
-          name,
-          userId: user.id,
-        }),
-      });
+    const response = await fetch("http://localhost:3000/api/exercises", {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        userId: user.id,
+      }),
+    });
 
-      if (response.ok) {
-        router.refresh();
-        setName("");
-      }
-    } catch (error) {}
+    setIsCreating(false);
+
+    if (!response.ok) {
+      toast.error("Oh no!  Something went wrong!");
+    }
+
+    toast.success("Successfully toasted!");
+    setName("");
+    router.refresh();
   }
 
   const filteredExercises = searchFilter(exercises, query);
@@ -77,14 +79,7 @@ export default function ExerciseOperations({ exercises, user }: ExerciseProps) {
         )}
       </div>
       <div className="min-h-screen flex flex-col justify-center items-center">
-        <form
-          className="w-[50%]"
-          action="submit"
-          onSubmit={async (e: React.FormEvent) => {
-            e.preventDefault();
-            await trigger();
-          }}
-        >
+        <form className="w-[50%]">
           <h2 className="text-xl font-semibold">Add an exercise</h2>
           <p className="text-slate-500">
             If you don&apos;t see an exercise that you want to track in the
@@ -108,9 +103,10 @@ export default function ExerciseOperations({ exercises, user }: ExerciseProps) {
           <Button
             className="w-full"
             variant="primary"
-            disabled={isMutating || name.length === 0}
+            disabled={isCreating || name.length === 0}
+            onClick={handleSubmit}
           >
-            {isMutating ? <Spinner /> : "Submit"}
+            {isCreating ? <Spinner /> : "Submit"}
           </Button>
         </form>
       </div>
