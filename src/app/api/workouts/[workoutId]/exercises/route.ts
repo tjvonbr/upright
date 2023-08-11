@@ -42,8 +42,6 @@ export async function POST(req: NextRequest) {
       return { exerciseId: exercise.id, workoutId: workout.id };
     });
 
-    console.log(workoutExercises);
-
     const newWorkoutExercises = await db.workoutsExercises.createMany({
       data: workoutExercises,
     });
@@ -53,7 +51,6 @@ export async function POST(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return new NextResponse(JSON.stringify(error.issues), { status: 422 });
     }
-    console.log(error);
 
     return new NextResponse(JSON.stringify(error), { status: 500 });
   }

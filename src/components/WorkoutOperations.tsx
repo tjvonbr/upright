@@ -241,6 +241,7 @@ export default function WorkoutOperations({
                   ceaseEditing={ceaseEditing}
                   exercise={workoutExercise.exercise}
                   exerciseToEdit={exerciseToEdit}
+                  instructions={workoutExercise.instructions}
                   isEditing={isEditing}
                   exerciseSets={exerciseSets}
                   recentWorkouts={recentWorkouts}
@@ -295,6 +296,7 @@ function ExerciseInWorkoutItem({
   ceaseEditing,
   exercise,
   exerciseToEdit,
+  instructions,
   isEditing,
   recentWorkouts,
   workoutId,
@@ -305,6 +307,7 @@ function ExerciseInWorkoutItem({
   ceaseEditing: () => void;
   exercise: Exercise;
   exerciseToEdit: Exercise | null;
+  instructions: WorkoutsExercises["instructions"];
   isEditing: boolean;
   recentWorkouts: ExerciseWorkoutMap;
   workoutId: number;
@@ -318,6 +321,8 @@ function ExerciseInWorkoutItem({
     }))
   );
   const [newSets, setNewSets] = useState([{ reps: "", weightLbs: "" }]);
+  const [newInstructions, setNewInstructions] = useState("");
+  const [isCreatingInstructions, setIsCreatingInstructions] = useState(false);
 
   const router = useRouter();
 
@@ -381,11 +386,72 @@ function ExerciseInWorkoutItem({
     setNewSets(newFormValues);
   }
 
+  async function createExerciseInstructions(
+    e: React.FormEvent<HTMLButtonElement>,
+    instructions: string
+  ) {
+    e.preventDefault();
+    setIsCreatingInstructions(true);
+
+    const response = await fetch(
+      `http://localhost:3000/api/workouts/${workoutId}/exercises/${exercise.id}`,
+      {
+        method: "PUT",
+        body: JSON.stringify({
+          instructions,
+        }),
+      }
+    );
+
+    setIsCreatingInstructions(false);
+
+    if (!response.ok) {
+      return toast.error(
+        "Whoops!  We had trouble updating your exercise goal for this workout!"
+      );
+    }
+
+    router.refresh();
+  }
+
   return (
     <div className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-slate-200">
       <div className="w-1/2 flex flex-col space-y-3">
         <div className="flex flex-col">
-          <span className="font-semibold text-sm">{exercise.name}</span>
+          <div className="flex items-center space-x-2">
+            <p className="font-semibold text-sm">{exercise.name}</p>
+            {instructions ? (
+              <p className="text-xs">{instructions}</p>
+            ) : (
+              <form className="flex items-center space-x-2">
+                <input
+                  className="px-2 py-1 w-[80px] border border-slate-200 rounded-[2px] text-xs"
+                  type="text"
+                  placeholder="sets x reps"
+                  value={newInstructions}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setNewInstructions(e.target.value)
+                  }
+                />
+                {newInstructions.length > 0 && (
+                  <button
+                    onClick={async (e: React.FormEvent<HTMLButtonElement>) =>
+                      createExerciseInstructions(e, newInstructions)
+                    }
+                  >
+                    {isCreatingInstructions ? (
+                      <Spinner color="black" size="15" />
+                    ) : (
+                      <Check
+                        className="text-slate-400 hover:text-green-500 transition-colors"
+                        size={18}
+                      />
+                    )}
+                  </button>
+                )}
+              </form>
+            )}
+          </div>
           {exerciseSets.length > 0 ? (
             <div className="flex space-x-1">
               {exerciseSets
