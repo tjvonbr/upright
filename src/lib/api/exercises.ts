@@ -10,7 +10,7 @@ export async function getExerciseById(exerciseId: string) {
   return exercise;
 }
 
-export async function getExercisesForUser(userId: string) {
+export async function getExercisesByUserId(userId: string) {
   const exercises = await db.exercise.findMany({
     where: {
       userId: Number(userId),
