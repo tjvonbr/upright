@@ -40,7 +40,6 @@ export async function PUT(
     return NextResponse.json(workout);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      console.log(JSON.stringify(error.issues));
       return new Response(JSON.stringify(error.issues), { status: 422 });
     }
 
