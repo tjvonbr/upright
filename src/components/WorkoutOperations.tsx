@@ -1,7 +1,12 @@
 /* eslint-disable */
 "use client";
 
-import { Exercise, Workout, WorkoutSet } from "@prisma/client";
+import {
+  Exercise,
+  Workout,
+  WorkoutSet,
+  WorkoutsExercises,
+} from "@prisma/client";
 import { Check, ExternalLink, Pencil, Trash2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,11 +16,16 @@ import { twJoin } from "tailwind-merge";
 
 import Text from "./common/Text";
 import Spinner from "./Spinner";
-import { ExerciseWorkoutMap } from "@/types/workouts";
+import {
+  ExerciseWorkoutMap,
+  WorkoutExercisesWithExercise,
+  WorkoutWithExercises,
+} from "@/types/workouts";
 import { buttonVariants } from "./common/button";
 import WorkoutTimer from "./WorkoutTimer";
 import WorkoutSetForm from "./WorkoutSetForm";
 import { convertUTCToLocal } from "@/lib/helpers/dates";
+import toast from "react-hot-toast";
 
 export default function WorkoutOperations({
   exercises,
@@ -24,17 +34,17 @@ export default function WorkoutOperations({
 }: {
   exercises: Exercise[];
   recentWorkouts: ExerciseWorkoutMap;
-  workout: any;
+  workout: WorkoutWithExercises;
 }) {
   const [exerciseToEdit, setExerciseToEdit] = useState<Exercise | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [isMutatingName, setIsMutatingName] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [name, setName] = useState(workout.name);
   const [isDeleting, setIsDeleting] = useState(false);
   const [selectedExercises, setSelectedExercises] = useState<Array<Exercise>>(
     []
   );
-  const [isMutating, setIsMutating] = useState(false);
+  const [isMutatingName, setIsMutatingName] = useState(false);
 
   let inputRef = useRef<HTMLInputElement>(null);
 
@@ -50,7 +60,7 @@ export default function WorkoutOperations({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setIsMutating(true);
+    setIsCreating(true);
 
     const response = await fetch(
       `http://localhost:3000/api/workouts/${workout.id}/exercises`,
@@ -63,12 +73,15 @@ export default function WorkoutOperations({
       }
     );
 
-    setIsMutating(false);
+    setIsCreating(false);
 
-    if (response.ok) {
-      setSelectedExercises([]);
-      router.refresh();
+    if (!response.ok) {
+      toast.error("Whoops!  We weren't able to add exercises to this workout!");
     }
+
+    toast.success(`Successfully added exercises to your workout!`);
+    setSelectedExercises([]);
+    router.refresh();
   }
 
   async function deleteExercise() {
@@ -214,25 +227,29 @@ export default function WorkoutOperations({
           </div>
         </div>
         <div className="mt-3 space-y-2">
-          {workoutExercises.map((exercise: Exercise, idx: number) => {
-            const exerciseSets = workoutSets
-              .filter((set: any) => set.exerciseId === exercise.id)
-              .sort((a: any, b: any) => b.id - a.id);
+          {workoutExercises.map(
+            (workoutExercise: WorkoutExercisesWithExercise, idx: number) => {
+              const exerciseSets = workoutSets
+                .filter(
+                  (set: any) => set.exerciseId === workoutExercise.exerciseId
+                )
+                .sort((a: any, b: any) => b.id - a.id);
 
-            return (
-              <ExerciseInWorkoutItem
-                key={idx}
-                beginEditing={beginEditing}
-                ceaseEditing={ceaseEditing}
-                exercise={exercise}
-                exerciseToEdit={exerciseToEdit}
-                isEditing={isEditing}
-                exerciseSets={exerciseSets}
-                recentWorkouts={recentWorkouts}
-                workoutId={workout.id}
-              />
-            );
-          })}
+              return (
+                <ExerciseInWorkoutItem
+                  key={idx}
+                  beginEditing={beginEditing}
+                  ceaseEditing={ceaseEditing}
+                  exercise={workoutExercise.exercise}
+                  exerciseToEdit={exerciseToEdit}
+                  isEditing={isEditing}
+                  exerciseSets={exerciseSets}
+                  recentWorkouts={recentWorkouts}
+                  workoutId={workout.id}
+                />
+              );
+            }
+          )}
         </div>
       </div>
       <div className="my-3 flex flex-col items-center">
@@ -248,7 +265,7 @@ export default function WorkoutOperations({
             className={twJoin(buttonVariants({ variant: "primary" }))}
             onClick={(e: React.FormEvent) => handleSubmit(e)}
           >
-            {isMutating ? (
+            {isCreating ? (
               <Spinner />
             ) : selectedExercises.length > 1 ? (
               "Add exercises"

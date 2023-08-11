@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { z } from "zod";
 
-import { getWorkout } from "@/lib/api/workouts";
+import { getWorkoutById } from "@/lib/api/workouts";
 import { db } from "@/lib/prisma";
 
 const exerciseSchema = z.object({
@@ -12,7 +12,6 @@ const exerciseSchema = z.object({
 });
 
 const createWorkoutExerciseSchema = z.object({
-  instructions: z.string(),
   exercises: z.array(exerciseSchema),
   workoutId: z.number(),
 });
@@ -33,7 +32,7 @@ export async function POST(req: NextRequest) {
   const body = createWorkoutExerciseSchema.parse(json);
 
   try {
-    const workout = await getWorkout(body.workoutId);
+    const workout = await getWorkoutById(body.workoutId);
 
     if (!workout) {
       return new NextResponse(null, { status: 404 });
@@ -42,6 +41,8 @@ export async function POST(req: NextRequest) {
     const workoutExercises = body.exercises.map((exercise) => {
       return { exerciseId: exercise.id, workoutId: workout.id };
     });
+
+    console.log(workoutExercises);
 
     const newWorkoutExercises = await db.workoutsExercises.createMany({
       data: workoutExercises,
@@ -52,8 +53,9 @@ export async function POST(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return new NextResponse(JSON.stringify(error.issues), { status: 422 });
     }
+    console.log(error);
 
-    return new NextResponse(null, { status: 500 });
+    return new NextResponse(JSON.stringify(error), { status: 500 });
   }
 }
 

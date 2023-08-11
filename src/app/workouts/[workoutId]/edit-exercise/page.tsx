@@ -2,7 +2,7 @@ import { Workout } from "@prisma/client";
 import { notFound, redirect } from "next/navigation";
 
 import WorkoutEditor from "@/components/workout-editor";
-import { getWorkout } from "@/lib/api/workouts";
+import { getWorkoutById } from "@/lib/api/workouts";
 import { getCurrentUser } from "@/lib/session";
 
 interface EditExerciseProps {
@@ -16,7 +16,7 @@ export default async function EditExercise({ params }: EditExerciseProps) {
     redirect("/login");
   }
 
-  const workout = await getWorkout(params.workoutId);
+  const workout = await getWorkoutById(params.workoutId);
 
   if (!workout) {
     notFound();

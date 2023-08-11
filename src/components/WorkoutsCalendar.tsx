@@ -81,8 +81,6 @@ interface CalendarDaysProps {
 }
 
 function CalendarDays({ currentDay, workouts }: CalendarDaysProps) {
-  console.log(workouts);
-
   let firstDayOfMonth = new Date(
     currentDay.getFullYear(),
     currentDay.getMonth(),

@@ -33,8 +33,8 @@ export async function getMostRecentWorkoutForProgram(programId: string) {
   });
 }
 
-export async function getWorkout(workoutId: number) {
-  const workout = await db.workout.findFirst({
+export async function getWorkoutById(workoutId: number) {
+  const workout = db.workout.findFirst({
     where: {
       id: Number(workoutId),
     },
