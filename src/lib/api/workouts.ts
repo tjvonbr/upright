@@ -87,7 +87,11 @@ export async function getMostRecentWorkoutByExerciseIds(
         ],
       },
       include: {
-        exercises: true,
+        exercises: {
+          include: {
+            exercise: true,
+          },
+        },
         workoutSets: {
           where: {
             exerciseId,

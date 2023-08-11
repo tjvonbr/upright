@@ -23,6 +23,7 @@ import { Button } from "./common/button";
 import Input from "./common/Input";
 import Spinner from "./Spinner";
 import WorkoutsCalendar from "./WorkoutsCalendar";
+import { convertUTCToLocal } from "@/lib/helpers/dates";
 
 interface WorkoutsOperationsProps {
   user: User;
@@ -233,10 +234,17 @@ function WorkoutItem({ href, workout }: WorkoutItemProps) {
 
   return (
     <div
-      className="px-3 py-2 flex justify-between items-center bg-white rounded-md border border-slate-200 hover:cursor-pointer"
+      className="px-3 py-2 flex flex-col bg-white rounded-md border border-slate-200 hover:cursor-pointer"
       onClick={() => router.push(href)}
     >
-      <span className="font-semibold text-sm">{workout.name}</span>
+      <p className="font-semibold text-sm">{workout.name}</p>
+      <p className="text-sm text-slate-500">
+        {convertUTCToLocal(workout.date).toLocaleDateString("en-us", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </p>
     </div>
   );
 }

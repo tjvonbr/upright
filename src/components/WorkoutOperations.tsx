@@ -1,12 +1,7 @@
 /* eslint-disable */
 "use client";
 
-import {
-  Exercise,
-  Workout,
-  WorkoutSet,
-  WorkoutsExercises,
-} from "@prisma/client";
+import { Exercise, WorkoutSet, WorkoutsExercises } from "@prisma/client";
 import { Check, ExternalLink, Pencil, Trash2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -77,11 +72,11 @@ export default function WorkoutOperations({
 
     if (!response.ok) {
       toast.error("Whoops!  We weren't able to add exercises to this workout!");
+    } else {
+      toast.success(`Successfully added exercises to your workout!`);
+      setSelectedExercises([]);
+      router.refresh();
     }
-
-    toast.success(`Successfully added exercises to your workout!`);
-    setSelectedExercises([]);
-    router.refresh();
   }
 
   async function deleteExercise() {
@@ -137,7 +132,11 @@ export default function WorkoutOperations({
   }
 
   const exercisesNotInWorkout = exercises.filter(
-    (exercise) => !workoutExercises.some((item: any) => item.id === exercise.id)
+    (exercise) =>
+      !workoutExercises.some(
+        (workoutExercise: WorkoutsExercises) =>
+          workoutExercise.exerciseId === exercise.id
+      )
   );
 
   async function handleEdit(e: React.FormEvent) {
