@@ -70,7 +70,7 @@ export default function WorkoutsOperations({
         body: JSON.stringify({
           name,
           date,
-          userId: Number(user.id),
+          userId: user.id,
           programId: program?.id,
         }),
       });

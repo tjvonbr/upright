@@ -21,7 +21,7 @@ export default async function ProgramWorkouts({
   if (!searchQuery) {
     workouts = await db.workout.findMany({
       where: {
-        programId: Number(params.programId),
+        programId: params.programId,
       },
     });
   } else {

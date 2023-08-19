@@ -32,8 +32,8 @@ export async function PUT(
     const exercise = await db.workoutsExercises.update({
       where: {
         workoutId_exerciseId: {
-          workoutId: Number(params.workoutId),
-          exerciseId: Number(params.exerciseId),
+          workoutId: params.workoutId,
+          exerciseId: params.exerciseId,
         },
       },
       data: {

@@ -25,7 +25,7 @@ export async function GET(
 
     const programWorkouts = await db.workout.findMany({
       where: {
-        programId: Number(params.programId),
+        programId: params.programId,
       },
     });
 
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       data: {
         name,
         date,
-        programId: Number(programId),
+        programId,
         userId,
       },
     });

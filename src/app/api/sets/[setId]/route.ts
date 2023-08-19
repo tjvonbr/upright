@@ -26,7 +26,7 @@ export async function DELETE(
 
     const workoutSet = await db.workoutSet.delete({
       where: {
-        id: Number(params.setId),
+        id: params.setId,
       },
     });
 
@@ -69,7 +69,7 @@ export async function PUT(
 
     const workoutSet = await db.workoutSet.update({
       where: {
-        id: Number(params.setId),
+        id: params.setId,
       },
       data: {
         reps: Number(body.reps),

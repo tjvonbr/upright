@@ -49,8 +49,8 @@ export default function ProgramOperations({
           body: JSON.stringify({
             name,
             date,
-            programId: Number(program.id),
-            userId: Number(user.id),
+            programId: program.id,
+            userId: user.id,
           }),
         }
       );

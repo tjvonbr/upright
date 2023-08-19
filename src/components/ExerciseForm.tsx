@@ -35,8 +35,8 @@ export default function AddExerciseForm({
         {
           method: "POST",
           body: JSON.stringify({
-            exerciseId: Number(selected?.id),
-            workoutId: Number(workout.id),
+            exerciseId: selected?.id,
+            workoutId: workout.id,
           }),
         }
       );

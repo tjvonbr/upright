@@ -3,7 +3,7 @@ import { db } from "../prisma";
 export async function getExerciseById(exerciseId: string) {
   const exercise = await db.exercise.findFirst({
     where: {
-      id: Number(exerciseId),
+      id: exerciseId,
     },
   });
 
@@ -13,7 +13,7 @@ export async function getExerciseById(exerciseId: string) {
 export async function getExercisesByUserId(userId: string) {
   const exercises = await db.exercise.findMany({
     where: {
-      userId: Number(userId),
+      userId,
     },
     orderBy: {
       name: "asc",
