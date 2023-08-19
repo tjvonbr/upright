@@ -19,5 +19,5 @@ export interface WorkoutWithExercises extends Workout {
 }
 
 export type ExerciseWorkoutMap = {
-  [key: number]: WorkoutWithSets | null;
+  [key: string]: WorkoutWithSets | null;
 };

@@ -6,19 +6,19 @@ import { getWorkoutById } from "@/lib/api/workouts";
 import { db } from "@/lib/prisma";
 
 const exerciseSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string(),
-  userId: z.number(),
+  userId: z.string(),
 });
 
 const createWorkoutExerciseSchema = z.object({
   exercises: z.array(exerciseSchema),
-  workoutId: z.number(),
+  workoutId: z.string(),
 });
 
 const deleteWorkoutExerciseSchema = z.object({
-  exerciseId: z.number(),
-  workoutId: z.number(),
+  exerciseId: z.string(),
+  workoutId: z.string(),
 });
 
 export async function POST(req: NextRequest) {

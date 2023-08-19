@@ -6,8 +6,8 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/prisma";
 
 const createWorkoutSetSchema = z.object({
-  exerciseId: z.number(),
-  workoutId: z.number(),
+  exerciseId: z.string(),
+  workoutId: z.string(),
   reps: z.string(),
   weight: z.string(),
 });

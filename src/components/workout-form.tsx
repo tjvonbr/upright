@@ -8,7 +8,7 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 
 interface WorkoutFormProps {
-  programId: number;
+  programId: string;
 }
 
 export default function WorkoutForm({ programId }: WorkoutFormProps) {

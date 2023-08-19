@@ -25,7 +25,7 @@ export async function GET(req: Request) {
 const createProgramSchema = z.object({
   name: z.string(),
   description: z.string(),
-  userId: z.number(),
+  userId: z.string(),
 });
 
 export async function POST(req: NextRequest) {

@@ -7,9 +7,9 @@ import { twJoin } from "tailwind-merge";
 interface WorkoutSetState {
   reps: number | null;
   weightLbs: number | null;
-  programId: number | null;
-  workoutId: number;
-  exerciseId: number | null;
+  programId: string | null;
+  workoutId: string;
+  exerciseId: string | null;
 }
 
 export default function WorkoutEditor({ workout }: { workout: any }) {

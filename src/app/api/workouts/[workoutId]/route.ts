@@ -28,7 +28,7 @@ export async function PUT(
 
     const workout = await db.workout.update({
       where: {
-        id: Number(params.workoutId),
+        id: params.workoutId,
       },
       data: {
         name: body.name || undefined,
@@ -68,7 +68,7 @@ export async function DELETE(
 
     const workout = await db.workout.delete({
       where: {
-        id: Number(params.workoutId),
+        id: params.workoutId,
       },
     });
 

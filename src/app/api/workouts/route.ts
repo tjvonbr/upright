@@ -8,8 +8,8 @@ import { db } from "@/lib/prisma";
 const createWorkoutSchema = z.object({
   name: z.string(),
   date: z.string(),
-  programId: z.number().optional(),
-  userId: z.number(),
+  programId: z.string().optional(),
+  userId: z.string(),
 });
 
 export async function POST(req: Request) {
@@ -27,8 +27,8 @@ export async function POST(req: Request) {
       data: {
         name: body.name,
         date: body.date,
-        programId: body.programId ? Number(body.programId) : null,
-        userId: Number(body.userId),
+        programId: body.programId ? body.programId : null,
+        userId: body.userId,
       },
     });
 

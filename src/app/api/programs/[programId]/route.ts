@@ -25,7 +25,7 @@ export async function GET(
 
     const program = await db.program.findFirst({
       where: {
-        id: Number(params.programId),
+        id: params.programId,
       },
     });
 

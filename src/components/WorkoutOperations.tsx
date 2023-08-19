@@ -286,7 +286,7 @@ export default function WorkoutOperations({
 }
 
 export interface Set {
-  id: number;
+  id: string;
   reps: string;
   weightLbs: string;
 }
@@ -310,7 +310,7 @@ function ExerciseInWorkoutItem({
   instructions: WorkoutsExercises["instructions"];
   isEditing: boolean;
   recentWorkouts: ExerciseWorkoutMap;
-  workoutId: number;
+  workoutId: string;
   exerciseSets: WorkoutSet[];
 }) {
   const [oldSets, setOldSets] = useState(

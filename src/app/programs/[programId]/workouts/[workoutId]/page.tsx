@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { db } from "@/lib/prisma";
 
-async function getWorkoutForProgram(workoutId: number) {
+async function getWorkoutForProgram(workoutId: string) {
   const workout = await db.workout.findFirst({
     where: {
       id: workoutId,
