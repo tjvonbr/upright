@@ -25,15 +25,6 @@ export default function RootLayout({ children, session }: RootLayoutProps) {
       <html lang="en" suppressHydrationWarning>
         <head />
         <body className="min-h-screen bg-slate-50 font-sans antialiased">
-          <UserNav
-            navbarItems={
-              isMarketing
-                ? navbarItems.mainNavbar
-                : !isAuth
-                ? navbarItems.dashboard
-                : []
-            }
-          />
           {children}
           <Toaster />
         </body>

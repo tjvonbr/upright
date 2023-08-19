@@ -58,7 +58,7 @@ export default function ProgramsOperations({
 
   return (
     <div className="min-h-screen grid grid-cols-2">
-      <div className="px-4 py-2 border-r border-slate-200">
+      <div className="px-4 py-2 flex flex-col border-r border-slate-200">
         <h1 className="text-2xl font-bold">Programs</h1>
         <div className="w-full pt-3 mb-3">
           <input
@@ -70,15 +70,7 @@ export default function ProgramsOperations({
             }
           />
         </div>
-        <div className="mt-3 space-y-2 flex flex-col">
-          {filteredPrograms.map((program: Program, idx: number) => (
-            <ProgramItem
-              key={idx}
-              href={`/programs/${program.id}`}
-              program={program}
-            />
-          ))}
-        </div>
+        <ProgramsList programs={filteredPrograms} />
       </div>
       <div className="flex flex-col justify-center items-center">
         <form
@@ -130,6 +122,31 @@ export default function ProgramsOperations({
       </div>
     </div>
   );
+}
+
+function ProgramsList({ programs }: { programs: Program[] }) {
+  if (programs.length > 0) {
+    return (
+      <div className="mt-3 space-y-2 flex flex-col grow">
+        {programs.map((program: Program, idx: number) => (
+          <ProgramItem
+            key={idx}
+            href={`/programs/${program.id}`}
+            program={program}
+          />
+        ))}
+      </div>
+    );
+  } else {
+    return (
+      <div className="flex grow flex-col justify-center items-center text-center">
+        <h2 className="text-2xl font-bold">
+          You haven&apos;t added any programs yet!
+        </h2>
+        <p className="text-slate-500">Add your first one on the right.</p>
+      </div>
+    );
+  }
 }
 
 interface ProgramItemProps {

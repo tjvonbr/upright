@@ -24,6 +24,7 @@ import Input from "./common/Input";
 import Spinner from "./Spinner";
 import WorkoutsCalendar from "./WorkoutsCalendar";
 import { convertUTCToLocal } from "@/lib/helpers/dates";
+import Link from "next/link";
 
 interface WorkoutsOperationsProps {
   user: User;
@@ -86,7 +87,7 @@ export default function WorkoutsOperations({
 
   return (
     <div className="min-h-screen grid grid-cols-2">
-      <div className="px-4 py-2 border-r border-slate-200">
+      <div className="flex flex-col px-4 py-2 border-r border-slate-200">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">Workouts</h1>
           <div className="flex space-x-2">
@@ -132,15 +133,23 @@ export default function WorkoutsOperations({
                 }
               />
             </div>
-            <div className="mt-3 space-y-2 flex flex-col">
-              {filteredWorkouts.map((workout: Workout, idx: number) => (
-                <WorkoutItem
-                  key={idx}
-                  href={`/workouts/${workout.id}`}
-                  workout={workout}
-                />
-              ))}
-            </div>
+            {filteredWorkouts.length > 0 ? (
+              <div className="mt-3 space-y-2 flex flex-col">
+                {filteredWorkouts.map((workout: Workout, idx: number) => (
+                  <WorkoutItem
+                    key={idx}
+                    href={`/workouts/${workout.id}`}
+                    workout={workout}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="flex grow flex-col justify-center items-center text-center">
+                <h2 className="w-1/2 text-2xl font-bold">
+                  You haven&apos;t added any workouts yet!
+                </h2>
+              </div>
+            )}
           </>
         ) : (
           <div className="min-h-screen flex flex-col justify-center items-center">
@@ -148,7 +157,7 @@ export default function WorkoutsOperations({
           </div>
         )}
       </div>
-      <div className="flex flex-col justify-center items-center">
+      <div className="h-screen flex flex-col justify-center items-center">
         <form
           className="w-[50%] space-y-2"
           action="submit"
@@ -191,29 +200,38 @@ export default function WorkoutsOperations({
           </fieldset>
           <div>
             <label className="text-sm font-semibold">Program</label>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="h-8 w-full px-2 flex items-center justify-center bg-white text-black rounded-md border border-gray-200 hover:bg-muted">
-                <ChevronDown size={15} strokeWidth={2.5} />
-                <div className="px-2 text-sm">
-                  {program?.name ?? "No program selected"}
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {programs.map((program: Program, idx: number) => (
-                  <DropdownMenuRadioItem
-                    className="rounded-md data-[highlighted]:bg-gray-300"
-                    key={idx}
-                    value={program.name}
-                    // eslint-disable-next-line no-unused-vars
-                    onSelect={(_: Event) => {
-                      setProgram(program);
-                    }}
-                  >
-                    {program.name}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {programs.length > 0 ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="h-8 w-full px-2 flex items-center justify-center bg-white text-black rounded-md border border-gray-200 hover:bg-muted">
+                  <ChevronDown size={15} strokeWidth={2.5} />
+                  <div className="px-2 text-sm">
+                    {program?.name ?? "No program selected"}
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  {programs.map((program: Program, idx: number) => (
+                    <DropdownMenuRadioItem
+                      className="rounded-md data-[highlighted]:bg-gray-300"
+                      key={idx}
+                      value={program.name}
+                      // eslint-disable-next-line no-unused-vars
+                      onSelect={(_: Event) => {
+                        setProgram(program);
+                      }}
+                    >
+                      {program.name}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                className="h-8 w-full px-2 flex items-center justify-center bg-white text-black text-sm rounded-md border border-gray-200 hover:hover:bg-slate-100"
+                href="/programs"
+              >
+                You haven't created any programs. Create one here.
+              </Link>
+            )}
           </div>
           <Button variant="primary" className="w-full">
             {isMutating ? <Spinner /> : "Submit"}

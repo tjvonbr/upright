@@ -25,7 +25,7 @@ export default function UserNav({ navbarItems }: UserNavProps) {
   return (
     <header
       className={twMerge(
-        "h-10 w-full py-2 px-4 flex justify-between items-center",
+        "absolute top-3 left-3 h-10 w-full py-2 px-4 flex justify-between items-center",
         !isMarketing && "border-b border-slate-200",
         isMarketing && "h-15 bg-white"
       )}
