@@ -7,7 +7,7 @@ import { db } from "../prisma";
 export async function getWorkoutsForUser(userId: string) {
   const workouts = db.workout.findMany({
     where: {
-      userId: Number(userId),
+      userId: userId,
     },
   });
 
@@ -17,7 +17,7 @@ export async function getWorkoutsForUser(userId: string) {
 export async function getWorkoutsForProgram(programId: Program["id"]) {
   return await db.workout.findMany({
     where: {
-      programId: Number(programId),
+      programId,
     },
   });
 }
@@ -25,7 +25,7 @@ export async function getWorkoutsForProgram(programId: Program["id"]) {
 export async function getMostRecentWorkoutForProgram(programId: string) {
   return await db.workout.findFirst({
     where: {
-      programId: Number(programId),
+      programId,
     },
     orderBy: {
       date: "desc",
@@ -33,10 +33,10 @@ export async function getMostRecentWorkoutForProgram(programId: string) {
   });
 }
 
-export async function getWorkoutById(workoutId: number) {
+export async function getWorkoutById(workoutId: string) {
   const workout = db.workout.findFirst({
     where: {
-      id: Number(workoutId),
+      id: workoutId,
     },
     include: {
       exercises: {
@@ -51,12 +51,12 @@ export async function getWorkoutById(workoutId: number) {
   return workout;
 }
 
-export async function getWorkoutsWithExercise(exerciseId: number) {
+export async function getWorkoutsWithExercise(exerciseId: string) {
   const workouts = await db.workout.findMany({
     where: {
       exercises: {
         some: {
-          exerciseId: Number(exerciseId),
+          exerciseId,
         },
       },
     },
@@ -73,7 +73,7 @@ export async function getWorkoutsWithExercise(exerciseId: number) {
 }
 
 export async function getMostRecentWorkoutByExerciseIds(
-  exerciseIds: number[],
+  exerciseIds: string[],
   workoutDate: Date
 ) {
   const workouts: ExerciseWorkoutMap = {};

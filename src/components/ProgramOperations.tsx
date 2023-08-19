@@ -69,7 +69,7 @@ export default function ProgramOperations({
       <h1>{program?.name}</h1>
       <div className="grid grid-cols-3">
         {recentWorkout ? <LastWorkoutWidget workout={recentWorkout} /> : null}
-        <WorkoutsWidget programId={program.id as number} />
+        <WorkoutsWidget programId={program.id as string} />
         <Dialog>
           <DialogTrigger>
             <div className="h-full w-full flex flex-col justify-center items-center">
@@ -154,7 +154,7 @@ function LastWorkoutWidget({ workout }: { workout: Workout }) {
   );
 }
 
-function WorkoutsWidget({ programId }: { programId: number }) {
+function WorkoutsWidget({ programId }: { programId: string }) {
   return (
     <Widget href={`/programs/${programId}/workouts`}>
       <div className="h-full w-full flex flex-col justify-center items-center">

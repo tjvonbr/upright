@@ -4,11 +4,10 @@ import { z } from "zod";
 
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/prisma";
-import { getCloneableBody } from "next/dist/server/body-streams";
 
 const createExerciseSchema = z.object({
   name: z.string(),
-  userId: z.number(),
+  userId: z.string(),
 });
 
 export async function POST(req: Request) {

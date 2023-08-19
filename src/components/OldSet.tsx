@@ -28,7 +28,7 @@ export default function OldSet({
 
   const router = useRouter();
 
-  async function deleteSet(setId: number) {
+  async function deleteSet(setId: string) {
     setIsDeleting(true);
 
     const response = await fetch(`http://localhost:3000/api/sets/${setId}`, {
@@ -43,7 +43,7 @@ export default function OldSet({
     setIsDeleting(false);
   }
 
-  async function updateSet(setId: number, idx: number) {
+  async function updateSet(setId: string, idx: number) {
     setIsUpdating(true);
 
     const response = await fetch(`http://localhost:3000/api/sets/${setId}`, {
