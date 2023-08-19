@@ -12,10 +12,10 @@ datasource db {
 }
 
 model Exercise {
-  id              Int             @id @default(autoincrement())
+  id              String          @id @default(uuid())
   name            String          @unique
   user            User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          Int?
+  userId          String?
   workouts        WorkoutsExercises[]
   workoutSets     WorkoutSet[]
   personalBests   PersonalBest[]  
@@ -25,20 +25,20 @@ model Exercise {
 }
 
 model Program {
-  id          Int         @id @default(autoincrement())
+  id          String      @id @default(uuid())
   name        String      @unique
   description String?
   user        User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int
+  userId      String
   workouts    Workout[]
   workoutSets WorkoutSet[]
 
   @@map("programs")
 }
 model Session {
-  id           Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   sessionToken String   @unique
-  userId       Int
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -46,7 +46,7 @@ model Session {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
+  id            String    @id @default(uuid())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   firstName     String    
@@ -73,15 +73,15 @@ model VerificationToken {
 }
 
 model Workout {
-  id          Int           @id @default(autoincrement())
+  id          String        @id @default(uuid())
   name        String        @unique
   startedAt   DateTime?
   completedAt DateTime?
   date        DateTime      @db.Date
   user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId      Int       
+  userId      String       
   program     Program?      @relation(fields: [programId], references: [id], onDelete: Cascade)
-  programId   Int?
+  programId   String?
   exercises   WorkoutsExercises[]
   workoutSets WorkoutSet[]
 
@@ -92,9 +92,9 @@ model WorkoutsExercises {
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   workout       Workout     @relation(fields:[workoutId], references:[id])
-  workoutId     Int
+  workoutId     String
   exercise      Exercise    @relation(fields: [exerciseId], references: [id])
-  exerciseId    Int
+  exerciseId    String
   instructions  String?
   
   @@id([workoutId, exerciseId])
@@ -102,14 +102,14 @@ model WorkoutsExercises {
 }
 
 model WorkoutSet {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(uuid())
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  exerciseId  Int
+  exerciseId  String
   exercise    Exercise  @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
-  workoutId   Int
+  workoutId   String
   workout     Workout   @relation(fields: [workoutId], references: [id], onDelete: Cascade)
-  programId   Int?
+  programId   String?
   program     Program?  @relation(fields: [programId], references: [id], onDelete: Cascade)
   reps        Int       
   weightLbs   Float     @map("weight_lbs")
@@ -121,9 +121,9 @@ model PersonalBest {
   type        String      
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
-  userId      Int         
+  userId      String         
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  exerciseId  Int
+  exerciseId  String
   exercise    Exercise    @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   weight      Float
 
