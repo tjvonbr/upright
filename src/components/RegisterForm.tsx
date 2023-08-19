@@ -89,7 +89,7 @@ export default function RegisterForm() {
           className="h-10 w-full px-3 py-2 border border-slate-200 rounded-md"
           placeholder="mm/dd/yyyy"
           name="birthday"
-          type="text"
+          type="date"
           value={birthday}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             setBirthday(e.target.value)
